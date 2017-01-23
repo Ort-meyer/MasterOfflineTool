@@ -50,7 +50,7 @@
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>fanndouble.lib;fanndoubled.lib;fannfixed.lib;fannfixedd.lib;fannfloat.lib;fannfloatd.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>fannfloat.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">

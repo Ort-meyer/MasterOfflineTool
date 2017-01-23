@@ -19,14 +19,24 @@ int print_callback(FANN::neural_net &net, FANN::training_data &train,
 
 void TrainNeuralNetwork(FANN::neural_net* io_net)
 {
-    io_net->train_on_file("PlusTest.data",200,50,0.0001f);
+	FANN::training_data data;
+	data.read_train_from_file("PlusTest.data");
+	io_net->init_weights(data);
+	io_net->train_on_data(data, 20000, 5000, 0.0001f);
+
 }
 
 void SetUpNeuralNet(FANN::neural_net* io_net)
 {
     // set up the network
-    io_net->create_standard(2,2,1);
+    io_net->create_standard(3,2,3,200);
     io_net->set_callback(print_callback, NULL);
+
+	io_net->set_learning_rate(0.7);
+	io_net->set_activation_steepness_output(1.0);
+	io_net->set_activation_steepness_hidden(1.0);
+	io_net->set_activation_function_output(FANN::SIGMOID_SYMMETRIC_STEPWISE);
+	io_net->set_activation_function_hidden(FANN::SIGMOID_SYMMETRIC_STEPWISE);
 }
 
 void RunNeuralNetwork(FANN::neural_net* io_net, const float& p_input1, const float& p_input2)
@@ -52,7 +62,7 @@ void CreatetestFile()
 {
 	int min = 0;
 	int max = 100;
-	int numTestCases = 50;
+	int numTestCases = 2000;
 	ofstream file;
 	file.open("PlusTest.data");
 	/* 
@@ -60,7 +70,7 @@ void CreatetestFile()
 	First is number of test cases.
 	next is number of inputs
 	finally is number of outputs*/
-	file << numTestCases << " " << "2" << " " << "1" << endl;
+	file << numTestCases << " " << "2" << " " << "200" << endl;
 	// Loop through our test cases
 	for (int i = 0; i < numTestCases; i++)
 	{
