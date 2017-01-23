@@ -5,8 +5,8 @@
 #include <ios>
 #include <iomanip>
 using namespace std;
-#include <FANN\header\fann_cpp.h>
 #include <FANN\header\floatfann.h>
+#include <FANN\header\fann_cpp.h>
 
 int print_callback(FANN::neural_net &net, FANN::training_data &train,
     unsigned int max_epochs, unsigned int epochs_between_reports,
