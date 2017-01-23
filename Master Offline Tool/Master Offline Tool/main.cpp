@@ -6,6 +6,20 @@ using namespace std;
 
 #include <fstream>
 
+// Not sure what these do...
+#include <ios>
+#include <iomanip>
+
+
+int print_callback(FANN::neural_net &net, FANN::training_data &train,
+	unsigned int max_epochs, unsigned int epochs_between_reports,
+	float desired_error, unsigned int epochs, void *user_data)
+{
+	cout << "Epochs     " << setw(8) << epochs << ". "
+		<< "Current Error: " << left << net.get_MSE() << right << endl;
+	return 0;
+}
+
 void CreatetestFile()
 {
 	int min = 0;
