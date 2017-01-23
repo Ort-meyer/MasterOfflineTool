@@ -19,7 +19,7 @@ int print_callback(FANN::neural_net &net, FANN::training_data &train,
 
 void TrainNeuralNetwork(FANN::neural_net* io_net)
 {
-    io_net->train_on_file("PlustTest.data",200,50,0.0001f);
+    io_net->train_on_file("PlusTest.data",200,50,0.0001f);
 }
 
 void SetUpNeuralNet(FANN::neural_net* io_net)
@@ -91,10 +91,12 @@ int main()
 
 
 
-	int pause;
-	cin >> pause;
+
     FANN::neural_net* net = new FANN::neural_net();
     SetUpNeuralNet(net);
     TrainNeuralNetwork(net);
     RunNeuralNetwork(net, 2, 3);
+
+	int pause;
+	cin >> pause;
 }
