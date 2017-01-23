@@ -22,21 +22,21 @@ void TrainNeuralNetwork(FANN::neural_net* io_net)
 	FANN::training_data data;
 	data.read_train_from_file("PlusTest.data");
 	io_net->init_weights(data);
-	io_net->train_on_data(data, 20000, 5000, 0.0001f);
+	io_net->train_on_data(data, 500, 5, 0.0001f);
 
 }
 
 void SetUpNeuralNet(FANN::neural_net* io_net)
 {
     // set up the network
-    io_net->create_standard(3,2,3,200);
+    io_net->create_standard(2,2,1);
     io_net->set_callback(print_callback, NULL);
 
 	io_net->set_learning_rate(0.7);
 	io_net->set_activation_steepness_output(1.0);
-	io_net->set_activation_steepness_hidden(1.0);
-	io_net->set_activation_function_output(FANN::SIGMOID_SYMMETRIC_STEPWISE);
-	io_net->set_activation_function_hidden(FANN::SIGMOID_SYMMETRIC_STEPWISE);
+    //io_net->set_activation_steepness_hidden(1.0);
+    //io_net->set_activation_function_hidden(FANN::SIGMOID_SYMMETRIC);
+	io_net->set_activation_function_output(FANN::SIGMOID_SYMMETRIC);
 }
 
 void RunNeuralNetwork(FANN::neural_net* io_net, const float& p_input1, const float& p_input2)
@@ -48,7 +48,7 @@ void RunNeuralNetwork(FANN::neural_net* io_net, const float& p_input1, const flo
     float* hej = io_net->run(input);
     if (*hej != input[0] + input[1])
     {
-        std::cout << "Not correct! Should be: " << input[0] + input[1] << " But was " << *hej << endl;
+        std::cout << "Not correct! Should be: " << (input[0] + input[1]) << " But was " << (*hej) << endl;
     }
     else
     {
@@ -62,7 +62,7 @@ void CreatetestFile()
 {
 	int min = 0;
 	int max = 100;
-	int numTestCases = 2000;
+	int numTestCases = 20000;
 	ofstream file;
 	file.open("PlusTest.data");
 	/* 
@@ -70,17 +70,15 @@ void CreatetestFile()
 	First is number of test cases.
 	next is number of inputs
 	finally is number of outputs*/
-	file << numTestCases << " " << "2" << " " << "200" << endl;
+	file << numTestCases << " " << "2" << " " << "1" << endl;
 	// Loop through our test cases
 	for (int i = 0; i < numTestCases; i++)
 	{
 		// Create random numbers
 		int x = rand() % (max - min + 1) + min;
 		int y = rand() % (max - min + 1) + min;
-		if (x == y)
-			cout << "fuck";
 		// Print the numbers as inputs and their sum as output
-		file << x << " " << y << endl << x+y << endl;
+		file << (float)(x) / (float)(max*2) << " " << (float)(y) / (float)(max*2) << endl << (float)(x+y)/ (float)(max*2) << endl;
 	}
 	file.close();
 
@@ -105,7 +103,7 @@ int main()
     FANN::neural_net* net = new FANN::neural_net();
     SetUpNeuralNet(net);
     TrainNeuralNetwork(net);
-    RunNeuralNetwork(net, 2, 3);
+    RunNeuralNetwork(net, .5f, .2f);
 
 	int pause;
 	cin >> pause;
