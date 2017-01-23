@@ -1,4 +1,9 @@
 #include <iostream>
+#include <fstream>
+
+// Not sure what these do...
+#include <ios>
+#include <iomanip>
 using namespace std;
 #include <FANN\header\fann_cpp.h>
 #include <FANN\header\floatfann.h>
@@ -41,24 +46,7 @@ void RunNeuralNetwork(FANN::neural_net* io_net, const float& p_input1, const flo
     }
 }
 
-#include <FANN\header\floatfann.h>
-#include <FANN\header\fann_cpp.h>
 
-#include <fstream>
-
-// Not sure what these do...
-#include <ios>
-#include <iomanip>
-
-
-int print_callback(FANN::neural_net &net, FANN::training_data &train,
-	unsigned int max_epochs, unsigned int epochs_between_reports,
-	float desired_error, unsigned int epochs, void *user_data)
-{
-	cout << "Epochs     " << setw(8) << epochs << ". "
-		<< "Current Error: " << left << net.get_MSE() << right << endl;
-	return 0;
-}
 
 void CreatetestFile()
 {
