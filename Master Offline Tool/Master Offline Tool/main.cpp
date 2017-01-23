@@ -1,5 +1,45 @@
 #include <iostream>
 using namespace std;
+#include <FANN\header\fann_cpp.h>
+#include <FANN\header\floatfann.h>
+
+int print_callback(FANN::neural_net &net, FANN::training_data &train,
+    unsigned int max_epochs, unsigned int epochs_between_reports,
+    float desired_error, unsigned int epochs, void *user_data)
+{
+    cout << "Epochs     " << epochs << ". "
+        << "Current Error: " << net.get_MSE() << endl;
+    return 0;
+}
+
+void TrainNeuralNetwork(FANN::neural_net* io_net)
+{
+    io_net->train_on_file("PlustTest.data",200,50,0.0001f);
+}
+
+void SetUpNeuralNet(FANN::neural_net* io_net)
+{
+    // set up the network
+    io_net->create_standard(2,2,1);
+    io_net->set_callback(print_callback, NULL);
+}
+
+void RunNeuralNetwork(FANN::neural_net* io_net, const float& p_input1, const float& p_input2)
+{
+    FANN::training_data data;
+    float* input = (float*)malloc(sizeof(float) * 2);
+    *input = p_input1;
+    input[1] = p_input2;
+    float* hej = io_net->run(input);
+    if (*hej != input[0] + input[1])
+    {
+        std::cout << "Not correct! Should be: " << input[0] + input[1] << " But was " << *hej << endl;
+    }
+    else
+    {
+        std::cout << "Correct!!";
+    }
+}
 
 #include <FANN\header\floatfann.h>
 #include <FANN\header\fann_cpp.h>
@@ -65,4 +105,8 @@ int main()
 
 	int pause;
 	cin >> pause;
+    FANN::neural_net* net = new FANN::neural_net();
+    SetUpNeuralNet(net);
+    TrainNeuralNetwork(net);
+    RunNeuralNetwork(net, 2, 3);
 }
