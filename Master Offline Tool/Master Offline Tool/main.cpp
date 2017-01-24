@@ -183,9 +183,9 @@ int main()
     myCalc.SetRandomSeed(1337);
     myCalc.SetUpNet();
     myCalc.SetFileName("CalcTrainingData.data");
-    myCalc.CreateTrainingFile(200);
+    myCalc.CreateTrainingFile(600);
     myCalc.ReadDataFromFile();
-    myCalc.TrainOnData(50000,100,0.0001f,false);
+    myCalc.TrainOnData(100000,100,0.0001f,false);
     // Simple validation
     myCalc.ValidateOnNumber(0.3f, 0.2f, Calculator::CalculationMethod::Addition);
     myCalc.ValidateOnNumber(0.3f, 0.5f, Calculator::CalculationMethod::Subtraction);

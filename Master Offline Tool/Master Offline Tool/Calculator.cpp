@@ -29,8 +29,8 @@ Calculator::~Calculator()
 
 void Calculator::CreateTrainingFile(const int& p_numberOfTestcases, CalculationMethod p_methodToCreateDataOn)
 {
-    float min = -0.5f;
-    float max = 0.5f; // Answere may not be above 1 and 0.5+0.5 is 1
+    float min = -.5f;
+    float max = .5f; // Answere may not be above 1 and 0.5+0.5 is 1
     int numTestCases = p_numberOfTestcases;
     CalculationMethod method = p_methodToCreateDataOn;
     ofstream file;
@@ -75,13 +75,12 @@ void Calculator::CreateTrainingFile(const int& p_numberOfTestcases, CalculationM
 void Calculator::SetUpNet()
 {
     // set up the network
-    m_net.create_standard(3, 3, 30, 1);
+    m_net.create_standard(3, 3,20, 1);
     m_net.set_callback(calculator_callback, NULL);
 
-    
-    m_net.set_learning_rate(0.7);
-    m_net.set_activation_steepness_output(1.0);
-    m_net.set_activation_steepness_hidden(1.0);
+    m_net.set_learning_rate(1.0f);
+    m_net.set_activation_steepness_output(1.0f);
+    m_net.set_activation_steepness_hidden(1.0f);
     m_net.set_activation_function_hidden(FANN::SIGMOID_SYMMETRIC);
     m_net.set_activation_function_output(FANN::SIGMOID_SYMMETRIC);
 }
@@ -124,7 +123,7 @@ void Calculator::ValidateOnFile()
         std::cout << "Net: " << *netOutput << " Acctual: " << output[i] << endl;
         fullError += abs(abs(*netOutput) - abs(output[i]));
     }
-    std::cout << "mean error: " << fullError / static_cast<float>(length);
+    std::cout << "mean error: " << fullError / static_cast<float>(length)<<endl;
 }
 
 void Calculator::ValidateOnNumber(const float & p_number1, const float & p_number2, CalculationMethod p_method)
