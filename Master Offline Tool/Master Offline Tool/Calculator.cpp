@@ -113,6 +113,8 @@ void Calculator::TrainOnData(const int & p_numberOfEpochs, const int & p_reportF
 void Calculator::ValidateOnFile()
 {
     m_data.read_train_from_file(m_fileName);
+    m_net.test_data(m_data);
+    std::cout << "Mean Square Error according to FANN: " << m_net.get_MSE() << endl;
     float fullError = 0;
     float* input = *m_data.get_input();
     float* output = *m_data.get_output();
@@ -130,6 +132,7 @@ void Calculator::ValidateOnNumber(const float & p_number1, const float & p_numbe
 {
     float Answere;
     std::string calcMethod;
+
     switch (p_method)
     {
     case Calculator::Addition:
