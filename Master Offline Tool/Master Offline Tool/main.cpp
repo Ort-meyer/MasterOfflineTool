@@ -1,6 +1,6 @@
 #include <iostream>
 #include <fstream>
-
+#include "Calculator.h"
 // Not sure what these do...
 #include <ios>
 #include <iomanip>
@@ -23,7 +23,6 @@ void TrainNeuralNetwork(FANN::neural_net* io_net)
 	data.read_train_from_file("PlusTest.data");
 	io_net->init_weights(data);
 	io_net->train_on_data(data, 500, 5, 0.0001f);
-
 }
 
 void SetUpNeuralNet(FANN::neural_net* io_net)
@@ -162,29 +161,35 @@ void CreateTestFileRandom()
 int main()
 {
 	cout << "Hello, world!" << endl;
-	CreatetestFile();
-	CreateTestFileRandom();
-	const float learning_rate = 0.7f;
-	const unsigned int num_layers = 3;
-	const unsigned int num_input = 2;
-	const unsigned int num_hidden = 3;
-	const unsigned int num_output = 1;
-	const float desired_error = 0.001f;
-	const unsigned int max_iterations = 300000;
-	const unsigned int iterations_between_reports = 1000;
+	//CreatetestFile();
+	//const float learning_rate = 0.7f;
+	//const unsigned int num_layers = 3;
+	//const unsigned int num_input = 2;
+	//const unsigned int num_hidden = 3;
+	//const unsigned int num_output = 1;
+	//const float desired_error = 0.001f;
+	//const unsigned int max_iterations = 300000;
+	//const unsigned int iterations_between_reports = 1000;
 
 
 
 
-    FANN::neural_net* net = new FANN::neural_net();
-    SetUpNeuralNet(net);
-    TrainNeuralNetwork(net);
-    RunNeuralNetwork(net, .5f, .2f);
+ //   FANN::neural_net* net = new FANN::neural_net();
+ //   SetUpNeuralNet(net);
+ //   TrainNeuralNetwork(net);
+ //   RunNeuralNetwork(net, .5f, .2f);
 
-	//FANN::neural_net* net = new FANN::neural_net();
-	//SetUpNeuralNetRandom(net);
-	//TrainNeuralNetwork(net);
-	//RunNeuralNetwork(net, 2, 3);
+    Calculator myCalc;
+    myCalc.SetRandomSeed(1337);
+    myCalc.SetUpNet();
+    myCalc.SetFileName("CalcTrainingData.data");
+    myCalc.CreateTrainingFile();
+    myCalc.ReadDataFromFile();
+    myCalc.TrainOnData(60000,100,0.0001f,false);
+    myCalc.ValidateOnNumber(0.3f, 0.2f, Calculator::CalculationMethod::Addition);
+    myCalc.ValidateOnNumber(0.3f, 0.5f, Calculator::CalculationMethod::Subtraction);
+    myCalc.ValidateOnNumber(0.5f, 0.2f, Calculator::CalculationMethod::Multiplication);
+    myCalc.ValidateOnNumber(0.3f, 0.2f, Calculator::CalculationMethod::Division);
 
 	int pause;
 	cin >> pause;
