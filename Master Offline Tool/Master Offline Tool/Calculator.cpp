@@ -27,11 +27,12 @@ Calculator::~Calculator()
 {
 }
 
-void Calculator::CreateTrainingFile()
+void Calculator::CreateTrainingFile(const int& p_numberOfTestcases, CalculationMethod p_methodToCreateDataOn)
 {
     float min = -0.5f;
     float max = 0.5f; // Answere may not be above 1 and 0.5+0.5 is 1
-    int numTestCases = 200;
+    int numTestCases = p_numberOfTestcases;
+    CalculationMethod method = p_methodToCreateDataOn;
     ofstream file;
     file.open(m_fileName);
     /*
@@ -46,7 +47,10 @@ void Calculator::CreateTrainingFile()
         // Create random numbers
         float x = min + static_cast<float>(rand()) / (static_cast<float>(RAND_MAX)/(max-min));
         float y = min + static_cast<float>(rand()) / (static_cast<float>(RAND_MAX)/(max-min));
-        CalculationMethod method = static_cast<CalculationMethod>(rand() % 4);
+        if (p_methodToCreateDataOn == CalculationMethod::ALL)
+        {
+            method = static_cast<CalculationMethod>(rand() % 4);
+        }      
         switch (method)
         {
         case Calculator::Addition:
@@ -71,7 +75,7 @@ void Calculator::CreateTrainingFile()
 void Calculator::SetUpNet()
 {
     // set up the network
-    m_net.create_standard(3, 3, 20, 1);
+    m_net.create_standard(3, 3, 30, 1);
     m_net.set_callback(calculator_callback, NULL);
 
     
@@ -109,6 +113,18 @@ void Calculator::TrainOnData(const int & p_numberOfEpochs, const int & p_reportF
 
 void Calculator::ValidateOnFile()
 {
+    m_data.read_train_from_file(m_fileName);
+    float fullError = 0;
+    float* input = *m_data.get_input();
+    float* output = *m_data.get_output();
+    int length = m_data.length_train_data();
+    for (size_t i = 0; i < length; i++)
+    {
+        float* netOutput = m_net.run(&input[i*3]);
+        std::cout << "Net: " << *netOutput << " Acctual: " << output[i] << endl;
+        fullError += abs(abs(*netOutput) - abs(output[i]));
+    }
+    std::cout << "mean error: " << fullError / static_cast<float>(length);
 }
 
 void Calculator::ValidateOnNumber(const float & p_number1, const float & p_number2, CalculationMethod p_method)

@@ -183,13 +183,33 @@ int main()
     myCalc.SetRandomSeed(1337);
     myCalc.SetUpNet();
     myCalc.SetFileName("CalcTrainingData.data");
-    myCalc.CreateTrainingFile();
+    myCalc.CreateTrainingFile(200);
     myCalc.ReadDataFromFile();
-    myCalc.TrainOnData(60000,100,0.0001f,false);
+    myCalc.TrainOnData(50000,100,0.0001f,false);
+    // Simple validation
     myCalc.ValidateOnNumber(0.3f, 0.2f, Calculator::CalculationMethod::Addition);
     myCalc.ValidateOnNumber(0.3f, 0.5f, Calculator::CalculationMethod::Subtraction);
     myCalc.ValidateOnNumber(0.5f, 0.2f, Calculator::CalculationMethod::Multiplication);
     myCalc.ValidateOnNumber(0.3f, 0.2f, Calculator::CalculationMethod::Division);
+    // Setting up a validation file to do more extensive testing
+    std::cout << "---------Validating Addition-----------" << endl;
+    myCalc.SetFileName("CalcValidationDataPlus.data");
+    myCalc.CreateTrainingFile(10, Calculator::CalculationMethod::Addition);
+    // This func call overwrites the currently saved data with the new file name
+    myCalc.ValidateOnFile();
+    std::cout << "---------Validating Subtraction----------" << endl;
+    myCalc.SetFileName("CalcValidationDataMinus.data");
+    myCalc.CreateTrainingFile(10, Calculator::CalculationMethod::Subtraction);
+    myCalc.ValidateOnFile();
+    std::cout << "---------Validating Multiplication---------" << endl;
+    myCalc.SetFileName("CalcValidationDataMulti.data");
+    myCalc.CreateTrainingFile(10, Calculator::CalculationMethod::Multiplication);
+    myCalc.ValidateOnFile();
+    std::cout << "---------Validating Division---------" << endl;
+    myCalc.SetFileName("CalcValidationDataDiv.data");
+    myCalc.CreateTrainingFile(10, Calculator::CalculationMethod::Division);
+    myCalc.ValidateOnFile();
+
 
 	int pause;
 	cin >> pause;

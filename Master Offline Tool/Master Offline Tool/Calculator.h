@@ -5,11 +5,11 @@
 class Calculator
 {
 public:
-    enum CalculationMethod {Addition, Subtraction, Multiplication, Division};
+    enum CalculationMethod {Addition, Subtraction, Multiplication, Division, ALL};
     Calculator();
     ~Calculator();
 
-    void CreateTrainingFile();
+    void CreateTrainingFile(const int& p_numberOfTestcases,CalculationMethod p_methodToCreateDataOn = CalculationMethod::ALL);
     void SetUpNet();
     void ReadDataFromFile();
     void TrainOnData(const int& p_numberOfEpochs, const int& p_reportFrequency, const float& p_errorAccaptance, const bool& p_random);
