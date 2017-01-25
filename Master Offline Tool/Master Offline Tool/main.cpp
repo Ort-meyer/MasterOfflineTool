@@ -1,6 +1,7 @@
 #include <iostream>
 #include <fstream>
 #include "Calculator.h"
+#include "RandomNetwork.h"
 // Not sure what these do...
 #include <ios>
 #include <iomanip>
@@ -172,7 +173,7 @@ int main()
 	//const unsigned int iterations_between_reports = 1000;
 
 
-
+	RandomNetwork net;
 
  //   FANN::neural_net* net = new FANN::neural_net();
  //   SetUpNeuralNet(net);
