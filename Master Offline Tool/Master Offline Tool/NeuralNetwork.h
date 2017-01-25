@@ -3,7 +3,7 @@
 #include <FANN\header\fann_cpp.h>
 #include <string>
 
-// Should probably have a constructor
+// Should probably have a constructor, or at least default values
 struct NetworkSettings
 {
 	int inputCells;
@@ -16,6 +16,8 @@ struct NetworkSettings
 	float steepnessHidden;
 	FANN::activation_function_enum functionHidden;
 	FANN::activation_function_enum functionOutput;
+	
+	bool randomSeed;
 
 };
 

@@ -42,6 +42,21 @@ void NeuralNetwork::ValidateOnFile()
 void NeuralNetwork::TrainOnData(const int& p_numberOfEpochs, const int& p_reportFrequency, const float& p_errorAccaptance)
 {
 	m_data.read_train_from_file(m_trainingDataFilename);
+	// Set starting weights
+	if (m_networkSettings.randomSeed)
+	{
+		m_net.init_weights(m_data);
+	}
+	else
+	{
+		FANN::connection* networkConnections = (FANN::connection*) malloc(sizeof(FANN::connection) * m_net.get_total_connections());
+		m_net.get_connection_array(networkConnections);
+		for (size_t i = 0; i < m_net.get_total_connections(); i++)
+		{
+			networkConnections[i].weight = -0.5f + static_cast<float>(rand()) / (static_cast<float>(RAND_MAX) / (0.5f - (-0.5f)));;
+		}
+		m_net.set_weight_array(networkConnections, m_net.get_total_connections());
+	}
 	m_net.train_on_data(m_data, p_numberOfEpochs, p_reportFrequency, p_errorAccaptance);
 }
 
