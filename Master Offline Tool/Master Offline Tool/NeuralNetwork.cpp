@@ -32,7 +32,8 @@ void NeuralNetwork::ValidateOnFile()
 	int length = m_data.length_train_data();
 	for (size_t i = 0; i < length; i++)
 	{
-		float* netOutput = m_net.run(&input[i * 3]);
+      // Needs to make this work for several output cells too
+		float* netOutput = m_net.run(&input[i * m_networkSettings.inputCells]);
 		std::cout << "Net: " << *netOutput << " Acctual: " << output[i] << endl;
 		fullError += abs(abs(*netOutput) - abs(output[i]));
 	}
