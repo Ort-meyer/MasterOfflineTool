@@ -11,6 +11,6 @@ public:
    void CreateTrainingFile();
 
    CalculationMethod m_methodToUse;
-   string m_fileName;
+   std::string m_fileName;
 };
 

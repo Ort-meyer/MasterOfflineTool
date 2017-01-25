@@ -10,7 +10,7 @@ CalculatorNetwork::CalculatorNetwork()
       m_validationDataFilename = "CalcTrainingDataNEW.data";
       m_networkSettings.inputCells = 3;
       m_networkSettings.outputCells = 1;
-      m_networkSettings.hiddenCells = new int{ 20 }; // Yup, it's an array
+      m_networkSettings.hiddenCells = new int(20); // Yup, it's an array
       m_networkSettings.hiddenLayers = 1;
 
       m_networkSettings.learningRate = 1;
@@ -21,11 +21,11 @@ CalculatorNetwork::CalculatorNetwork()
 
       m_networkSettings.randomSeed = true;
 
+      m_methodToUse = ALL;
+
       CreateTrainingFile();
       NeuralNetwork::SetupNetwork();
       NeuralNetwork::TrainOnData(200, 20, 0.0001f);
-
-      m_methodToUse = ALL;
    }
 }
 
@@ -40,7 +40,7 @@ void CalculatorNetwork::CreateTrainingFile()
    float max = .5f; // Answere may not be above 1 and 0.5+0.5 is 1
    int numTestCases = 1000;
    ofstream file;
-   file.open(m_fileName);
+   file.open(m_trainingDataFilename);
    /*
    Print first line of data:
    First is number of test cases.
@@ -78,5 +78,5 @@ void CalculatorNetwork::CreateTrainingFile()
    }
    file.close();
 }
-}
+
 

@@ -2,6 +2,7 @@
 #include <fstream>
 #include "Calculator.h"
 #include "RandomNetwork.h"
+#include "CalculatorNetwork.h"
 // Not sure what these do...
 #include <ios>
 #include <iomanip>
@@ -179,6 +180,12 @@ int main()
  //   SetUpNeuralNet(net);
  //   TrainNeuralNetwork(net);
  //   RunNeuralNetwork(net, .5f, .2f);
+
+
+
+   
+   CalculatorNetwork calcNet;
+   
 
     Calculator myCalc;
     myCalc.SetRandomSeed(1337);
