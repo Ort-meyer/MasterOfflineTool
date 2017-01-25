@@ -69,12 +69,14 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Calculator.cpp" />
+    <ClCompile Include="CalculatorNetwork.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="NeuralNetwork.cpp" />
     <ClCompile Include="RandomNetwork.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Calculator.h" />
+    <ClInclude Include="CalculatorNetwork.h" />
     <ClInclude Include="NeuralNetwork.h" />
     <ClInclude Include="RandomNetwork.h" />
   </ItemGroup>
