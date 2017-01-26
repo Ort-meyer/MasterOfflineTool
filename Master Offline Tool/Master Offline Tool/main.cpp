@@ -185,7 +185,7 @@ int main()
 
 
 	PositionNetwork posnet;
-   CalculatorNetwork calcNet;
+	   CalculatorNetwork calcNet;
    
 
     Calculator myCalc;

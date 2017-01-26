@@ -74,6 +74,7 @@
     <ClCompile Include="NeuralNetwork.cpp" />
     <ClCompile Include="PositionNetwork.cpp" />
     <ClCompile Include="RandomNetwork.cpp" />
+    <ClCompile Include="RawDataWriter.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Calculator.h" />
@@ -81,6 +82,7 @@
     <ClInclude Include="NeuralNetwork.h" />
     <ClInclude Include="PositionNetwork.h" />
     <ClInclude Include="RandomNetwork.h" />
+    <ClInclude Include="RawDataWriter.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
