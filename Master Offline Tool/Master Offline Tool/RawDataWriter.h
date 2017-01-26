@@ -25,7 +25,7 @@ public:
 	taking the total mouse displacement in the last sample
 	divided by the "maximum" total mouse displacement
 	(to get a value between 0 and 1).
-	The idea is for this data to be calculated at a set intervall
+	The idea is for this data to be calculated at a set sample rate
 	but here it's obviously just generated more or less randomly*/
 	void WriteMeanMouseDisplacementData();
 	/**
@@ -37,13 +37,17 @@ public:
 	TODO implement APM? */
 
 private:
-	// The output file name
+	// The output file names
 	string m_dispOutputName;
+	string m_mouseOutputName;
 	// How many intervalls we want to have. Basically the same as num test cases
 	int m_numberOfIntervalls;
 	// How long each intervall is. I.e. how many samples per intervall
 	int m_samplesPerIntervall;
 	
+	// Help method for WriteMeanMouseDisplacementData();
+	vec2 CreateRandomMouseVector(float min, float max);
+	// Help method for WriteDisplacementData
 	vec3 CreateRandomMoveVector(float min, float max);
 };
 

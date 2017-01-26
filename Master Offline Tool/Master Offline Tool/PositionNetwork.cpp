@@ -55,17 +55,18 @@ void PositionNetwork::CreateTrainingFile()
 		// Decide if this set should be lost or not
 		bool lost = rand() % 2;
 		vec3 movement;
-		// We want to start off having moved in a random direction
-		movement = CreateRandomMoveVector(min, max);
-		// We don't want first value to be skewed
-		oldMovement = movement;
+		// If we're lost, we want to set a constant movement directino
+		if (!lost)
+			for (size_t i = 0; i < 3; i++)
+				movement[i] = min + static_cast<float>(rand()) / (static_cast<float>(RAND_MAX) / (max - min));
 		// Build up our path
-		for (size_t i = 0; i < m_samplesPerIntervall; i++)
+		for (size_t i = 0; i < g_numSteps; i++)
 		{
-			// If we're lost we always want a new movement direction
-			if (lost)
+			// Create displacement
+			for (size_t i = 0; i < 3; i++)
 			{
-				movement = CreateRandomMoveVector(min, max);
+				if (lost)
+					movement[i] = min + static_cast<float>(rand()) / (static_cast<float>(RAND_MAX) / (max - min));
 			}
 			// Calculate length of our movement
 			float displacement = length(movement);
