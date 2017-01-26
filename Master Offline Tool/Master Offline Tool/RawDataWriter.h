@@ -1,5 +1,8 @@
 #pragma once
 #include <string>
+#include <GLM\glm.hpp>
+using namespace std;
+using namespace glm;
 class RawDataWriter
 {
 public:
@@ -40,10 +43,16 @@ private:
 	// The output file names
 	string m_dispOutputName;
 	string m_mouseOutputName;
-	// How many intervalls we want to have. Basically the same as num test cases
-	int m_numberOfIntervalls;
+	string m_keyDownOutputName;
+	// Half how many intervalls we want. Half total intervalls are lost
+	int m_halfNumberOfIntervalls;
 	// How long each intervall is. I.e. how many samples per intervall
 	int m_samplesPerIntervall;
+
+	// Iterators keeping track of number of lost intervalls
+	int m_dispLost;
+	int m_mouseLost;
+	int m_keyLost;
 	
 	// Help method for WriteMeanMouseDisplacementData();
 	vec2 CreateRandomMouseVector(float min, float max);

@@ -9,8 +9,13 @@ RawDataWriter::RawDataWriter()
 {
 	m_dispOutputName = "DEBUGRawPositionData.data";
 	m_mouseOutputName = "DEBUGMouseData.data";
+	m_keyDownOutputName = "DEBUGKeyData.data";
 	m_samplesPerIntervall = 10;
-	m_numberOfIntervalls = 1000;
+	m_halfNumberOfIntervalls = 1000;
+
+	m_keyLost = m_halfNumberOfIntervalls;
+	m_mouseLost = m_halfNumberOfIntervalls;
+	m_dispLost = m_halfNumberOfIntervalls;
 }
 
 
@@ -20,6 +25,29 @@ RawDataWriter::~RawDataWriter()
 
 void RawDataWriter::WriteKeyDownData()
 {
+	// Index used to map the different data together
+	int intervalIndex = 0;
+
+
+	ofstream file;
+	file.open(m_keyDownOutputName);
+	for (size_t i = 0; i < m_halfNumberOfIntervalls; i++)
+	{
+		// Write intervall index at start of each intervall
+		file << intervalIndex << endl;
+		intervalIndex++;
+		// Decide if this set should be lost or not
+		bool lost = false;
+		if (m_keyLost < m_halfNumberOfIntervalls)
+		{
+			lost = true;
+			m_keyLost++;
+		}
+		for (size_t i = 0; i < m_samplesPerIntervall; i++)
+		{
+
+		}
+	}
 
 }
 vec2 RawDataWriter::CreateRandomMouseVector(float min, float max)
@@ -32,6 +60,8 @@ vec2 RawDataWriter::CreateRandomMouseVector(float min, float max)
 
 void RawDataWriter::WriteMeanMouseDisplacementData()
 {
+	// Index used to map the different data together
+	int intervalIndex = 0;
 	float min = -1;
 	float max = 1;
 	// How often a non-lost player moves his mouse as a denominator
@@ -41,11 +71,19 @@ void RawDataWriter::WriteMeanMouseDisplacementData()
 
 	ofstream file;
 	file.open(m_mouseOutputName);
-	for (size_t i = 0; i < m_numberOfIntervalls; i++)
+	for (size_t i = 0; i < m_halfNumberOfIntervalls; i++)
 	{
+		// Write intervall index at start of each intervall
+		file << intervalIndex << endl;
+		intervalIndex++;
 		vec2 mouseMove = vec2(0, 0);
 		// Decide if this set should be lost or not
-		bool lost = rand() % 2;
+		bool lost = false;
+		if (m_mouseLost < m_halfNumberOfIntervalls)
+		{
+			lost = true;
+			m_mouseLost++;
+		}
 		for (size_t i = 0; i < m_samplesPerIntervall; i++)
 		{
 			// Update move vector if we're nost
@@ -74,6 +112,8 @@ vec3 RawDataWriter::CreateRandomMoveVector(float min, float max)
 
 void RawDataWriter::WriteDisplacementData()
 {
+	// Index used to map the different data together
+	int intervalIndex = 0;
 	float min = -1;
 	float max = 1;
 
@@ -83,10 +123,18 @@ void RawDataWriter::WriteDisplacementData()
 	The idea is to build a path of displacements with every other
 	value being the displacement distance, and every other being
 	the angle to the last vector*/
-	for (size_t i = 0; i < m_numberOfIntervalls; i++)
+	for (size_t i = 0; i < m_halfNumberOfIntervalls; i++)
 	{
+		// Write intervall index at start of each intervall
+		file << intervalIndex << endl;
+		intervalIndex++;
 		// Decide if this set should be lost or not
-		bool lost = rand() % 2;
+		bool lost = false;
+		if (m_dispLost < m_halfNumberOfIntervalls)
+		{
+			lost = true;
+			m_dispLost++;
+		}
 		vec3 movement;
 		// We want to start off having moved in a random direction
 		movement = CreateRandomMoveVector(min, max);
