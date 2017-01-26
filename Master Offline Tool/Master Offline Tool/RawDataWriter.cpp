@@ -28,6 +28,11 @@ void RawDataWriter::WriteKeyDownData()
 	// Index used to map the different data together
 	int intervalIndex = 0;
 
+	float numWPressed = 0;
+	float numSpacePressed = 0;
+	float numAPressed = 0;
+	float numDPressed = 0;
+	float numSPressed = 0;
 
 	ofstream file;
 	file.open(m_keyDownOutputName);
@@ -45,8 +50,54 @@ void RawDataWriter::WriteKeyDownData()
 		}
 		for (size_t i = 0; i < m_samplesPerIntervall; i++)
 		{
+			// Some percentages to do stuff this frame
+			int thisSeed = rand() % (100 + 1);
+			if (lost)
+			{
+				// 60% chance of using W
+				if (thisSeed > 40)
+					numWPressed++;
 
+				// 20% chance of using S
+				if (thisSeed < 20)
+					numSPressed++;
+
+				// 30% chance of using A
+				if (thisSeed > 70)
+					numAPressed++;
+
+				// 30% chance of using D
+				if (thisSeed < 30)
+					numDPressed++;
+
+				// 30% chance of using space
+				if (thisSeed < 30)
+					numSpacePressed++;
+			}
+			else
+			{
+				// 90% chance of using W
+				if (thisSeed > 10)
+					numWPressed++;
+
+				// 5% chance of using S
+				if (thisSeed < 5)
+					numSPressed++;
+
+				// 15% chance of using A
+				if (thisSeed > 85)
+					numAPressed++;
+
+				// 15% chance of using D
+				if (thisSeed < 15)
+					numDPressed++;
+
+				// 20% chance of using space
+				if (thisSeed < 30)
+					numSpacePressed++;
+			}
 		}
+		file << numWPressed << " " << numSPressed << " " << numSpacePressed << " " << numAPressed << " " << numDPressed << endl;
 	}
 
 }
