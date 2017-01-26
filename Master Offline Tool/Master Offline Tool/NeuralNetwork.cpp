@@ -44,7 +44,7 @@ void NeuralNetwork::TrainOnData(const int& p_numberOfEpochs, const int& p_report
 {
 	m_data.read_train_from_file(m_trainingDataFilename);
 	// Set starting weights
-	if (m_networkSettings.randomSeed)
+	if (!m_networkSettings.deterministicWeights)
 	{
 		m_net.init_weights(m_data);
 	}

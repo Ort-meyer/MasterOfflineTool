@@ -70,14 +70,18 @@
   <ItemGroup>
     <ClCompile Include="Calculator.cpp" />
     <ClCompile Include="CalculatorNetwork.cpp" />
+    <ClCompile Include="DataSetBuilder.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="NeuralNetwork.cpp" />
+    <ClCompile Include="NeuralNetworkFactory.cpp" />
     <ClCompile Include="RandomNetwork.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Calculator.h" />
     <ClInclude Include="CalculatorNetwork.h" />
+    <ClInclude Include="DataSetBuilder.h" />
     <ClInclude Include="NeuralNetwork.h" />
+    <ClInclude Include="NeuralNetworkFactory.h" />
     <ClInclude Include="RandomNetwork.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

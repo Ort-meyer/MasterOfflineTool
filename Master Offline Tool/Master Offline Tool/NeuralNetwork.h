@@ -9,6 +9,7 @@ struct NetworkSettings
 	int inputCells;
 	int outputCells;
 	int hiddenLayers;
+    // array, should be the lenght of hiddenLayers
 	int* hiddenCells;
 
 	float learningRate;
@@ -17,8 +18,25 @@ struct NetworkSettings
 	FANN::activation_function_enum functionHidden;
 	FANN::activation_function_enum functionOutput;
 	
-	bool randomSeed;
+	bool deterministicWeights;
 
+    /**
+    Saves all the inparams to the structs variables, should be used for all but input- and output-cells
+    Note that the pointer to hidden cells is set to the inparam, so dont delete it after this func
+    */
+    void SetVaryingVariables(const int& p_hiddenLayers, int* p_hiddenCells, const float& p_learningRate, const float& p_steepnessOutput,
+        const float& p_steepnessHidden, const FANN::activation_function_enum& p_functionHidden, 
+        const FANN::activation_function_enum& p_functionOutput, const bool& p_deterministicWeights)
+    {
+        hiddenLayers = p_hiddenLayers;
+        hiddenCells = p_hiddenCells;
+        learningRate = p_learningRate;
+        steepnessOutput = p_steepnessOutput;
+        steepnessHidden = p_steepnessHidden;
+        functionHidden = p_functionHidden;
+        functionOutput = p_functionOutput;
+        deterministicWeights = p_deterministicWeights;
+    }
 };
 
 class NeuralNetwork
@@ -26,6 +44,10 @@ class NeuralNetwork
 public:
 	NeuralNetwork();
 	~NeuralNetwork();
+    /**
+    Sets the neural network settings
+    */
+    void SetSettings(const NetworkSettings& p_settings) { m_networkSettings = p_settings; };
 	/**
 	Sets up the neural network with appropriate parameters
 	defined by the network settings. These settings will
