@@ -4,6 +4,7 @@
 #include "RandomNetwork.h"
 #include "CalculatorNetwork.h"
 #include "PositionNetwork.h"
+#include "RawDataWriter.h"
 // Not sure what these do...
 #include <ios>
 #include <iomanip>
@@ -163,6 +164,7 @@ void CreateTestFileRandom()
 
 int main()
 {
+	RawDataWriter datawriter;
 	cout << "Hello, world!" << endl;
 	//CreatetestFile();
 	//const float learning_rate = 0.7f;

@@ -16,6 +16,9 @@ RawDataWriter::RawDataWriter()
 	m_keyLost = m_halfNumberOfIntervalls;
 	m_mouseLost = m_halfNumberOfIntervalls;
 	m_dispLost = m_halfNumberOfIntervalls;
+	WriteKeyDownData();
+	WriteDisplacementData();
+	WriteMeanMouseDisplacementData();
 }
 
 
@@ -28,16 +31,17 @@ void RawDataWriter::WriteKeyDownData()
 	// Index used to map the different data together
 	int intervalIndex = 0;
 
-	float numWPressed = 0;
-	float numSpacePressed = 0;
-	float numAPressed = 0;
-	float numDPressed = 0;
-	float numSPressed = 0;
+
 
 	ofstream file;
 	file.open(m_keyDownOutputName);
 	for (size_t i = 0; i < m_halfNumberOfIntervalls; i++)
 	{
+		float numWPressed = 0;
+		float numSpacePressed = 0;
+		float numAPressed = 0;
+		float numDPressed = 0;
+		float numSPressed = 0;
 		// Write intervall index at start of each intervall
 		file << intervalIndex << endl;
 		intervalIndex++;
@@ -98,6 +102,7 @@ void RawDataWriter::WriteKeyDownData()
 			}
 		}
 		file << numWPressed << " " << numSPressed << " " << numSpacePressed << " " << numAPressed << " " << numDPressed << endl;
+		file << lost << endl;
 	}
 
 }
