@@ -3,6 +3,7 @@
 #include "Calculator.h"
 #include "RandomNetwork.h"
 #include "CalculatorNetwork.h"
+#include "PositionNetwork.h"
 // Not sure what these do...
 #include <ios>
 #include <iomanip>
@@ -183,7 +184,7 @@ int main()
 
 
 
-   
+	PositionNetwork posnet;
    CalculatorNetwork calcNet;
    
 
