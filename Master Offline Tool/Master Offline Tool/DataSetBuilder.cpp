@@ -19,8 +19,6 @@ DataSetBuilder::DataSetBuilder()
 	BuildDataSetFromFolder("DEBUGData");
 	// End debug stuff
 	m_factory = new NeuralNetworkFactory();
-	m_factory->SetVariables(3, 5, 1);
-	m_factory->testFunc();
 
 
 }
