@@ -10,7 +10,7 @@ struct DataSet
 {	
 	int index;
 	int inputs;
-	float* values;
+	std::vector<float> values;
 	int output;
 };
 

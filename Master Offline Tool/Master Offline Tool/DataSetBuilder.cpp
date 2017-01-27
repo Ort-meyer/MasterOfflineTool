@@ -42,9 +42,6 @@ void DataSetBuilder::BuildDataSetFromFolder(string p_directory)
 	}
 	vector<vector<DataSet>> mergedData; // This is what we'll feed networks
 	// Find which big data sets we want to merge
-	// DEBUG
-	MergeDataFiles(t_rawDataFiles);
-	// END DEBUG
 	int n = t_rawDataFiles.size();
 	int cap = 1 << n;
 	for (int i = 1; i < cap; ++i)
@@ -59,6 +56,12 @@ void DataSetBuilder::BuildDataSetFromFolder(string p_directory)
 			}
 		}
 		mergedData.push_back(MergeDataFiles(t_dataFilesToMerge));
+	}
+
+	// send data to neural network
+	for (size_t i = 0; i < mergedData.size(); i++)
+	{
+		//mergedData.at(i).at(i).
 	}
 }
 
@@ -110,8 +113,9 @@ vector<DataSet> DataSetBuilder::ConvertRawdataToDataSets(std::string p_fileName)
 			DataSet thisSet;
 			thisSet.index = index;
 			thisSet.inputs = theseValues.size();
-			thisSet.values = (float*)malloc(sizeof(float) * theseValues.size());
-			memcpy(thisSet.values, &theseValues.at(0), theseValues.size());
+			thisSet.values = theseValues; // Yup, let's copy!
+			//thisSet.values = (float*)malloc(sizeof(float) * theseValues.size());
+			//memcpy(thisSet.values, &theseValues.at(0), theseValues.size());
 			thisSet.output = output;
 			r_dataSets.push_back(thisSet);
 		}
@@ -159,24 +163,10 @@ std::vector<DataSet> DataSetBuilder::MergeDataFiles(vector<vector<DataSet>> p_da
 			inputs += theseSets.at(l).inputs;
 		}
 		finalSet.inputs = inputs;
-		// Allocate memory for values
-		//m_bytes += inputs * sizeof(float);
-		//if (m_bytes > 1000)
-		//{
-		//	m_kbytes += (m_bytes/1000)+1;
-		//	m_bytes = 0;
-		//}
-		float* big = (float*)malloc(inputs * sizeof(float)); // REALLY redudant with double memory, but won't work otherwise
-		//finalSet.values = nullptr;
-		finalSet.values = big;
-		//finalSet.values = (float*)malloc(inputs * sizeof(float) * 2); // REALLY redudant with double memory, but won't work otherwise
-		// Copy values
+		// Copy over data sets into final data set
 		for (size_t l = 0; l < theseSets.size(); l++)
 		{
-			int stride = 0;
-			if (l > 0)
-				stride += theseSets.at(l - 1).inputs * sizeof(float);
-			memcpy(finalSet.values+stride, theseSets.at(l).values, theseSets.at(l).inputs*sizeof(float));
+			finalSet.values.insert(finalSet.values.end(), theseSets.at(l).values.begin(), theseSets.at(l).values.end());
 		}
 		finalDataSets.push_back(finalSet);
 		

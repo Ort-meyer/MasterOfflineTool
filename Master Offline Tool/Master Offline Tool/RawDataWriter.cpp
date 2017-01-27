@@ -14,9 +14,9 @@ RawDataWriter::RawDataWriter()
 	m_samplesPerIntervall = 10;
 	m_halfNumberOfIntervalls = 3;
 
-	m_keyLost = m_halfNumberOfIntervalls;
-	m_mouseLost = m_halfNumberOfIntervalls;
-	m_dispLost = m_halfNumberOfIntervalls;
+	m_keyLost = 0;
+	m_mouseLost = 0;
+	m_dispLost = 0;
 	WriteKeyDownData();
 	WriteDisplacementData();
 	WriteMeanMouseDisplacementData();
@@ -36,7 +36,7 @@ void RawDataWriter::WriteKeyDownData()
 
 	ofstream file;
 	file.open(m_keyDownOutputName);
-	for (size_t i = 0; i < m_halfNumberOfIntervalls; i++)
+	for (size_t i = 0; i < m_halfNumberOfIntervalls*2; i++)
 	{
 		float numWPressed = 0;
 		float numSpacePressed = 0;
@@ -128,7 +128,7 @@ void RawDataWriter::WriteMeanMouseDisplacementData()
 
 	ofstream file;
 	file.open(m_mouseOutputName);
-	for (size_t i = 0; i < m_halfNumberOfIntervalls; i++)
+	for (size_t i = 0; i < m_halfNumberOfIntervalls*2; i++)
 	{
 		// Write intervall index at start of each intervall
 		file << intervalIndex << endl;
@@ -180,7 +180,7 @@ void RawDataWriter::WriteDisplacementData()
 	The idea is to build a path of displacements with every other
 	value being the displacement distance, and every other being
 	the angle to the last vector*/
-	for (size_t i = 0; i < m_halfNumberOfIntervalls; i++)
+	for (size_t i = 0; i < m_halfNumberOfIntervalls*2; i++)
 	{
 		// Write intervall index at start of each intervall
 		file << intervalIndex << endl;
