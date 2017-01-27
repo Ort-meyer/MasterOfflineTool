@@ -21,7 +21,7 @@ PositionNetwork::PositionNetwork()
 	m_networkSettings.functionOutput = FANN::SIGMOID_SYMMETRIC;
 	m_networkSettings.functionHidden = FANN::SIGMOID_SYMMETRIC;
 
-	m_networkSettings.randomSeed = true;
+	m_networkSettings.deterministicWeights = true;
 
 	CreateTrainingFile();
 	NeuralNetwork::SetupNetwork();
