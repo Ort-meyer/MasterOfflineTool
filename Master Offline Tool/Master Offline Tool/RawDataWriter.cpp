@@ -7,9 +7,10 @@ using namespace std;
 
 RawDataWriter::RawDataWriter()
 {
-	m_dispOutputName = "DEBUGRawPositionData.data";
-	m_mouseOutputName = "DEBUGMouseData.data";
-	m_keyDownOutputName = "DEBUGKeyData.data";
+	string savePath = "../Debug/DEBUGData/";
+	m_dispOutputName = savePath+"DEBUGRawPositionData.rawdata";
+	m_mouseOutputName = savePath+"DEBUGMouseData.rawdata";
+	m_keyDownOutputName = savePath+"DEBUGKeyData.rawdata";
 	m_samplesPerIntervall = 10;
 	m_halfNumberOfIntervalls = 1000;
 
@@ -43,7 +44,7 @@ void RawDataWriter::WriteKeyDownData()
 		float numDPressed = 0;
 		float numSPressed = 0;
 		// Write intervall index at start of each intervall
-		file << "i" << intervalIndex << endl;
+		file << intervalIndex << endl;
 		intervalIndex++;
 		// Decide if this set should be lost or not
 		bool lost = false;
@@ -130,7 +131,7 @@ void RawDataWriter::WriteMeanMouseDisplacementData()
 	for (size_t i = 0; i < m_halfNumberOfIntervalls; i++)
 	{
 		// Write intervall index at start of each intervall
-		file << "i" << intervalIndex << endl;
+		file << intervalIndex << endl;
 		intervalIndex++;
 		vec2 mouseMove = vec2(0, 0);
 		// Decide if this set should be lost or not
@@ -182,7 +183,7 @@ void RawDataWriter::WriteDisplacementData()
 	for (size_t i = 0; i < m_halfNumberOfIntervalls; i++)
 	{
 		// Write intervall index at start of each intervall
-		file << "i" << intervalIndex << endl;
+		file << intervalIndex << endl;
 		intervalIndex++;
 		// Decide if this set should be lost or not
 		bool lost = false;
