@@ -68,10 +68,11 @@ public:
     void TrainAndValidateNetwork();
 	
 protected:
+    // HELPER FUNCTIONS
+    void InitializeWeights();
+
 	// Neural network
 	FANN::neural_net m_net;
-	// Data used by the neural network
-	FANN::training_data m_data;
 	// Filename for data used to training the network
 	std::string m_trainingDataFilename;
 	// Filename for data used to validated a trained network

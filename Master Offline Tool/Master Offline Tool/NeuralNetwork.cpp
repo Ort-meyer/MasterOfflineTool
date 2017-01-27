@@ -23,49 +23,56 @@ NeuralNetwork::~NeuralNetwork()
 
 void NeuralNetwork::ValidateOnFile()
 {
-	m_data.read_train_from_file(m_trainingDataFilename);
-	m_net.test_data(m_data);
-	std::cout << "Mean Square Error according to FANN: " << m_net.get_MSE() << endl;
-	float fullError = 0;
-	float* input = *m_data.get_input();
-	float* output = *m_data.get_output();
-	int length = m_data.length_train_data();
-	for (size_t i = 0; i < length; i++)
-	{
-      // Needs to make this work for several output cells too
-		float* netOutput = m_net.run(&input[i * m_networkSettings.inputCells]);
-		std::cout << "Net: " << *netOutput << " Acctual: " << output[i] << endl;
-		fullError += abs(abs(*netOutput) - abs(output[i]));
-	}
-	std::cout << "mean error: " << fullError / static_cast<float>(length) << endl;
+	//m_data.read_train_from_file(m_trainingDataFilename);
+	//m_net.test_data(m_data);
+	//std::cout << "Mean Square Error according to FANN: " << m_net.get_MSE() << endl;
+	//float fullError = 0;
+	//float* input = *m_data.get_input();
+	//float* output = *m_data.get_output();
+	//int length = m_data.length_train_data();
+	//for (size_t i = 0; i < length; i++)
+	//{
+ //     // Needs to make this work for several output cells too
+	//	float* netOutput = m_net.run(&input[i * m_networkSettings.inputCells]);
+	//	std::cout << "Net: " << *netOutput << " Acctual: " << output[i] << endl;
+	//	fullError += abs(abs(*netOutput) - abs(output[i]));
+	//}
+	//std::cout << "mean error: " << fullError / static_cast<float>(length) << endl;
 }
 
 void NeuralNetwork::TrainAndValidateNetwork()
 {
     // Start by training with one amount of epochs
-    
+    TrainOnData(1000,100,0.0001f);
     // Validate the trained network
 }
 
-void NeuralNetwork::TrainOnData(const int& p_numberOfEpochs, const int& p_reportFrequency, const float& p_errorAccaptance)
+void NeuralNetwork::InitializeWeights()
 {
-	m_data.read_train_from_file(m_trainingDataFilename);
-	// Set starting weights
-	if (!m_networkSettings.deterministicWeights)
-	{
-		m_net.init_weights(m_data);
-	}
-	else
-	{
-		FANN::connection* networkConnections = (FANN::connection*) malloc(sizeof(FANN::connection) * m_net.get_total_connections());
-		m_net.get_connection_array(networkConnections);
-		for (size_t i = 0; i < m_net.get_total_connections(); i++)
-		{
-			networkConnections[i].weight = -0.5f + static_cast<float>(rand()) / (static_cast<float>(RAND_MAX) / (0.5f - (-0.5f)));;
-		}
-		m_net.set_weight_array(networkConnections, m_net.get_total_connections());
-	}
-	m_net.train_on_data(m_data, p_numberOfEpochs, p_reportFrequency, p_errorAccaptance);
+    // Set starting weights
+    if (!m_networkSettings.deterministicWeights)
+    {
+        m_net.init_weights(*m_networkSettings.trainingData);
+    }
+    else
+    {
+        FANN::connection* networkConnections = (FANN::connection*) malloc(sizeof(FANN::connection) * m_net.get_total_connections());
+        m_net.get_connection_array(networkConnections);
+        for (size_t i = 0; i < m_net.get_total_connections(); i++)
+        {
+            networkConnections[i].weight = -0.5f + static_cast<float>(rand()) / (static_cast<float>(RAND_MAX) / (0.5f - (-0.5f)));;
+        }
+        m_net.set_weight_array(networkConnections, m_net.get_total_connections());
+    }
+}
+
+void NeuralNetwork::TrainOnData(const int& p_numberOfEpochs, const int& p_reportFrequency, const float& p_errorAccaptance)
+{	
+	m_net.train_on_data(*m_networkSettings.trainingData, p_numberOfEpochs, p_reportFrequency, p_errorAccaptance);
+    if (m_net.get_errno() != 0)
+    {
+        int a = 9;
+    }
 }
 
 void NeuralNetwork::SetupNetwork()

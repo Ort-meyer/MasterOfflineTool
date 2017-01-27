@@ -13,6 +13,7 @@ NeuralNetworkFactory::~NeuralNetworkFactory()
 
 void NeuralNetworkFactory::CreateNewNeuralNetworkCombinationsFromData(FANN::training_data* p_trainingData)
 {
+    m_networksTrainedWithCurrentData = 0;
     NetworkSettings newNetSettings;
     // Set the constant variables
     newNetSettings.inputCells = p_trainingData->num_input_train_data();
@@ -83,13 +84,13 @@ void NeuralNetworkFactory::CreateHiddenLayerCombinations(NetworkSettings * p_net
 
 void NeuralNetworkFactory::CreateLearningRateSteepnessAndDeterministicSpecificCombinations(NetworkSettings * p_netWorkSettings)
 {
-    for (float learningRate = 0; learningRate <= 1; learningRate += m_learningRateIncrement)
+    for (float learningRate = m_learningRateIncrement; learningRate <= 1; learningRate += m_learningRateIncrement)
     {
         p_netWorkSettings->learningRate = learningRate;
-        for (float hiddenSteepness = 0; hiddenSteepness <= 1; hiddenSteepness += m_hiddenSteepnessIncrement)
+        for (float hiddenSteepness = m_hiddenSteepnessIncrement; hiddenSteepness <= 1; hiddenSteepness += m_hiddenSteepnessIncrement)
         {
             p_netWorkSettings->steepnessHidden = hiddenSteepness;
-            for (float outputSteepness = 0; outputSteepness <= 1; outputSteepness+=m_outputSteepnessIncrement)
+            for (float outputSteepness = m_outputSteepnessIncrement; outputSteepness <= 1; outputSteepness+=m_outputSteepnessIncrement)
             {
                 p_netWorkSettings->steepnessOutput = outputSteepness;
                 for (size_t i = 0; i < 2; i++)
@@ -109,6 +110,10 @@ void NeuralNetworkFactory::CreateFANNFunctionOutputSpecificCombinations(NetworkS
     // Loop over all different functions, COS_SYMMETRIC is the last in the enum
     for (size_t i = 0; i < FANN::activation_function_enum::COS_SYMMETRIC + 1; i++)
     {
+        if (i == FANN::activation_function_enum::THRESHOLD || i == FANN::activation_function_enum::THRESHOLD_SYMMETRIC)
+        {
+            continue;
+        }
         p_networkSettings->functionOutput = static_cast<FANN::activation_function_enum>(i);
         CreateFANNFunctionHiddenSpecificCombinations(p_networkSettings);
     }
@@ -117,8 +122,13 @@ void NeuralNetworkFactory::CreateFANNFunctionOutputSpecificCombinations(NetworkS
 void NeuralNetworkFactory::CreateFANNFunctionHiddenSpecificCombinations(NetworkSettings * p_networkSettings)
 {
     // Loop over all different functions, COS_SYMMETRIC is the last in the enum
+    // The threshold once cant be used during training so for now we skipp them completely (Should maybe use them during validation?)
     for (size_t i = 0; i < FANN::activation_function_enum::COS_SYMMETRIC + 1; i++)
     {
+        if (i == FANN::activation_function_enum::THRESHOLD || i == FANN::activation_function_enum::THRESHOLD_SYMMETRIC)
+        {
+            continue;
+        }
         p_networkSettings->functionHidden = static_cast<FANN::activation_function_enum>(i);
         // This is the last stepp, now we create and save the network!
         CreateTheNetwork(p_networkSettings);
@@ -138,11 +148,12 @@ void NeuralNetworkFactory::CreateTheNetwork(NetworkSettings * p_netWorkSettings)
         // A inverted for loop for easy removes while we dont have it threaded
         for (int i = size - 1; i >= 0; i--)
         {
+            m_networksTrainedWithCurrentData++;
             // TODO Train and validate the network, use threads here if needed.
             // Note that after training and validation is done the network will delete itself
             m_networks.at(i)->TrainAndValidateNetwork();
             // TODO Join threads
-
+            std::cout << "Networks Trained: " << m_networksTrainedWithCurrentData << std::endl;
             // Remove the networks
             delete m_networks.at(i);
             m_networks.erase(m_networks.begin() + i);

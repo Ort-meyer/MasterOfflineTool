@@ -63,5 +63,7 @@ private:
     // Note that combinations with higher hidden layer count takes more memory. This could possibly be changed to mbytes allowed
     // to keep it a bit better, that will however not work when using cascading.
     int m_maxNetsInMemoryAtOneTime;
+
+    int m_networksTrainedWithCurrentData;
 };
 
