@@ -162,9 +162,12 @@ void CreateTestFileRandom()
 	file.close();
 }
 
+#include "DataSetBuilder.h"
+
 int main()
 {
 	RawDataWriter datawriter;
+    DataSetBuilder ds;
 	cout << "Hello, world!" << endl;
 	//CreatetestFile();
 	//const float learning_rate = 0.7f;

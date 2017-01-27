@@ -34,6 +34,10 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="RawDataWriter.cpp">
+    <ClCompile Include="DataSetBuilder.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="NeuralNetworkFactory.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -54,6 +58,10 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="RawDataWriter.h">
+    <ClInclude Include="DataSetBuilder.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="NeuralNetworkFactory.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -11,7 +11,7 @@ RandomNetwork::RandomNetwork()
 	m_networkSettings.steepnessOutput = 1;
 	m_networkSettings.functionOutput = FANN::SIGMOID_SYMMETRIC_STEPWISE;
 	m_networkSettings.hiddenLayers = 0;
-	m_networkSettings.randomSeed = true;
+	m_networkSettings.deterministicWeights = true;
 	
 	CreateTrainingFile();
 	NeuralNetwork::SetupNetwork();
