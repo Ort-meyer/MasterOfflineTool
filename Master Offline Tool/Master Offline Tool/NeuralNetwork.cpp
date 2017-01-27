@@ -40,6 +40,13 @@ void NeuralNetwork::ValidateOnFile()
 	std::cout << "mean error: " << fullError / static_cast<float>(length) << endl;
 }
 
+void NeuralNetwork::TrainAndValidateNetwork()
+{
+    // Start by training with one amount of epochs
+    
+    // Validate the trained network
+}
+
 void NeuralNetwork::TrainOnData(const int& p_numberOfEpochs, const int& p_reportFrequency, const float& p_errorAccaptance)
 {
 	m_data.read_train_from_file(m_trainingDataFilename);
