@@ -86,7 +86,6 @@ vector<DataSet> DataSetBuilder::ConvertRawdataToDataSets(std::string p_fileName)
 			istringstream in1(line);
 			// Counts number of inputs by getting number of spaces. Or something
 			int inputs = distance(istream_iterator<string>(istringstream(line) >> ws), istream_iterator<string>());
-			inputs += 1; // Doesn't end in a space
 			for (size_t i = 0; i < inputs; i++)
 			{
 				float thisValue;
