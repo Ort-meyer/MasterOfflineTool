@@ -13,12 +13,16 @@ DataSetBuilder::DataSetBuilder()
     FANN::training_data* data = new FANN::training_data();
     data->read_train_from_file("CalcTrainingData.data");
     m_factory->CreateNewNeuralNetworkCombinationsFromData(data);
+	m_bytes = 0;
+	m_kbytes = 0;
 	// DEBUG stuff
 	BuildDataSetFromFolder("DEBUGData");
 	// End debug stuff
 	m_factory = new NeuralNetworkFactory();
 	m_factory->SetVariables(3, 5, 1);
 	m_factory->testFunc();
+
+
 }
 
 
@@ -36,8 +40,11 @@ void DataSetBuilder::BuildDataSetFromFolder(string p_directory)
 	{
 		t_rawDataFiles.push_back(ConvertRawdataToDataSets(t_rawDataFileNames.at(i)));
 	}
-	vector<DataSet> mergedData; // This is what we'll feed networks
+	vector<vector<DataSet>> mergedData; // This is what we'll feed networks
 	// Find which big data sets we want to merge
+	// DEBUG
+	MergeDataFiles(t_rawDataFiles);
+	// END DEBUG
 	int n = t_rawDataFiles.size();
 	int cap = 1 << n;
 	for (int i = 1; i < cap; ++i)
@@ -113,9 +120,68 @@ vector<DataSet> DataSetBuilder::ConvertRawdataToDataSets(std::string p_fileName)
 	}
 	return r_dataSets;
 }
-DataSet DataSetBuilder::MergeDataFiles(vector<vector<DataSet>> p_dataFiles)
+std::vector<DataSet> DataSetBuilder::MergeDataFiles(vector<vector<DataSet>> p_dataFiles)
 {
-	return DataSet();
+
+	vector<DataSet> finalDataSets;
+	// Iterate through first data file
+	for (size_t i = 0; i < p_dataFiles.at(0).size(); i++)
+	{
+		m_kbytes++;
+		cout << m_kbytes << endl;
+		vector<DataSet> theseSets;
+		// Find a data set
+		DataSet thisSet = p_dataFiles.at(0).at(i);
+		theseSets.push_back(thisSet);
+		int thisIndex = thisSet.index;
+		// Find the data sets in all other data files
+		for (size_t j = 1; j < p_dataFiles.size(); j++)
+		{
+			// Find the data set with the right index from this file
+			for (size_t k = 0; k < p_dataFiles.at(j).size(); k++)
+			{
+				if (p_dataFiles.at(j).at(k).index == thisIndex)
+				{
+					theseSets.push_back(p_dataFiles.at(j).at(k));
+					break;
+				}
+			}
+		}
+		// We've found the sets to merge. Lego merge
+		DataSet finalSet;
+		// Copy index and output
+		finalSet.index = theseSets.at(0).index;
+		finalSet.output = theseSets.at(0).output;
+		// Add together inputs
+		int inputs = 0;
+		for (size_t l = 0; l < theseSets.size(); l++)
+		{
+			inputs += theseSets.at(l).inputs;
+		}
+		finalSet.inputs = inputs;
+		// Allocate memory for values
+		//m_bytes += inputs * sizeof(float);
+		//if (m_bytes > 1000)
+		//{
+		//	m_kbytes += (m_bytes/1000)+1;
+		//	m_bytes = 0;
+		//}
+		float* big = (float*)malloc(inputs * sizeof(float)); // REALLY redudant with double memory, but won't work otherwise
+		//finalSet.values = nullptr;
+		finalSet.values = big;
+		//finalSet.values = (float*)malloc(inputs * sizeof(float) * 2); // REALLY redudant with double memory, but won't work otherwise
+		// Copy values
+		for (size_t l = 0; l < theseSets.size(); l++)
+		{
+			int stride = 0;
+			if (l > 0)
+				stride += theseSets.at(l - 1).inputs * sizeof(float);
+			memcpy(finalSet.values+stride, theseSets.at(l).values, theseSets.at(l).inputs*sizeof(float));
+		}
+		finalDataSets.push_back(finalSet);
+		
+	}
+	return finalDataSets;
 }
 std::vector<std::string> DataSetBuilder::GetAllFileNames(std::string p_directory)
 {

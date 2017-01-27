@@ -37,6 +37,9 @@ private:
 	dataset file format*/
 	std::vector<DataSet> ConvertRawdataToDataSets(std::string p_fileName);
 
-	DataSet MergeDataFiles(std::vector<std::vector<DataSet>> p_dataFiles);
+	std::vector<DataSet> MergeDataFiles(std::vector<std::vector<DataSet>> p_dataFiles);
+
+	int m_bytes;
+	int m_kbytes;
 };
 

@@ -166,6 +166,7 @@ void CreateTestFileRandom()
 
 int main()
 {
+	//float* derp = (float*)malloc(50 * )
 	RawDataWriter datawriter;
     DataSetBuilder ds;
 
