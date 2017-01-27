@@ -168,6 +168,7 @@ int main()
 {
 	RawDataWriter datawriter;
     DataSetBuilder ds;
+
 	cout << "Hello, world!" << endl;
 	//CreatetestFile();
 	//const float learning_rate = 0.7f;
