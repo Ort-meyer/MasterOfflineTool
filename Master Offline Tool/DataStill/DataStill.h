@@ -40,6 +40,16 @@ private:
 	output file name*/
 	void FilterAvrage(std::string p_rawDataFileName, std::string p_filteredFileName, int p_numToAvrage);
 
+	/**
+	Help method used to avrage numbers based on what rows are sent in. This
+	is meant to be called sending in the true and false vectors of lines read
+	from the data files. Return value is a single string with all avraged rows*/
+	std::string AvrageNumbers(const std::vector<std::string>& p_rows, int p_nrOfdataRowsPerEntry, int p_nrToAvrage);
+
+	/**
+	Help method that returns the file specified as a vector of strings where
+	each string is a line fron the read file.*/
+	std::vector<std::string> ReadFileIntoLines(std::string p_fileName);
 	// Stores full path to directory in which we find raw data
 	std::string m_rawDataFilePath;
 };
