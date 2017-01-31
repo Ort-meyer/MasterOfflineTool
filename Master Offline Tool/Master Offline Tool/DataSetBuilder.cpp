@@ -4,6 +4,7 @@
 #include <iostream>
 #include <iterator>
 #include <sstream>
+using namespace FANN;
 using namespace std;
 DataSetBuilder::DataSetBuilder()
 {
@@ -12,7 +13,7 @@ DataSetBuilder::DataSetBuilder()
     // We let the network be responsible for deleting the training data after it is done
     FANN::training_data* data = new FANN::training_data();
     data->read_train_from_file("CalcTrainingData.data");
-    m_factory->CreateNewNeuralNetworkCombinationsFromData(data);
+    //m_factory->CreateNewNeuralNetworkCombinationsFromData(data);
 	m_bytes = 0;
 	m_kbytes = 0;
 	// DEBUG stuff
@@ -38,6 +39,14 @@ void DataSetBuilder::BuildDataSetFromFolder(string p_directory)
 	{
 		t_rawDataFiles.push_back(ConvertRawdataToDataSets(t_rawDataFileNames.at(i)));
 	}
+	/*
+	mergedData is a vector of vectors of data sets. Each "outer" vector is a
+	kombination of the data set we want to merge. In other words, if we have
+	three different types of input, mergedData.size() will always be 7, as that
+	is how many combinations that exist.
+	Each "inner" vector is the data sets for that particular kombination of 
+	inputs. That is to say, each inner vector contains the actual values that
+	the neural network will make use of.*/
 	vector<vector<DataSet>> mergedData; // This is what we'll feed networks
 	// Find which big data sets we want to merge
 	int n = t_rawDataFiles.size();
@@ -56,11 +65,39 @@ void DataSetBuilder::BuildDataSetFromFolder(string p_directory)
 		mergedData.push_back(MergeDataFiles(t_dataFilesToMerge));
 	}
 
-	// send data to neural network
+	// Now to actually make it work
+	int dataSetSize = mergedData.at(0).size();
+	
+	// Run through all merged data and feed to factory
 	for (size_t i = 0; i < mergedData.size(); i++)
 	{
-		//mergedData.at(i).at(i).
+		
+		// Build mergedData into something useful
+		float** inputs;
+		inputs = (float**)malloc(sizeof(float*) * dataSetSize);
+		float** outputs;
+		outputs = (float**)malloc(sizeof(float*) * dataSetSize);
+
+		int numInputs = mergedData.at(i).at(0).inputs;
+		// Take this combination and put all inputs and outputs into appropriate arrays
+		for (size_t j = 0; j < dataSetSize; j++)
+		{
+			inputs[j] = (float*)malloc(sizeof(float) * numInputs);
+			inputs[j] = &mergedData.at(i).at(j).values[0];
+			outputs[j] = (float*)malloc(sizeof(float));
+			outputs[j] = &mergedData.at(i).at(j).output;
+		}
+
+
+		training_data data;
+		
+		data.set_train_data(dataSetSize, mergedData.at(i).at(0).inputs, inputs, 1, outputs);
+		NeuralNetworkFactory netFac;
+		netFac.SetVariables(1, 3, 1, 0.3, 0.3, 0.3, 1);
+		netFac.CreateNewNeuralNetworkCombinationsFromData(&data);
 	}
+
+
 }
 
 void DataSetBuilder::BuildDataSetFromFiles(std::vector<std::string> p_fileNames)

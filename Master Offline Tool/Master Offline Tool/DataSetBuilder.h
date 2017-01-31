@@ -11,7 +11,7 @@ struct DataSet
 	int index;
 	int inputs;
 	std::vector<float> values;
-	int output;
+	float output;
 };
 
 class DataSetBuilder
