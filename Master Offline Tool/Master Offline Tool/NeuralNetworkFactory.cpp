@@ -153,7 +153,11 @@ void NeuralNetworkFactory::CreateTheNetwork(NetworkSettings * p_netWorkSettings)
             // Note that after training and validation is done the network will delete itself
             m_networks.at(i)->TrainAndValidateNetwork();
             // TODO Join threads
-            std::cout << "Networks Trained: " << m_networksTrainedWithCurrentData << std::endl;
+			
+			float percentDone = ((float)m_networksTrainedWithCurrentData / (float)m_totalNrOfnetworks) * 100.0f;
+            std::cout << "Networks Trained: " << m_networksTrainedWithCurrentData << 
+				std::endl << "which is " << percentDone << "% of total" << std::endl;
+			
             // Remove the networks
             delete m_networks.at(i);
             m_networks.erase(m_networks.begin() + i);
