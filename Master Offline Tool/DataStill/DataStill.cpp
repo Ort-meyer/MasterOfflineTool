@@ -8,7 +8,7 @@ using namespace std;
 DataStill::DataStill()
 {
 	m_rawDataFilePath = GetAbsoluteFilePath("DEBUGData");
-	FilterAvrage("DEBUGKeyData.rawdata", "DEBUGKeyData.filtereddata", 3);
+	FilterAvrage("DEBUGKeyData.rawdata", "DEBUGKeyData.filtereddata", 10);
 }
 
 
@@ -138,7 +138,7 @@ std::string DataStill::AvrageNumbers(const std::vector<string>& p_rows, int p_nr
 	}
 
 	// Now we avrage the values in each list
-	for (size_t i = 0; i < p_rows.size() / p_nrToAvrage; i += p_nrToAvrage)
+	for (size_t i = 0; i < p_rows.size(); i += p_nrToAvrage)
 	{
 		// Per batch of data entries
 		/*
@@ -157,11 +157,15 @@ std::string DataStill::AvrageNumbers(const std::vector<string>& p_rows, int p_nr
 				// Number of inputs for this row
 				int inputs = nrOfInputs.at(k);
 				vector<float> valuesOfThisRow;
-				int rowStartEntry = i*p_nrToAvrage + j*p_nrOfdataRowsPerEntry + k;
+				int rowStartEntry = i*p_nrOfdataRowsPerEntry + j*p_nrOfdataRowsPerEntry + k;
+				if (rowStartEntry >= p_rows.size())
+				{
+					break;
+				}
 				// Ugly way of doing this, but it works
 				if (!readIndexAndOutput)
 				{
-					index = p_rows.at(rowStartEntry);
+					index = p_rows.at(rowStartEntry);	
 					output = p_rows.at(rowStartEntry + p_nrOfdataRowsPerEntry - 1);
 					readIndexAndOutput = true;
 				}
@@ -217,9 +221,6 @@ std::string DataStill::AvrageNumbers(const std::vector<string>& p_rows, int p_nr
 		}
 		r_avrageLines += output;
 		r_avrageLines += "\n";
-
-		
-		
 	}
 	cout << r_avrageLines;
 	return r_avrageLines;

@@ -12,7 +12,7 @@ RawDataWriter::RawDataWriter()
 	m_mouseOutputName = savePath+"DEBUGMouseData.rawdata";
 	m_keyDownOutputName = savePath+"DEBUGKeyData.rawdata";
 	m_samplesPerIntervall = 10;
-	m_halfNumberOfIntervalls = 3;
+	m_halfNumberOfIntervalls = 50;
 
 	m_keyLost = 0;
 	m_mouseLost = 0;
