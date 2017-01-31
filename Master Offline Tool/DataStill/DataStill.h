@@ -33,6 +33,12 @@ private:
 	output file name*/
 	void FilterAwayDataKeep(std::string p_rawDataFileName, std::string p_filteredFileName, int p_increment);
 
+	/**
+	General filter method that takes p_nuToAvrage numer of values and stores
+	as the avrage of those values. 
+	p_rawDataFileName specifies input file, and p_filteredFileName specifies
+	output file name*/
+	void FilterAvrage(std::string p_rawDataFileName, std::string p_filteredFileName, int p_numToAvrage);
 
 	// Stores full path to directory in which we find raw data
 	std::string m_rawDataFilePath;
