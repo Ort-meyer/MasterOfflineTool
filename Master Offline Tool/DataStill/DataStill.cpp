@@ -138,7 +138,7 @@ std::string DataStill::AvrageNumbers(const std::vector<string>& p_rows, int p_nr
 	}
 
 	// Now we avrage the values in each list
-	for (size_t i = 0; i < p_rows.size(); i += p_nrToAvrage)
+	for (size_t i = 0; i < p_rows.size() / p_nrToAvrage; i++)
 	{
 		// Per batch of data entries
 		/*
@@ -157,7 +157,7 @@ std::string DataStill::AvrageNumbers(const std::vector<string>& p_rows, int p_nr
 				// Number of inputs for this row
 				int inputs = nrOfInputs.at(k);
 				vector<float> valuesOfThisRow;
-				int rowStartEntry = i*p_nrOfdataRowsPerEntry + j*p_nrOfdataRowsPerEntry + k;
+				int rowStartEntry = i*p_nrOfdataRowsPerEntry*p_nrToAvrage + j*p_nrOfdataRowsPerEntry + k;
 				if (rowStartEntry >= p_rows.size())
 				{
 					break;
@@ -165,7 +165,7 @@ std::string DataStill::AvrageNumbers(const std::vector<string>& p_rows, int p_nr
 				// Ugly way of doing this, but it works
 				if (!readIndexAndOutput)
 				{
-					index = p_rows.at(rowStartEntry);	
+					index = p_rows.at(rowStartEntry);
 					output = p_rows.at(rowStartEntry + p_nrOfdataRowsPerEntry - 1);
 					readIndexAndOutput = true;
 				}
@@ -178,7 +178,8 @@ std::string DataStill::AvrageNumbers(const std::vector<string>& p_rows, int p_nr
 				}
 				dataEntriesOfthisSet.push_back(valuesOfThisRow);
 			}
-			allDataEntries.push_back(dataEntriesOfthisSet);
+			if (dataEntriesOfthisSet.size()> 0)
+				allDataEntries.push_back(dataEntriesOfthisSet);
 		}
 		// Now we avrage the numbers
 		/**
