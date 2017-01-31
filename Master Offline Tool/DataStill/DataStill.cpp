@@ -126,7 +126,7 @@ void DataStill::FilterAvrage(std::string p_rawDataFileName, std::string p_filter
 
 std::string DataStill::AvrageNumbers(const std::vector<string>& p_rows, int p_nrOfdataRowsPerEntry, int p_nrToAvrage)
 {
-	string r_avrageLines;
+	string r_avrageLines = "";
 	int nrOfValueRows = p_nrOfdataRowsPerEntry - 2; // Hard-coded. Index is one row, output is one row
 	// Figure out how many inputs each data row stores
 	vector<int> nrOfInputs;
@@ -163,6 +163,7 @@ std::string DataStill::AvrageNumbers(const std::vector<string>& p_rows, int p_nr
 				{
 					index = p_rows.at(rowStartEntry);
 					output = p_rows.at(rowStartEntry + p_nrOfdataRowsPerEntry - 1);
+					readIndexAndOutput = true;
 				}
 				istringstream in(p_rows.at(rowStartEntry + 1));
 				for (size_t l = 0; l < inputs; l++)
@@ -175,7 +176,6 @@ std::string DataStill::AvrageNumbers(const std::vector<string>& p_rows, int p_nr
 			}
 			allDataEntries.push_back(dataEntriesOfthisSet);
 		}
-		r_avrageLines += index;
 		// Now we avrage the numbers
 		/**
 		Each inner vector is one row of values.
@@ -200,19 +200,29 @@ std::string DataStill::AvrageNumbers(const std::vector<string>& p_rows, int p_nr
 				}
 			}
 		}
-
+		// Write results to return string
+		r_avrageLines += index;
+		r_avrageLines += "\n";
 		// Now actually avrage
 		for (size_t j = 0; j < avrages.size(); j++)
 		{
 			for (size_t k = 0; k < avrages.at(j).size(); k++)
 			{
 				avrages.at(j).at(k) /= p_nrToAvrage;
+				// Write value
+				r_avrageLines += to_string(avrages.at(j).at(k));
+				r_avrageLines += " ";
 			}
+			r_avrageLines += "\n";
 		}
+		r_avrageLines += output;
+		r_avrageLines += "\n";
 
+		
+		
 	}
-
-	return "2";
+	cout << r_avrageLines;
+	return r_avrageLines;
 }
 
 std::vector<std::string> DataStill::ReadFileIntoLines(std::string p_fileName)
