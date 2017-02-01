@@ -9,11 +9,6 @@ public:
 
 private:
 	/**
-	Returns the full path to files we might want to open
-	Parameter is directory path as given relative to program .exe*/
-	std::string GetAbsoluteFilePath(std::string p_directory);
-
-	/**
 	Filters player's movements from p_rawDataFileName and stores in 
 	a new file as specified by p_filteredFilename*/
 	void FilterDisplacement(std::string p_rawDataFileName, std::string p_filteredFileName);
@@ -22,11 +17,6 @@ private:
 	Takes p_numToMerge data sets and put them onto the same line.
 	Index will be that of the first of the data sets.*/
 	void MergeDataOntoSameLine(std::string p_rawDataFileName, std::string p_filteredFileName, int p_numToMerge);
-
-	/**
-	Help Method to MergeDataOntoSameLine. This puts p_numToMerge
-	data values on the same row*/
-	std::string MergeVectorDataOntoSameLine(const std::vector<std::string>& p_dataLines, int p_numToMerge, int nrOfRowsPerDataEntry);
 
 	/**
 	General filter method to remove every p_increment:th point of data
@@ -50,6 +40,8 @@ private:
 	output file name*/
 	void FilterAvrage(std::string p_rawDataFileName, std::string p_filteredFileName, int p_numToAvrage);
 
+
+	/////////////////////HELP METHODS/////////////////
 	/**
 	Help method used to avrage numbers based on what rows are sent in. This
 	is meant to be called sending in the true and false vectors of lines read
@@ -57,9 +49,30 @@ private:
 	std::string AvrageNumbers(const std::vector<std::string>& p_rows, int p_nrOfdataRowsPerEntry, int p_nrToAvrage);
 
 	/**
+	Help Method to MergeDataOntoSameLine. This puts p_numToMerge
+	data values on the same row*/
+	std::string MergeVectorDataOntoSameLine(const std::vector<std::string>& p_dataLines, int p_numToMerge, int nrOfRowsPerDataEntry);
+
+	/**
+	Splits a data set into two vectors, one with only true output and one with
+	only false output. Create vectors before calling this method and send pointers
+	as parameters*/
+	void SplitDataIntoTrueAndFalseVectors(
+		const std::vector<std::string>& p_inData, 
+		std::vector<std::string>* p_trueVector, 
+		std::vector<std::string>* p_falseVector, 
+		int p_nrOfDataRowsPerEntry);
+	/**
 	Help method that returns the file specified as a vector of strings where
 	each string is a line fron the read file.*/
 	std::vector<std::string> ReadFileIntoLines(std::string p_fileName);
+
+	/**
+	Returns the full path to files we might want to open
+	Parameter is directory path as given relative to program .exe*/
+	std::string GetAbsoluteFilePath(std::string p_directory);
+
+
 	// Stores full path to directory in which we find raw data
 	std::string m_rawDataFilePath;
 };

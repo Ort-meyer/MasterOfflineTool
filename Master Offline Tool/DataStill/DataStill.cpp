@@ -99,25 +99,7 @@ void DataStill::FilterAvrage(std::string p_rawDataFileName, std::string p_filter
 	// Read into two vectors: one with true, one with false. Makes things easier
 	vector<string> trueList;
 	vector<string> falseList;
-	for (size_t i = 0; i < nrOfDataPoints; i++)
-	{
-		// This is haxy. It relies on the output for a raw data set to be the last row in a data entry
-		if (!strcmp(lines.at((i + 1)*nrOfRowsPerDataEntry - 1).c_str(), "0"))
-		{
-			// Write the rows for this data entry
-			for (size_t j = 0; j < nrOfRowsPerDataEntry; j++)
-			{
-				falseList.push_back(lines.at(i*nrOfRowsPerDataEntry + j));
-			}
-		}
-		else
-		{
-			for (size_t j = 0; j < nrOfRowsPerDataEntry; j++)
-			{
-				trueList.push_back(lines.at(i*nrOfRowsPerDataEntry + j));
-			}
-		}
-	}
+	SplitDataIntoTrueAndFalseVectors(lines, &trueList, &falseList, nrOfRowsPerDataEntry);
 	// Use our amazing help method
 	string trueAvrages = AvrageNumbers(trueList, nrOfRowsPerDataEntry, p_numToAvrage);
 	string falseAvrages = AvrageNumbers(falseList, nrOfRowsPerDataEntry, p_numToAvrage);
@@ -135,25 +117,7 @@ void DataStill::MergeDataOntoSameLine(std::string p_rawDataFileName, std::string
 	// Read into two vectors: one with true, one with false. Makes things easier
 	vector<string> trueList;
 	vector<string> falseList;
-	for (size_t i = 0; i < nrOfDataPoints; i++)
-	{
-		// This is haxy. It relies on the output for a raw data set to be the last row in a data entry
-		if (!strcmp(lines.at((i + 1)*nrOfRowsPerDataEntry - 1).c_str(), "0"))
-		{
-			// Write the rows for this data entry
-			for (size_t j = 0; j < nrOfRowsPerDataEntry; j++)
-			{
-				falseList.push_back(lines.at(i*nrOfRowsPerDataEntry + j));
-			}
-		}
-		else
-		{
-			for (size_t j = 0; j < nrOfRowsPerDataEntry; j++)
-			{
-				trueList.push_back(lines.at(i*nrOfRowsPerDataEntry + j));
-			}
-		}
-	}
+	SplitDataIntoTrueAndFalseVectors(lines, &trueList, &falseList, nrOfRowsPerDataEntry);
 
 	string trueMerged = MergeVectorDataOntoSameLine(trueList, p_numToMerge, nrOfRowsPerDataEntry);
 	string falseMerged = MergeVectorDataOntoSameLine(falseList, p_numToMerge, nrOfRowsPerDataEntry);
@@ -209,7 +173,6 @@ std::string DataStill::MergeVectorDataOntoSameLine(const std::vector<string>& p_
 			merged += "\n";
 		}
 	}
-	cout << merged;
 	return merged;
 }
 
@@ -319,8 +282,35 @@ std::string DataStill::AvrageNumbers(const std::vector<string>& p_rows, int p_nr
 			r_avrageLines += "\n";
 		}
 	}
-	cout << r_avrageLines;
 	return r_avrageLines;
+}
+
+void DataStill::SplitDataIntoTrueAndFalseVectors(
+	const std::vector<std::string>& p_inData, 
+	std::vector<std::string>* p_trueVector, 
+	std::vector<std::string>* p_falseVector, 
+	int p_nrOfDataRowsPerEntry)
+{
+	int nrOfDataPoints = p_inData.size() / p_nrOfDataRowsPerEntry;
+	for (size_t i = 0; i < nrOfDataPoints; i++)
+	{
+		// This is haxy. It relies on the output for a raw data set to be the last row in a data entry
+		if (!strcmp(p_inData.at((i + 1)*p_nrOfDataRowsPerEntry - 1).c_str(), "0"))
+		{
+			// Write the rows for this data entry
+			for (size_t j = 0; j < p_nrOfDataRowsPerEntry; j++)
+			{
+				p_falseVector->push_back(p_inData.at(i*p_nrOfDataRowsPerEntry + j));
+			}
+		}
+		else
+		{
+			for (size_t j = 0; j < p_nrOfDataRowsPerEntry; j++)
+			{
+				p_trueVector->push_back(p_inData.at(i*p_nrOfDataRowsPerEntry + j));
+			}
+		}
+	}
 }
 
 std::vector<std::string> DataStill::ReadFileIntoLines(std::string p_fileName)
