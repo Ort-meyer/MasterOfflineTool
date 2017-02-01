@@ -8,6 +8,7 @@ using namespace std;
 DataStill::DataStill()
 {
 	m_rawDataFilePath = GetAbsoluteFilePath("DEBUGData");
+	MergeDataOntoSameLine("DEBUGKeyData.rawdata", "DEBUGKeyData.filtereddata", 3);
 	FilterAvrage("DEBUGKeyData.rawdata", "DEBUGKeyData.filtereddata", 20);
 }
 
@@ -122,6 +123,94 @@ void DataStill::FilterAvrage(std::string p_rawDataFileName, std::string p_filter
 	string falseAvrages = AvrageNumbers(falseList, nrOfRowsPerDataEntry, p_numToAvrage);
 
 
+}
+
+void DataStill::MergeDataOntoSameLine(std::string p_rawDataFileName, std::string p_filteredFileName, int p_numToMerge)
+{
+	vector<string> lines = ReadFileIntoLines(p_rawDataFileName);
+	int nrOfRowsPerDataEntry = 4; // Will have to be tweaked!
+	int strideToData = 1; //How many rows are skipped before data is read, for each data point
+	int nrOfDataPoints = lines.size() / nrOfRowsPerDataEntry;
+
+	// Read into two vectors: one with true, one with false. Makes things easier
+	vector<string> trueList;
+	vector<string> falseList;
+	for (size_t i = 0; i < nrOfDataPoints; i++)
+	{
+		// This is haxy. It relies on the output for a raw data set to be the last row in a data entry
+		if (!strcmp(lines.at((i + 1)*nrOfRowsPerDataEntry - 1).c_str(), "0"))
+		{
+			// Write the rows for this data entry
+			for (size_t j = 0; j < nrOfRowsPerDataEntry; j++)
+			{
+				falseList.push_back(lines.at(i*nrOfRowsPerDataEntry + j));
+			}
+		}
+		else
+		{
+			for (size_t j = 0; j < nrOfRowsPerDataEntry; j++)
+			{
+				trueList.push_back(lines.at(i*nrOfRowsPerDataEntry + j));
+			}
+		}
+	}
+
+	string trueMerged = MergeVectorDataOntoSameLine(trueList, p_numToMerge, nrOfRowsPerDataEntry);
+	string falseMerged = MergeVectorDataOntoSameLine(falseList, p_numToMerge, nrOfRowsPerDataEntry);
+
+}
+
+std::string DataStill::MergeVectorDataOntoSameLine(const std::vector<string>& p_dataLines, int p_numToMerge, int nrOfRowsPerDataEntry)
+{
+	string merged = "";
+	int t_nrOfdataRows = nrOfRowsPerDataEntry - 2;
+	// Iterate over each chunk of data entries we want merged
+	for (size_t i = 0; i < p_dataLines.size(); i += p_numToMerge*nrOfRowsPerDataEntry)
+	{
+		string index = p_dataLines.at(i);
+		// Stride past data rows to find output
+		string output = p_dataLines.at(i + t_nrOfdataRows+1);
+
+		vector<string> t_mergedDataRows;
+		t_mergedDataRows.resize(t_nrOfdataRows);
+		bool outOfScope = false;
+		// Iterate over each data entry
+		for (size_t k = 0; k < p_numToMerge; k++)
+		{
+			int startRow = i + 1 + k * nrOfRowsPerDataEntry;
+			// Check if building a merged data entry would put us out of scope
+			if (startRow + t_nrOfdataRows >= p_dataLines.size())
+			{
+				outOfScope = true;
+			}
+			else
+			{
+				// Iterate over the data rows of each entry
+				for (size_t j = 0; j < t_nrOfdataRows; j++)
+				{
+					string line = p_dataLines.at(startRow+j);
+					t_mergedDataRows.at(j).append(line);
+					t_mergedDataRows.at(j) += " ";
+				}
+			}
+		}
+		// Write the merged data entry into return string
+		if (!outOfScope)
+		{
+			merged += index;
+			merged += "\n";
+			for (size_t j = 0; j < t_nrOfdataRows; j++)
+			{
+				merged.append(t_mergedDataRows.at(j));
+				merged += "\n";
+			}
+			//cout << output << endl;
+			merged += output;
+			merged += "\n";
+		}
+	}
+	cout << merged;
+	return merged;
 }
 
 std::string DataStill::AvrageNumbers(const std::vector<string>& p_rows, int p_nrOfdataRowsPerEntry, int p_nrToAvrage)

@@ -17,6 +17,16 @@ private:
 	Filters player's movements from p_rawDataFileName and stores in 
 	a new file as specified by p_filteredFilename*/
 	void FilterDisplacement(std::string p_rawDataFileName, std::string p_filteredFileName);
+	
+	/**
+	Takes p_numToMerge data sets and put them onto the same line.
+	Index will be that of the first of the data sets.*/
+	void MergeDataOntoSameLine(std::string p_rawDataFileName, std::string p_filteredFileName, int p_numToMerge);
+
+	/**
+	Help Method to MergeDataOntoSameLine. This puts p_numToMerge
+	data values on the same row*/
+	std::string MergeVectorDataOntoSameLine(const std::vector<std::string>& p_dataLines, int p_numToMerge, int nrOfRowsPerDataEntry);
 
 	/**
 	General filter method to remove every p_increment:th point of data
