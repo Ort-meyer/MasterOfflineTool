@@ -53,6 +53,7 @@ void RawDataWriter::WriteKeyDownData()
 			lost = true;
 			m_keyLost++;
 		}
+		
 		for (size_t i = 0; i < m_samplesPerIntervall; i++)
 		{
 			// Some percentages to do stuff this frame
@@ -102,7 +103,10 @@ void RawDataWriter::WriteKeyDownData()
 					numSpacePressed++;
 			}
 		}
-		file << numWPressed << " " << numSPressed << " " << numSpacePressed << " " << numAPressed << " " << numDPressed << endl;
+		for (size_t i = 0; i < 2; i++)
+		{
+			file << numWPressed << " " << numSPressed << " " << numSpacePressed << " " << numAPressed << " " << numDPressed << endl;
+		}
 		file << lost << endl;
 	}
 

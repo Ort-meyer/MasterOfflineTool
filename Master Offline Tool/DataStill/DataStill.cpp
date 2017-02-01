@@ -92,7 +92,7 @@ void DataStill::FilterAvrage(std::string p_rawDataFileName, std::string p_filter
 {
 	vector<string> lines = ReadFileIntoLines(p_rawDataFileName);
 
-	int nrOfRowsPerDataEntry = 3; // Will have to be tweaked!
+	int nrOfRowsPerDataEntry = 4; // Will have to be tweaked!
 	int strideToData = 1; //How many rows are skipped before data is read, for each data point
 	int nrOfDataPoints = lines.size() / nrOfRowsPerDataEntry;
 	// Read into two vectors: one with true, one with false. Makes things easier
