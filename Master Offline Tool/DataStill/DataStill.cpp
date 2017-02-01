@@ -32,6 +32,8 @@ DataStill::~DataStill()
 {
 }
 
+//////// SPECIFIC MEHODS//////
+
 vector<string>* DataStill::FilterDisplacement(const std::vector<std::string>& p_lines)
 {
 	// We know this. Says so in comments
@@ -70,6 +72,8 @@ vector<string>* DataStill::FilterDisplacement(const std::vector<std::string>& p_
 	}
 	return r_lines;
 }
+
+/////// GENERAL METODS///////
 
 std::vector<std::vector<std::string>>* DataStill::NormalizeValues(const std::vector<vector<std::string>>& p_filesInLines)
 {
@@ -220,59 +224,7 @@ std::vector<std::string>*  DataStill::FilterAvrage(const std::vector<string>& p_
 	return r_lines;
 }
 
-
-
-std::string DataStill::MergeVectorDataOntoSameLine(const std::vector<string>& p_dataLines, int p_numToMerge, int nrOfRowsPerDataEntry)
-{
-	string merged = "";
-	int t_nrOfdataRows = nrOfRowsPerDataEntry - 2;
-	// Iterate over each chunk of data entries we want merged
-	for (size_t i = 0; i < p_dataLines.size(); i += p_numToMerge*nrOfRowsPerDataEntry)
-	{
-		string index = p_dataLines.at(i);
-		// Stride past data rows to find output
-		string output = p_dataLines.at(i + t_nrOfdataRows + 1);
-
-		vector<string> t_mergedDataRows;
-		t_mergedDataRows.resize(t_nrOfdataRows);
-		bool outOfScope = false;
-		// Iterate over each data entry
-		for (size_t k = 0; k < p_numToMerge; k++)
-		{
-			int startRow = i + 1 + k * nrOfRowsPerDataEntry;
-			// Check if building a merged data entry would put us out of scope
-			if (startRow + t_nrOfdataRows >= p_dataLines.size())
-			{
-				outOfScope = true;
-			}
-			else
-			{
-				// Iterate over the data rows of each entry
-				for (size_t j = 0; j < t_nrOfdataRows; j++)
-				{
-					string line = p_dataLines.at(startRow + j);
-					t_mergedDataRows.at(j).append(line);
-					t_mergedDataRows.at(j) += " ";
-				}
-			}
-		}
-		// Write the merged data entry into return string
-		if (!outOfScope)
-		{
-			merged += index;
-			merged += "\n";
-			for (size_t j = 0; j < t_nrOfdataRows; j++)
-			{
-				merged.append(t_mergedDataRows.at(j));
-				merged += "\n";
-			}
-			//cout << output << endl;
-			merged += output;
-			merged += "\n";
-		}
-	}
-	return merged;
-}
+/////// HELP METHODS///////
 
 std::vector<std::string>* DataStill::AvrageNumbers(const std::vector<string>& p_rows, int p_nrOfdataRowsPerEntry, int p_nrToAvrage)
 {
@@ -379,6 +331,58 @@ std::vector<std::string>* DataStill::AvrageNumbers(const std::vector<string>& p_
 		}
 	}
 	return r_lines;
+}
+
+std::string DataStill::MergeVectorDataOntoSameLine(const std::vector<string>& p_dataLines, int p_numToMerge, int nrOfRowsPerDataEntry)
+{
+	string merged = "";
+	int t_nrOfdataRows = nrOfRowsPerDataEntry - 2;
+	// Iterate over each chunk of data entries we want merged
+	for (size_t i = 0; i < p_dataLines.size(); i += p_numToMerge*nrOfRowsPerDataEntry)
+	{
+		string index = p_dataLines.at(i);
+		// Stride past data rows to find output
+		string output = p_dataLines.at(i + t_nrOfdataRows + 1);
+
+		vector<string> t_mergedDataRows;
+		t_mergedDataRows.resize(t_nrOfdataRows);
+		bool outOfScope = false;
+		// Iterate over each data entry
+		for (size_t k = 0; k < p_numToMerge; k++)
+		{
+			int startRow = i + 1 + k * nrOfRowsPerDataEntry;
+			// Check if building a merged data entry would put us out of scope
+			if (startRow + t_nrOfdataRows >= p_dataLines.size())
+			{
+				outOfScope = true;
+			}
+			else
+			{
+				// Iterate over the data rows of each entry
+				for (size_t j = 0; j < t_nrOfdataRows; j++)
+				{
+					string line = p_dataLines.at(startRow + j);
+					t_mergedDataRows.at(j).append(line);
+					t_mergedDataRows.at(j) += " ";
+				}
+			}
+		}
+		// Write the merged data entry into return string
+		if (!outOfScope)
+		{
+			merged += index;
+			merged += "\n";
+			for (size_t j = 0; j < t_nrOfdataRows; j++)
+			{
+				merged.append(t_mergedDataRows.at(j));
+				merged += "\n";
+			}
+			//cout << output << endl;
+			merged += output;
+			merged += "\n";
+		}
+	}
+	return merged;
 }
 
 void DataStill::SplitDataIntoTrueAndFalseVectors(
