@@ -22,6 +22,12 @@ private:
 	
 
 	//////////////////General methods////////////////
+
+	/**
+	Interprets p_lines as a list of lines to be written into a file. 
+	Will write into p_fileName*/
+	void WriteToFile(std::vector<std::string> p_lines, std::string p_fileName);
+
 	/**
 	Reads through all files specified and normalizes values within and outputs
 	results into respective p_filtereFileNames name. Make sure the two parameters 

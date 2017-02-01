@@ -455,3 +455,20 @@ std::vector<std::string> DataStill::ReadFileIntoLines(std::string p_fileName)
 	inFile.close();
 	return lines;
 }
+
+void DataStill::WriteToFile(std::vector<std::string> p_lines, std::string p_fileName)
+{
+	// Complete absolut file path
+	string outFilePath = m_rawDataFilePath;
+	outFilePath += "/";
+	outFilePath += p_fileName;
+
+	// Open and write
+	ofstream outFile;
+	outFile.open(outFilePath);
+	for (size_t i = 0; i < p_lines.size(); i++)
+	{
+		outFile << p_lines.at(i);
+	}
+	outFile.close();
+}
