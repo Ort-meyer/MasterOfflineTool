@@ -8,7 +8,7 @@ using namespace std;
 DataStill::DataStill()
 {
 	m_rawDataFilePath = GetAbsoluteFilePath("DEBUGData");
-	FilterAvrage("DEBUGKeyData.rawdata", "DEBUGKeyData.filtereddata", 10);
+	FilterAvrage("DEBUGKeyData.rawdata", "DEBUGKeyData.filtereddata", 20);
 }
 
 
@@ -185,43 +185,50 @@ std::string DataStill::AvrageNumbers(const std::vector<string>& p_rows, int p_nr
 		/**
 		Each inner vector is one row of values.
 		Each outer vector contains one data set*/
-		vector<vector<float>> avrages;
-
-		// Make room for our values
-		avrages.resize(nrOfInputs.size());
-		for (size_t j = 0; j < nrOfInputs.size(); j++)
+		// Check if there's numbers to avrage
+		if (allDataEntries.size() > 0)
 		{
-			avrages.at(j).resize(nrOfInputs.at(j));
-		}
-
-		// Get totals
-		for (size_t j = 0; j < allDataEntries.size(); j++)
-		{
-			for (size_t k = 0; k < allDataEntries.at(j).size(); k++)
+			// Make room for our values
+			vector<vector<float>> avrages;
+			if (allDataEntries.size() > 0)
 			{
-				for (size_t l = 0; l < allDataEntries.at(j).at(k).size(); l++)
+				avrages.resize(allDataEntries.at(0).size());
+				for (size_t j = 0; j < allDataEntries.at(0).size(); j++)
 				{
-					avrages.at(k).at(l) += allDataEntries.at(j).at(k).at(l);
+					avrages.at(j).resize(allDataEntries.at(0).at(j).size());
 				}
 			}
-		}
-		// Write results to return string
-		r_avrageLines += index;
-		r_avrageLines += "\n";
-		// Now actually avrage
-		for (size_t j = 0; j < avrages.size(); j++)
-		{
-			for (size_t k = 0; k < avrages.at(j).size(); k++)
+
+			// Get totals
+			for (size_t j = 0; j < allDataEntries.size(); j++)
 			{
-				avrages.at(j).at(k) /= p_nrToAvrage;
-				// Write value
-				r_avrageLines += to_string(avrages.at(j).at(k));
-				r_avrageLines += " ";
+				for (size_t k = 0; k < allDataEntries.at(j).size(); k++)
+				{
+					for (size_t l = 0; l < allDataEntries.at(j).at(k).size(); l++)
+					{
+						avrages.at(k).at(l) += allDataEntries.at(j).at(k).at(l);
+					}
+				}
 			}
+
+			// Write results to return string
+			r_avrageLines += index;
+			r_avrageLines += "\n";
+			// Now actually avrage
+			for (size_t j = 0; j < avrages.size(); j++)
+			{
+				for (size_t k = 0; k < avrages.at(j).size(); k++)
+				{
+					avrages.at(j).at(k) /= p_nrToAvrage;
+					// Write value
+					r_avrageLines += to_string(avrages.at(j).at(k));
+					r_avrageLines += " ";
+				}
+				r_avrageLines += "\n";
+			}
+			r_avrageLines += output;
 			r_avrageLines += "\n";
 		}
-		r_avrageLines += output;
-		r_avrageLines += "\n";
 	}
 	cout << r_avrageLines;
 	return r_avrageLines;
