@@ -10,8 +10,14 @@ public:
 private:
 	///////////////////Specific methods///////////////
 	/**
-	Filters player's movements from p_rawDataFileName and stores in 
-	a new file as specified by p_filteredFilename*/
+	Transforms world positions into displacement vectors.
+	Formatting is important. Must be as follows:
+	Index
+	Values[3] // MUST be three input vectors
+	Output
+	In other words, multiple rows of input will not work.
+	Output will be structured in the same way, but with displacement
+	vectors instead of world positions*/
 	void FilterDisplacement(std::string p_rawDataFileName, std::string p_filteredFileName);
 	
 

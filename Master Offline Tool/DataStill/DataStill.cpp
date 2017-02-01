@@ -3,7 +3,9 @@
 #include <iostream>
 #include <iterator>
 #include <sstream>
+#include <GLM\glm.hpp>
 #include <Windows.h>
+using namespace glm;
 using namespace std;
 DataStill::DataStill()
 {
@@ -15,6 +17,44 @@ DataStill::DataStill()
 
 DataStill::~DataStill()
 {
+}
+
+void DataStill::FilterDisplacement(std::string p_rawDataFileName, std::string p_filteredFileName)
+{
+	vector<string> lines = ReadFileIntoLines(p_rawDataFileName);
+	// We know this. Says so in comments
+	int numLinesPerDataEntry = 3;
+	int numInputs = 3;
+	// Set start values
+	istringstream in(lines.at(1));
+	vec3 t_currentPos;
+	for (size_t j = 0; j < numInputs; j++)
+	{
+		in >> t_currentPos[j];
+	}
+	ofstream file;
+	file.open(p_filteredFileName);
+	// Iterate over all positions and generate displacements
+	for (size_t i = 1; i < lines.size(); i += numLinesPerDataEntry)
+	{
+		string index = lines.at(i);
+		string output = lines.at(i + 2);
+
+		// Read next position into vector
+		istringstream in(lines.at(i+1));
+		vec3 t_newPos;
+		for (size_t j = 0; j < numInputs; j++)
+		{
+			in >> t_newPos[j];
+		}
+		vec3 displacement = t_newPos - t_currentPos;
+		t_currentPos = t_newPos;
+		// Write displacement to file right away
+		file << index << endl;
+		file << displacement.x << " " << displacement.y << " " << displacement.x << " " << endl;
+		file << output << endl;
+
+	}
 }
 
 std::string DataStill::GetAbsoluteFilePath(std::string p_directory)
