@@ -8,8 +8,8 @@ using namespace std;
 DataStill::DataStill()
 {
 	m_rawDataFilePath = GetAbsoluteFilePath("DEBUGData");
-	MergeDataOntoSameLine("DEBUGKeyData.rawdata", "DEBUGKeyData.filtereddata", 3);
-	FilterAvrage("DEBUGKeyData.rawdata", "DEBUGKeyData.filtereddata", 20);
+	//MergeDataOntoSameLine("DEBUGKeyData.rawdata", "DEBUGKeyData.filtereddata", 3);
+	//FilterAvrage("DEBUGKeyData.rawdata", "DEBUGKeyData.filtereddata", 20);
 }
 
 

@@ -8,11 +8,14 @@ public:
 	~DataStill();
 
 private:
+	///////////////////Specific methods///////////////
 	/**
 	Filters player's movements from p_rawDataFileName and stores in 
 	a new file as specified by p_filteredFilename*/
 	void FilterDisplacement(std::string p_rawDataFileName, std::string p_filteredFileName);
 	
+
+	//////////////////General methods////////////////
 	/**
 	Takes p_numToMerge data sets and put them onto the same line.
 	Index will be that of the first of the data sets.*/
