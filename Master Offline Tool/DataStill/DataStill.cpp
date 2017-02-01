@@ -12,6 +12,12 @@ DataStill::DataStill()
 
 	m_rawDataFilePath = GetAbsoluteFilePath("DEBUGData");
 
+	vector<string>* data = ReadFileIntoLines("CUSTOMDATA.rawdata");
+	vector<vector<string>> dataTobeNormalized;
+	dataTobeNormalized.push_back(*data);
+	*data = NormalizeValues(dataTobeNormalized)->at(0);
+	data = MergeDataOntoSameLine(*data, 2);
+	data = FilterAvrage(*data, 2);
 
 	//vector<string> innames;
 	//vector<string> outnames;
@@ -416,18 +422,18 @@ void DataStill::SplitDataIntoTrueAndFalseVectors(
 	}
 }
 
-std::vector<std::string> DataStill::ReadFileIntoLines(std::string p_fileName)
+std::vector<std::string>* DataStill::ReadFileIntoLines(std::string p_fileName)
 {
 	// Read all lines of file into vector of strings
 	string inFilePath = m_rawDataFilePath;
 	inFilePath += "/";
 	inFilePath += p_fileName;
-	vector<string> lines;
+	vector<string>* lines = new vector<string>();
 	ifstream inFile(inFilePath);
 	string line;
 	while (std::getline(inFile, line))
 	{
-		lines.push_back(line);
+		lines->push_back(line);
 	}
 	inFile.close();
 	return lines;

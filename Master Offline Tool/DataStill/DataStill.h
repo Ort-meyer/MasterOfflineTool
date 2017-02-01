@@ -88,7 +88,7 @@ private:
 	/**
 	Help method that returns the file specified as a vector of strings where
 	each string is a line fron the read file.*/
-	std::vector<std::string> ReadFileIntoLines(std::string p_fileName);
+	std::vector<std::string>* ReadFileIntoLines(std::string p_fileName);
 
 	/**
 	Returns the full path to files we might want to open
