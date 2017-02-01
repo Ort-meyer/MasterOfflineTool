@@ -76,7 +76,7 @@ private:
 	/**
 	Help Method to MergeDataOntoSameLine. This puts p_numToMerge
 	data values on the same row*/
-	std::string MergeVectorDataOntoSameLine(const std::vector<std::string>& p_dataLines, int p_numToMerge, int nrOfRowsPerDataEntry);
+	std::vector<std::string>* MergeVectorDataOntoSameLine(const std::vector<std::string>& p_dataLines, int p_numToMerge, int nrOfRowsPerDataEntry);
 
 	/**
 	Splits a data set into two vectors, one with only true output and one with

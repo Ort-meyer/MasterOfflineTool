@@ -333,9 +333,9 @@ std::vector<std::string>* DataStill::AvrageNumbers(const std::vector<string>& p_
 	return r_lines;
 }
 
-std::string DataStill::MergeVectorDataOntoSameLine(const std::vector<string>& p_dataLines, int p_numToMerge, int nrOfRowsPerDataEntry)
+std::vector<std::string>* DataStill::MergeVectorDataOntoSameLine(const std::vector<string>& p_dataLines, int p_numToMerge, int nrOfRowsPerDataEntry)
 {
-	string merged = "";
+	vector<string>* r_lines = new vector<string>();
 	int t_nrOfdataRows = nrOfRowsPerDataEntry - 2;
 	// Iterate over each chunk of data entries we want merged
 	for (size_t i = 0; i < p_dataLines.size(); i += p_numToMerge*nrOfRowsPerDataEntry)
@@ -370,19 +370,16 @@ std::string DataStill::MergeVectorDataOntoSameLine(const std::vector<string>& p_
 		// Write the merged data entry into return string
 		if (!outOfScope)
 		{
-			merged += index;
-			merged += "\n";
+			r_lines->push_back(index);
 			for (size_t j = 0; j < t_nrOfdataRows; j++)
 			{
-				merged.append(t_mergedDataRows.at(j));
-				merged += "\n";
+				r_lines->push_back(t_mergedDataRows.at(j));
 			}
 			//cout << output << endl;
-			merged += output;
-			merged += "\n";
+			r_lines->push_back(output);
 		}
 	}
-	return merged;
+	return r_lines;
 }
 
 void DataStill::SplitDataIntoTrueAndFalseVectors(
