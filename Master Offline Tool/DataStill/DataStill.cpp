@@ -161,9 +161,12 @@ std::vector<std::string>* DataStill::MergeDataOntoSameLine(const std::vector<std
 	vector<string> falseList;
 	SplitDataIntoTrueAndFalseVectors(p_lines, &trueList, &falseList, nrOfRowsPerDataEntry);
 
-	//string trueMerged = MergeVectorDataOntoSameLine(trueList, p_numToMerge, nrOfRowsPerDataEntry);
-	//string falseMerged = MergeVectorDataOntoSameLine(falseList, p_numToMerge, nrOfRowsPerDataEntry);
+	vector<string>* trueMerged = MergeVectorDataOntoSameLine(trueList, p_numToMerge, nrOfRowsPerDataEntry);
+	vector<string>* falseMerged = MergeVectorDataOntoSameLine(falseList, p_numToMerge, nrOfRowsPerDataEntry);
 	vector<string>* r_lines = new vector<string>();
+	// Merge true and false lists before returning
+	r_lines = trueMerged;
+	r_lines->insert(r_lines->end(), falseMerged->begin(), falseMerged->end());
 	return r_lines;
 }
 
@@ -218,9 +221,11 @@ std::vector<std::string>*  DataStill::FilterAvrage(const std::vector<string>& p_
 	vector<string> falseList;
 	SplitDataIntoTrueAndFalseVectors(p_lines, &trueList, &falseList, nrOfRowsPerDataEntry);
 	// Use our amazing help method
-	//string trueAvrages = AvrageNumbers(trueList, nrOfRowsPerDataEntry, p_numToAvrage);
-	//string falseAvrages = AvrageNumbers(falseList, nrOfRowsPerDataEntry, p_numToAvrage);
+	vector<string>* trueAvrages = AvrageNumbers(trueList, nrOfRowsPerDataEntry, p_numToAvrage);
+	vector<string>* falseAvrages = AvrageNumbers(falseList, nrOfRowsPerDataEntry, p_numToAvrage);
 	vector<string>* r_lines = new vector<string>();
+	r_lines = trueAvrages;
+	r_lines->insert(r_lines->end(), falseMerged->begin(), falseMerged->end());
 	return r_lines;
 }
 
