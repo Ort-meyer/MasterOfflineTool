@@ -23,6 +23,13 @@ private:
 
 	//////////////////General methods////////////////
 	/**
+	Reads through all files specified and normalizes values within and outputs
+	results into respective p_filtereFileNames name. Make sure the two parameters 
+	are mapped. All values will be between -1 and 1
+	WARNING! This assume that there is only one data row per file. CBA with scalability.*/
+	void NormalizeValues(std::vector<std::string> p_rawDataFileNames, std::vector <std::string> p_filteredFileNames);
+	
+	/**
 	Takes p_numToMerge data sets and put them onto the same line.
 	Index will be that of the first of the data sets.*/
 	void MergeDataOntoSameLine(std::string p_rawDataFileName, std::string p_filteredFileName, int p_numToMerge);

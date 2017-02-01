@@ -9,9 +9,21 @@ using namespace glm;
 using namespace std;
 DataStill::DataStill()
 {
+
 	m_rawDataFilePath = GetAbsoluteFilePath("DEBUGData");
+
+
+	vector<string> innames;
+	vector<string> outnames;
 	FilterDisplacement("Positions2017-02-01 - 13-16-28.debug", "PositionsNotLost.filteredData");
+	innames.push_back("PositionsNotLost.filteredData");
+	outnames.push_back("normalizedPositionNotlost.filteredData");
+
 	FilterDisplacement("Positions2017-02-01 - 13-11-40.debug", "PositionsLost.filteredData");
+	innames.push_back("PositionsLost.filteredData");
+	outnames.push_back("normalizedPositionLost.filteredData");
+
+	NormalizeValues(innames, outnames);
 
 }
 
@@ -45,7 +57,7 @@ void DataStill::FilterDisplacement(std::string p_rawDataFileName, std::string p_
 		string output = lines.at(i + 2);
 
 		// Read next position into vector
-		istringstream in(lines.at(i+1));
+		istringstream in(lines.at(i + 1));
 		vec3 t_newPos;
 		for (size_t j = 0; j < numInputs; j++)
 		{
@@ -60,6 +72,75 @@ void DataStill::FilterDisplacement(std::string p_rawDataFileName, std::string p_
 
 	}
 	outFile.close();
+}
+
+void DataStill::NormalizeValues(std::vector<std::string> p_rawDataFileNames, std::vector <std::string> p_filteredFileNames)
+{
+	// Load all files into vectors of lines
+	vector<vector<string>> t_listOfListOfLines;
+	for (size_t i = 0; i < p_rawDataFileNames.size(); i++)
+	{
+		t_listOfListOfLines.push_back(ReadFileIntoLines(p_rawDataFileNames.at(i)));
+	}
+
+	// Find largest value
+	// Needs to be vector in case of multiple data rows per data entry
+	float t_maxValue = 0;
+	for (size_t i = 0; i < t_listOfListOfLines.size(); i++)// Per file
+	{
+		// We now have one list of lines
+		// Iterate through the list. add +2 to iterator for index and output
+		for (size_t j = 0; j < t_listOfListOfLines.at(i).size()-2; j+= 3)
+		{
+			// We're at the start of one data entry
+			// Figure out how many inputs
+			string line = t_listOfListOfLines.at(i).at(j+1);
+			istringstream in(line);
+			int inputs = std::distance(istream_iterator<string>(istringstream(line) >> ws), istream_iterator<string>());
+			// See if there's a bigger number for this kind of value
+			for (size_t k = 0; k < inputs; k++)
+			{
+				float thisValue;
+				in >> thisValue;
+				thisValue = abs(thisValue);
+				if (t_maxValue < thisValue)
+					t_maxValue = thisValue;
+			}
+		}
+	}
+	
+
+	// Now divide every value with this value and write to file
+	for (size_t i = 0; i < t_listOfListOfLines.size(); i++)// Per file
+	{
+		// We now have one list of lines
+		ofstream outFile;
+		string outFilePath = m_rawDataFilePath;
+		outFilePath += "/";
+		outFilePath += p_filteredFileNames.at(i);
+		outFile.open(outFilePath);
+		// Iterate through the list. add +2 to iterator for index and output
+		for (size_t j = 0; j < t_listOfListOfLines.at(i).size() - 2; j += 3)
+		{
+			// We're at the start of one data entry
+			string index = t_listOfListOfLines.at(i).at(j);
+			outFile << index << endl;
+			string output = t_listOfListOfLines.at(i).at(j+2);
+			// Figure out how many inputs
+			string line = t_listOfListOfLines.at(i).at(j + 1);
+			istringstream in(line);
+			int inputs = std::distance(istream_iterator<string>(istringstream(line) >> ws), istream_iterator<string>());
+			// See if there's a bigger number for this kind of value
+			for (size_t k = 0; k < inputs; k++)
+			{
+				float thisValue;
+				in >> thisValue;
+				thisValue /= t_maxValue;
+				outFile << thisValue << " ";
+			}
+			outFile << endl << output << endl;
+		}
+	}
 }
 
 std::string DataStill::GetAbsoluteFilePath(std::string p_directory)
@@ -178,7 +259,7 @@ std::string DataStill::MergeVectorDataOntoSameLine(const std::vector<string>& p_
 	{
 		string index = p_dataLines.at(i);
 		// Stride past data rows to find output
-		string output = p_dataLines.at(i + t_nrOfdataRows+1);
+		string output = p_dataLines.at(i + t_nrOfdataRows + 1);
 
 		vector<string> t_mergedDataRows;
 		t_mergedDataRows.resize(t_nrOfdataRows);
@@ -197,7 +278,7 @@ std::string DataStill::MergeVectorDataOntoSameLine(const std::vector<string>& p_
 				// Iterate over the data rows of each entry
 				for (size_t j = 0; j < t_nrOfdataRows; j++)
 				{
-					string line = p_dataLines.at(startRow+j);
+					string line = p_dataLines.at(startRow + j);
 					t_mergedDataRows.at(j).append(line);
 					t_mergedDataRows.at(j) += " ";
 				}
@@ -230,7 +311,7 @@ std::string DataStill::AvrageNumbers(const std::vector<string>& p_rows, int p_nr
 	// We use only the first data entry, since all data entries have to be foramtted the same
 	for (size_t i = 0; i < nrOfValueRows; i++)
 	{
-		int inputs =std::distance(istream_iterator<string>(istringstream(p_rows.at(i + 1)) >> ws), istream_iterator<string>());
+		int inputs = std::distance(istream_iterator<string>(istringstream(p_rows.at(i + 1)) >> ws), istream_iterator<string>());
 		nrOfInputs.push_back(inputs);
 	}
 
@@ -331,9 +412,9 @@ std::string DataStill::AvrageNumbers(const std::vector<string>& p_rows, int p_nr
 }
 
 void DataStill::SplitDataIntoTrueAndFalseVectors(
-	const std::vector<std::string>& p_inData, 
-	std::vector<std::string>* p_trueVector, 
-	std::vector<std::string>* p_falseVector, 
+	const std::vector<std::string>& p_inData,
+	std::vector<std::string>* p_trueVector,
+	std::vector<std::string>* p_falseVector,
 	int p_nrOfDataRowsPerEntry)
 {
 	int nrOfDataPoints = p_inData.size() / p_nrOfDataRowsPerEntry;
