@@ -17,8 +17,9 @@ private:
 	Output
 	In other words, multiple rows of input will not work.
 	Output will be structured in the same way, but with displacement
-	vectors instead of world positions*/
-	void FilterDisplacement(std::string p_rawDataFileName, std::string p_filteredFileName);
+	vectors instead of world positions.
+	Returns pointer to the filtered data as a vector of strings*/
+	std::vector<std::string>* FilterDisplacement(const std::vector<std::string>& p_lines);
 	
 
 	//////////////////General methods////////////////
@@ -33,19 +34,20 @@ private:
 	results into respective p_filtereFileNames name. Make sure the two parameters 
 	are mapped. All values will be between -1 and 1
 	WARNING! This assume that there is only one data row per file. CBA with scalability.*/
-	void NormalizeValues(std::vector<std::string> p_rawDataFileNames, std::vector <std::string> p_filteredFileNames);
+	std::vector<std::vector<std::string>>* NormalizeValues(const std::vector<std::vector<std::string>>& p_filesInLines);
 	
 	/**
 	Takes p_numToMerge data sets and put them onto the same line.
-	Index will be that of the first of the data sets.*/
-	void MergeDataOntoSameLine(std::string p_rawDataFileName, std::string p_filteredFileName, int p_numToMerge);
+	Index will be that of the first of the data sets.
+	!!!!!!!!!!!!!!!!!!!!NOT FINNISHED!!!!!!!!!!!!!*/
+	std::vector<std::string>* MergeDataOntoSameLine(const std::vector<std::string>& p_lines, int p_numToMerge);
 
 	/**
 	General filter method to remove every p_increment:th point of data
 	For instance, setting p_increment to 3 will remove every 3rd data point.
 	p_rawDataFileName specifies input file, and p_filteredFileName specifies
 	output file name*/
-	void FilterAwayDataRemove(std::string p_rawDataFileName, std::string p_filteredFileName, int p_increment);
+	std::vector<std::string>* FilterAwayDataRemove(const std::vector<std::string>& p_lines, int p_increment);
 
 	/**
 	General filter method to keep every p_increment:th point of data
@@ -53,14 +55,15 @@ private:
 	every other data point will be removed
 	p_rawDataFileName specifies input file, and p_filteredFileName specifies
 	output file name*/
-	void FilterAwayDataKeep(std::string p_rawDataFileName, std::string p_filteredFileName, int p_increment);
+	std::vector<std::string>*  FilterAwayDataKeep(const std::vector<std::string>& p_lines, int p_increment);
 
 	/**
 	General filter method that takes p_nuToAvrage numer of values and stores
 	as the avrage of those values. 
 	p_rawDataFileName specifies input file, and p_filteredFileName specifies
-	output file name*/
-	void FilterAvrage(std::string p_rawDataFileName, std::string p_filteredFileName, int p_numToAvrage);
+	output file name
+	/////////////////NOT FINISHED////////////////////*/
+	std::vector<std::string>*  FilterAvrage(const std::vector<std::string>& p_lines, int p_numToAvrage);
 
 
 	/////////////////////HELP METHODS/////////////////
@@ -68,7 +71,7 @@ private:
 	Help method used to avrage numbers based on what rows are sent in. This
 	is meant to be called sending in the true and false vectors of lines read
 	from the data files. Return value is a single string with all avraged rows*/
-	std::string AvrageNumbers(const std::vector<std::string>& p_rows, int p_nrOfdataRowsPerEntry, int p_nrToAvrage);
+	std::vector<std::string>* AvrageNumbers(const std::vector<std::string>& p_rows, int p_nrOfdataRowsPerEntry, int p_nrToAvrage);
 
 	/**
 	Help Method to MergeDataOntoSameLine. This puts p_numToMerge

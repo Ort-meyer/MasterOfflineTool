@@ -13,17 +13,17 @@ DataStill::DataStill()
 	m_rawDataFilePath = GetAbsoluteFilePath("DEBUGData");
 
 
-	vector<string> innames;
-	vector<string> outnames;
-	FilterDisplacement("Positions2017-02-01 - 13-16-28.debug", "PositionsNotLost.filteredData");
-	innames.push_back("PositionsNotLost.filteredData");
-	outnames.push_back("normalizedPositionNotlost.filteredData");
-
-	FilterDisplacement("Positions2017-02-01 - 13-11-40.debug", "PositionsLost.filteredData");
-	innames.push_back("PositionsLost.filteredData");
-	outnames.push_back("normalizedPositionLost.filteredData");
-
-	NormalizeValues(innames, outnames);
+	//vector<string> innames;
+	//vector<string> outnames;
+	//FilterDisplacement("Positions2017-02-01 - 13-16-28.debug", "PositionsNotLost.filteredData");
+	//innames.push_back("PositionsNotLost.filteredData");
+	//outnames.push_back("normalizedPositionNotlost.filteredData");
+	//
+	//	FilterDisplacement("Positions2017-02-01 - 13-11-40.debug", "PositionsLost.filteredData");
+	//innames.push_back("PositionsLost.filteredData");
+	//outnames.push_back("normalizedPositionLost.filteredData");
+	//
+	//NormalizeValues(innames, outnames);
 
 }
 
@@ -32,32 +32,28 @@ DataStill::~DataStill()
 {
 }
 
-void DataStill::FilterDisplacement(std::string p_rawDataFileName, std::string p_filteredFileName)
+vector<string>* DataStill::FilterDisplacement(const std::vector<std::string>& p_lines)
 {
-	vector<string> lines = ReadFileIntoLines(p_rawDataFileName);
 	// We know this. Says so in comments
 	int numLinesPerDataEntry = 3;
 	int numInputs = 3;
 	// Set start values
-	istringstream in(lines.at(1));
+	istringstream in(p_lines.at(1));
 	vec3 t_currentPos;
 	for (size_t j = 0; j < numInputs; j++)
 	{
 		in >> t_currentPos[j];
 	}
-	ofstream outFile;
-	string outFilePath = m_rawDataFilePath;
-	outFilePath += "/";
-	outFilePath += p_filteredFileName;
-	outFile.open(outFilePath);
+	vector<string>* r_lines = new vector<string>();
 	// Iterate over all positions and generate displacements
-	for (size_t i = numLinesPerDataEntry; i < lines.size() - 2; i += numLinesPerDataEntry)
+	for (size_t i = numLinesPerDataEntry; i < p_lines.size() - 2; i += numLinesPerDataEntry)
 	{
-		string index = lines.at(i);
-		string output = lines.at(i + 2);
+		
+		string index = p_lines.at(i);
+		string output = p_lines.at(i + 2);
 
 		// Read next position into vector
-		istringstream in(lines.at(i + 1));
+		istringstream in(p_lines.at(i + 1));
 		vec3 t_newPos;
 		for (size_t j = 0; j < numInputs; j++)
 		{
@@ -66,35 +62,29 @@ void DataStill::FilterDisplacement(std::string p_rawDataFileName, std::string p_
 		vec3 displacement = t_newPos - t_currentPos;
 		t_currentPos = t_newPos;
 		// Write displacement to file right away
-		outFile << index << endl;
-		outFile << displacement.x << " " << displacement.y << " " << displacement.x << " " << endl;
-		outFile << output << endl;
-
+		r_lines->push_back(index);
+		stringstream t_stringStream;
+		t_stringStream << displacement.x << " " << displacement.y << " " << displacement.x << " " << endl;
+		r_lines->push_back(t_stringStream.str());
+		r_lines->push_back(output);
 	}
-	outFile.close();
+	return r_lines;
 }
 
-void DataStill::NormalizeValues(std::vector<std::string> p_rawDataFileNames, std::vector <std::string> p_filteredFileNames)
+std::vector<std::vector<std::string>>* DataStill::NormalizeValues(const std::vector<vector<std::string>>& p_filesInLines)
 {
-	// Load all files into vectors of lines
-	vector<vector<string>> t_listOfListOfLines;
-	for (size_t i = 0; i < p_rawDataFileNames.size(); i++)
-	{
-		t_listOfListOfLines.push_back(ReadFileIntoLines(p_rawDataFileNames.at(i)));
-	}
-
 	// Find largest value
 	// Needs to be vector in case of multiple data rows per data entry
 	float t_maxValue = 0;
-	for (size_t i = 0; i < t_listOfListOfLines.size(); i++)// Per file
+	for (size_t i = 0; i < p_filesInLines.size(); i++)// Per file
 	{
 		// We now have one list of lines
 		// Iterate through the list. add +2 to iterator for index and output
-		for (size_t j = 0; j < t_listOfListOfLines.at(i).size()-2; j+= 3)
+		for (size_t j = 0; j < p_filesInLines.at(i).size() - 2; j += 3)
 		{
 			// We're at the start of one data entry
 			// Figure out how many inputs
-			string line = t_listOfListOfLines.at(i).at(j+1);
+			string line = p_filesInLines.at(i).at(j + 1);
 			istringstream in(line);
 			int inputs = std::distance(istream_iterator<string>(istringstream(line) >> ws), istream_iterator<string>());
 			// See if there's a bigger number for this kind of value
@@ -109,38 +99,37 @@ void DataStill::NormalizeValues(std::vector<std::string> p_rawDataFileNames, std
 		}
 	}
 	
-
+	vector<vector<string>>* r_filesInLines = new vector<vector<string>>();
+	r_filesInLines->resize(p_filesInLines.size());
 	// Now divide every value with this value and write to file
-	for (size_t i = 0; i < t_listOfListOfLines.size(); i++)// Per file
+	for (size_t i = 0; i < p_filesInLines.size(); i++)// Per file
 	{
-		// We now have one list of lines
-		ofstream outFile;
-		string outFilePath = m_rawDataFilePath;
-		outFilePath += "/";
-		outFilePath += p_filteredFileNames.at(i);
-		outFile.open(outFilePath);
 		// Iterate through the list. add +2 to iterator for index and output
-		for (size_t j = 0; j < t_listOfListOfLines.at(i).size() - 2; j += 3)
+		for (size_t j = 0; j < p_filesInLines.at(i).size() - 2; j += 3)
 		{
 			// We're at the start of one data entry
-			string index = t_listOfListOfLines.at(i).at(j);
-			outFile << index << endl;
-			string output = t_listOfListOfLines.at(i).at(j+2);
+			string index = p_filesInLines.at(i).at(j);
+			string output = p_filesInLines.at(i).at(j + 2);
 			// Figure out how many inputs
-			string line = t_listOfListOfLines.at(i).at(j + 1);
+			string line = p_filesInLines.at(i).at(j + 1);
 			istringstream in(line);
 			int inputs = std::distance(istream_iterator<string>(istringstream(line) >> ws), istream_iterator<string>());
 			// See if there's a bigger number for this kind of value
+			stringstream t_stringstream;
 			for (size_t k = 0; k < inputs; k++)
 			{
 				float thisValue;
 				in >> thisValue;
 				thisValue /= t_maxValue;
-				outFile << thisValue << " ";
+				t_stringstream << thisValue << " ";
 			}
-			outFile << endl << output << endl;
+			// Write values
+			r_filesInLines->at(i).push_back(index);
+			r_filesInLines->at(i).push_back(t_stringstream.str());
+			r_filesInLines->at(i).push_back(output);
 		}
 	}
+	return r_filesInLines;
 }
 
 std::string DataStill::GetAbsoluteFilePath(std::string p_directory)
@@ -157,18 +146,28 @@ std::string DataStill::GetAbsoluteFilePath(std::string p_directory)
 	return fullPath;
 }
 
-void DataStill::FilterAwayDataRemove(std::string p_rawDataFileName, std::string p_filteredFileName, int p_increment)
+std::vector<std::string>* DataStill::MergeDataOntoSameLine(const std::vector<std::string>& p_lines, int p_numToMerge)
 {
-	vector<string> lines = ReadFileIntoLines(p_rawDataFileName);
+	int nrOfRowsPerDataEntry = 3; // Will have to be tweaked!
+	int strideToData = 1; //How many rows are skipped before data is read, for each data point
+	int nrOfDataPoints = p_lines.size() / nrOfRowsPerDataEntry;
 
-	// Write to output file
-	ofstream outFile;
-	string outFilePath = m_rawDataFilePath;
-	outFilePath += "/";
-	outFilePath += p_filteredFileName;
-	outFile.open(outFilePath);
+	// Read into two vectors: one with true, one with false. Makes things easier
+	vector<string> trueList;
+	vector<string> falseList;
+	SplitDataIntoTrueAndFalseVectors(p_lines, &trueList, &falseList, nrOfRowsPerDataEntry);
+
+	//string trueMerged = MergeVectorDataOntoSameLine(trueList, p_numToMerge, nrOfRowsPerDataEntry);
+	//string falseMerged = MergeVectorDataOntoSameLine(falseList, p_numToMerge, nrOfRowsPerDataEntry);
+	vector<string>* r_lines = new vector<string>();
+	return r_lines;
+}
+
+std::vector<std::string>* DataStill::FilterAwayDataRemove(const std::vector<string>& p_lines, int p_increment)
+{
 	int nrOfRowsPerdataSet = 3; // Will have to be tweaked!
-	int size = lines.size() / nrOfRowsPerdataSet;
+	int size = p_lines.size() / nrOfRowsPerdataSet;
+	vector<string>* r_lines = new vector<string>();
 	for (size_t i = 1; i < size + 1; i++)
 	{
 		// Skip every p_increment:th write
@@ -177,28 +176,18 @@ void DataStill::FilterAwayDataRemove(std::string p_rawDataFileName, std::string 
 			int derp = 5;
 			for (size_t j = 0; j < nrOfRowsPerdataSet; j++)
 			{
-				outFile << lines.at((i - 1)*nrOfRowsPerdataSet + j) << endl;
+				r_lines->push_back(p_lines.at((i - 1)*nrOfRowsPerdataSet + j));
 			}
 		}
-
 	}
-	outFile.close();
-
+	return r_lines;
 }
 
-void DataStill::FilterAwayDataKeep(std::string p_rawDataFileName, std::string p_filteredFileName, int p_increment)
+std::vector<std::string>*  DataStill::FilterAwayDataKeep(const std::vector<string>& p_lines, int p_increment)
 {
-
-	vector<string> lines = ReadFileIntoLines(p_rawDataFileName);
-
-	// Write to output file
-	ofstream outFile;
-	string outFilePath = m_rawDataFilePath;
-	outFilePath += "/";
-	outFilePath += p_filteredFileName;
-	outFile.open(outFilePath);
 	int nrOfRowsPerdataSet = 3; // Will have to be tweaked!
-	int size = lines.size() / nrOfRowsPerdataSet;
+	int size = p_lines.size() / nrOfRowsPerdataSet;
+	vector<string>* r_lines = new vector<string>();
 	for (size_t i = 1; i < size + 1; i++)
 	{
 		// Skip every p_increment:th write
@@ -207,48 +196,31 @@ void DataStill::FilterAwayDataKeep(std::string p_rawDataFileName, std::string p_
 			int derp = 5;
 			for (size_t j = 0; j < nrOfRowsPerdataSet; j++)
 			{
-				outFile << lines.at((i - 1)*nrOfRowsPerdataSet + j) << endl;
+				r_lines->push_back(p_lines.at((i - 1)*nrOfRowsPerdataSet + j));
 			}
 		}
-
 	}
-	outFile.close();
+	return r_lines;
 }
 
-void DataStill::FilterAvrage(std::string p_rawDataFileName, std::string p_filteredFileName, int p_numToAvrage)
+std::vector<std::string>*  DataStill::FilterAvrage(const std::vector<string>& p_lines, int p_numToAvrage)
 {
-	vector<string> lines = ReadFileIntoLines(p_rawDataFileName);
 
-	int nrOfRowsPerDataEntry = 4; // Will have to be tweaked!
+	int nrOfRowsPerDataEntry = 3; // Will have to be tweaked!
 	int strideToData = 1; //How many rows are skipped before data is read, for each data point
-	int nrOfDataPoints = lines.size() / nrOfRowsPerDataEntry;
+	int nrOfDataPoints = p_lines.size() / nrOfRowsPerDataEntry;
 	// Read into two vectors: one with true, one with false. Makes things easier
 	vector<string> trueList;
 	vector<string> falseList;
-	SplitDataIntoTrueAndFalseVectors(lines, &trueList, &falseList, nrOfRowsPerDataEntry);
+	SplitDataIntoTrueAndFalseVectors(p_lines, &trueList, &falseList, nrOfRowsPerDataEntry);
 	// Use our amazing help method
-	string trueAvrages = AvrageNumbers(trueList, nrOfRowsPerDataEntry, p_numToAvrage);
-	string falseAvrages = AvrageNumbers(falseList, nrOfRowsPerDataEntry, p_numToAvrage);
-
-
+	//string trueAvrages = AvrageNumbers(trueList, nrOfRowsPerDataEntry, p_numToAvrage);
+	//string falseAvrages = AvrageNumbers(falseList, nrOfRowsPerDataEntry, p_numToAvrage);
+	vector<string>* r_lines = new vector<string>();
+	return r_lines;
 }
 
-void DataStill::MergeDataOntoSameLine(std::string p_rawDataFileName, std::string p_filteredFileName, int p_numToMerge)
-{
-	vector<string> lines = ReadFileIntoLines(p_rawDataFileName);
-	int nrOfRowsPerDataEntry = 4; // Will have to be tweaked!
-	int strideToData = 1; //How many rows are skipped before data is read, for each data point
-	int nrOfDataPoints = lines.size() / nrOfRowsPerDataEntry;
 
-	// Read into two vectors: one with true, one with false. Makes things easier
-	vector<string> trueList;
-	vector<string> falseList;
-	SplitDataIntoTrueAndFalseVectors(lines, &trueList, &falseList, nrOfRowsPerDataEntry);
-
-	string trueMerged = MergeVectorDataOntoSameLine(trueList, p_numToMerge, nrOfRowsPerDataEntry);
-	string falseMerged = MergeVectorDataOntoSameLine(falseList, p_numToMerge, nrOfRowsPerDataEntry);
-
-}
 
 std::string DataStill::MergeVectorDataOntoSameLine(const std::vector<string>& p_dataLines, int p_numToMerge, int nrOfRowsPerDataEntry)
 {
@@ -302,9 +274,8 @@ std::string DataStill::MergeVectorDataOntoSameLine(const std::vector<string>& p_
 	return merged;
 }
 
-std::string DataStill::AvrageNumbers(const std::vector<string>& p_rows, int p_nrOfdataRowsPerEntry, int p_nrToAvrage)
+std::vector<std::string>* DataStill::AvrageNumbers(const std::vector<string>& p_rows, int p_nrOfdataRowsPerEntry, int p_nrToAvrage)
 {
-	string r_avrageLines = "";
 	int nrOfValueRows = p_nrOfdataRowsPerEntry - 2; // Hard-coded. Index is one row, output is one row
 	// Figure out how many inputs each data row stores
 	vector<int> nrOfInputs;
@@ -315,6 +286,7 @@ std::string DataStill::AvrageNumbers(const std::vector<string>& p_rows, int p_nr
 		nrOfInputs.push_back(inputs);
 	}
 
+	vector<string>* r_lines = new vector<string>();
 	// Now we avrage the values in each list
 	for (size_t i = 0; i < p_rows.size() / p_nrToAvrage; i++)
 	{
@@ -390,25 +362,23 @@ std::string DataStill::AvrageNumbers(const std::vector<string>& p_rows, int p_nr
 			}
 
 			// Write results to return string
-			r_avrageLines += index;
-			r_avrageLines += "\n";
+			r_lines->push_back(index);
 			// Now actually avrage
 			for (size_t j = 0; j < avrages.size(); j++)
 			{
+				stringstream t_stringStream;
 				for (size_t k = 0; k < avrages.at(j).size(); k++)
 				{
 					avrages.at(j).at(k) /= p_nrToAvrage;
 					// Write value
-					r_avrageLines += to_string(avrages.at(j).at(k));
-					r_avrageLines += " ";
+					t_stringStream << avrages.at(j).at(k) << " ";
 				}
-				r_avrageLines += "\n";
+				r_lines->push_back(t_stringStream.str());
 			}
-			r_avrageLines += output;
-			r_avrageLines += "\n";
+			r_lines->push_back(output);
 		}
 	}
-	return r_avrageLines;
+	return r_lines;
 }
 
 void DataStill::SplitDataIntoTrueAndFalseVectors(
