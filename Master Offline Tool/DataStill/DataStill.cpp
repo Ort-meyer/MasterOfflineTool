@@ -224,8 +224,9 @@ std::vector<std::string>*  DataStill::FilterAvrage(const std::vector<string>& p_
 	vector<string>* trueAvrages = AvrageNumbers(trueList, nrOfRowsPerDataEntry, p_numToAvrage);
 	vector<string>* falseAvrages = AvrageNumbers(falseList, nrOfRowsPerDataEntry, p_numToAvrage);
 	vector<string>* r_lines = new vector<string>();
+	// Merge true and false lists before returning
 	r_lines = trueAvrages;
-	r_lines->insert(r_lines->end(), falseMerged->begin(), falseMerged->end());
+	r_lines->insert(r_lines->end(), falseAvrages->begin(), falseAvrages->end());
 	return r_lines;
 }
 

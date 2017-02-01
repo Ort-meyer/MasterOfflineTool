@@ -38,8 +38,7 @@ private:
 	
 	/**
 	Takes p_numToMerge data sets and put them onto the same line.
-	Index will be that of the first of the data sets.
-	!!!!!!!!!!!!!!!!!!!!NOT FINNISHED!!!!!!!!!!!!!*/
+	Index will be that of the first of the data sets.*/
 	std::vector<std::string>* MergeDataOntoSameLine(const std::vector<std::string>& p_lines, int p_numToMerge);
 
 	/**
@@ -61,8 +60,7 @@ private:
 	General filter method that takes p_nuToAvrage numer of values and stores
 	as the avrage of those values. 
 	p_rawDataFileName specifies input file, and p_filteredFileName specifies
-	output file name
-	/////////////////NOT FINISHED////////////////////*/
+	output file name*/
 	std::vector<std::string>*  FilterAvrage(const std::vector<std::string>& p_lines, int p_numToAvrage);
 
 
