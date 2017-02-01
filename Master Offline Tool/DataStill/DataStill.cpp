@@ -10,8 +10,9 @@ using namespace std;
 DataStill::DataStill()
 {
 	m_rawDataFilePath = GetAbsoluteFilePath("DEBUGData");
-	//MergeDataOntoSameLine("DEBUGKeyData.rawdata", "DEBUGKeyData.filtereddata", 3);
-	//FilterAvrage("DEBUGKeyData.rawdata", "DEBUGKeyData.filtereddata", 20);
+	FilterDisplacement("Positions2017-02-01 - 13-16-28.debug", "PositionsNotLost.filteredData");
+	FilterDisplacement("Positions2017-02-01 - 13-11-40.debug", "PositionsLost.filteredData");
+
 }
 
 
@@ -32,10 +33,13 @@ void DataStill::FilterDisplacement(std::string p_rawDataFileName, std::string p_
 	{
 		in >> t_currentPos[j];
 	}
-	ofstream file;
-	file.open(p_filteredFileName);
+	ofstream outFile;
+	string outFilePath = m_rawDataFilePath;
+	outFilePath += "/";
+	outFilePath += p_filteredFileName;
+	outFile.open(outFilePath);
 	// Iterate over all positions and generate displacements
-	for (size_t i = 1; i < lines.size(); i += numLinesPerDataEntry)
+	for (size_t i = numLinesPerDataEntry; i < lines.size() - 2; i += numLinesPerDataEntry)
 	{
 		string index = lines.at(i);
 		string output = lines.at(i + 2);
@@ -50,11 +54,12 @@ void DataStill::FilterDisplacement(std::string p_rawDataFileName, std::string p_
 		vec3 displacement = t_newPos - t_currentPos;
 		t_currentPos = t_newPos;
 		// Write displacement to file right away
-		file << index << endl;
-		file << displacement.x << " " << displacement.y << " " << displacement.x << " " << endl;
-		file << output << endl;
+		outFile << index << endl;
+		outFile << displacement.x << " " << displacement.y << " " << displacement.x << " " << endl;
+		outFile << output << endl;
 
 	}
+	outFile.close();
 }
 
 std::string DataStill::GetAbsoluteFilePath(std::string p_directory)
@@ -225,7 +230,7 @@ std::string DataStill::AvrageNumbers(const std::vector<string>& p_rows, int p_nr
 	// We use only the first data entry, since all data entries have to be foramtted the same
 	for (size_t i = 0; i < nrOfValueRows; i++)
 	{
-		int inputs = distance(istream_iterator<string>(istringstream(p_rows.at(i + 1)) >> ws), istream_iterator<string>());
+		int inputs =std::distance(istream_iterator<string>(istringstream(p_rows.at(i + 1)) >> ws), istream_iterator<string>());
 		nrOfInputs.push_back(inputs);
 	}
 
