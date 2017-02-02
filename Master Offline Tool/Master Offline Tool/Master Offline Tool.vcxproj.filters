@@ -1,12 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <ClCompile Include="Calculator.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
-    <ClCompile Include="CalculatorNetwork.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
     <ClCompile Include="DataSetBuilder.cpp">
       <Filter>Source</Filter>
     </ClCompile>
@@ -19,26 +13,8 @@
     <ClCompile Include="NeuralNetworkFactory.cpp">
       <Filter>Source</Filter>
     </ClCompile>
-    <ClCompile Include="PositionNetwork.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
-    <ClCompile Include="RandomNetwork.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
-    <ClCompile Include="RawDataWriter.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="RawDataWriter.h">
-      <Filter>Header</Filter>
-    </ClInclude>
-    <ClInclude Include="Calculator.h">
-      <Filter>Header</Filter>
-    </ClInclude>
-    <ClInclude Include="CalculatorNetwork.h">
-      <Filter>Header</Filter>
-    </ClInclude>
     <ClInclude Include="DataSetBuilder.h">
       <Filter>Header</Filter>
     </ClInclude>
@@ -46,12 +22,6 @@
       <Filter>Header</Filter>
     </ClInclude>
     <ClInclude Include="NeuralNetworkFactory.h">
-      <Filter>Header</Filter>
-    </ClInclude>
-    <ClInclude Include="PositionNetwork.h">
-      <Filter>Header</Filter>
-    </ClInclude>
-    <ClInclude Include="RandomNetwork.h">
       <Filter>Header</Filter>
     </ClInclude>
   </ItemGroup>
