@@ -2,7 +2,7 @@
 #include "DataStill.h"
 #include "KeyMaskInterpreter.h"
 #include <Windows.h>
-
+#include <FileHandler.h>
 
 
 DataStillManager::DataStillManager()
@@ -26,7 +26,7 @@ void DataStillManager::FiltrateAllFilesInDirectory(std::string p_directoryPath)
     size_t numberOfFilesInDirectory = filesInDirectory.size();
     for (size_t currentFile = 0; currentFile < numberOfFilesInDirectory; currentFile++)
     {
-        std::vector<std::string>* fileContent = still.ReadFileIntoLines(directoryPath + filesInDirectory[currentFile]);
+        std::vector<std::string>* fileContent = FileHandler::ReadFileIntoLines(directoryPath + filesInDirectory[currentFile]);
         if (filesInDirectory[currentFile].compare(m_keyPressesRawDataBegining) == m_keyPressesRawDataBegining.length())
         {
             // It's a keypresses file, perform special thingies here!
@@ -46,7 +46,7 @@ void DataStillManager::FiltrateAllFilesInDirectory(std::string p_directoryPath)
         }
         // Perform general things, same for each file
         fileContent = still.MergeDataOntoSameLine(*fileContent, 5);
-        still.WriteToFile(*fileContent, directoryPath + filesInDirectory[currentFile]);
+        FileHandler::WriteToFile(*fileContent, directoryPath + filesInDirectory[currentFile]);
         delete fileContent;
     }
 }
