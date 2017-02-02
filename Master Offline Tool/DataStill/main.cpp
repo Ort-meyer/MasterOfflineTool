@@ -4,7 +4,7 @@
 using namespace std;
 int main()
 {
-	DataStill still;
+	//DataStill still;
     DataStillManager dataStillManager;
     dataStillManager.FiltrateAllFilesInDirectory("../rawdata/");
 	cout << "Hello, world!" << endl;

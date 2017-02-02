@@ -27,6 +27,8 @@ void DataStillManager::FiltrateAllFilesInDirectory(std::string p_directoryPath)
     for (size_t currentFile = 0; currentFile < numberOfFilesInDirectory; currentFile++)
     {
         std::vector<std::string>* fileContent = FileHandler::ReadFileIntoLines(directoryPath + filesInDirectory[currentFile]);
+        int a = filesInDirectory[currentFile].compare(m_keyPressesRawDataBegining);
+        // This does not work as comparison
         if (filesInDirectory[currentFile].compare(m_keyPressesRawDataBegining) == m_keyPressesRawDataBegining.length())
         {
             // It's a keypresses file, perform special thingies here!

@@ -12,60 +12,6 @@ using namespace glm;
 using namespace std;
 DataStill::DataStill()
 {
-	//// ACTUAL real thing
-	m_rawDataFilePath = FileHandler::GetAbsoluteFilePath("../RawData");
-
-
-
-	//// Real filtering. Thing's getting serious!
-	//m_rawDataFilePath = GetAbsoluteFilePath("../RawData");
-	//vector<string>*data = ReadFileIntoLines("Positions2017-02-02 - 11-45-27.debug");
-	//// Flag
-	//this->FlagDataOutput(*data, 360, 1);
-	//cout << "filter done" << endl;
-	//// Position -> displacement
-	//data = this->FilterDisplacement(*data);
-	//cout << "filter done" << endl;
-	//// Normalize
-	//vector<vector<string>> dataTobeNormalized;
-	//dataTobeNormalized.push_back(*data);
-	//*data = NormalizeValues(dataTobeNormalized)->at(0);
-	//cout << "filter done" << endl;
-	//// Avrage
-	//data = this->FilterAvrage(*data, 60);
-	//cout << "filter done" << endl;
-	//// Merge to line
-	//data = this->MergeDataOntoSameLine(*data, 3);
-	//cout << "filter done" << endl;
-	//// Write
-	//WriteToFile(*data, "filteredPositiondata.filteredData");
-
-	//int debug = 10;
-	//// DEBUG stuff below
-	m_rawDataFilePath = FileHandler::GetAbsoluteFilePath("DEBUGData");
-	while (true)
-	{
-		////// DOES NOT WORK ANYMORE/////
-		vector<string>* data = FileHandler::ReadFileIntoLines("CUSTOMDATA.rawdata");
-		////// ABOVE DOESN'T WORK////////
-		int increment;
-		cin >> increment;
-		data = AddDataTogether(*data, increment);
-		////DATA FLAGGING TEST
-		//FlagDataOutput(*data, increment, 1);
-		////NORMALIZE TEST
-		//vector<vector<string>> dataTobeNormalized;
-		//dataTobeNormalized.push_back(*data);
-		//*data = NormalizeValues(dataTobeNormalized)->at(0);
-		////MERGE TEST
-		//data = MergeDataOntoSameLine(*data, increment);
-		////AVRAGE TEST
-		//data = FilterAvrage(*data, increment);
-	
-	
-		////// DOES NOT WORK ANYMORE/////
-		FileHandler::WriteToFile(*data, "finaldata.filteredData");
-	}
 }
 
 
