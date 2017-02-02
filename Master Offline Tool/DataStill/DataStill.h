@@ -110,5 +110,6 @@ private:
 
 	// Stores full path to directory in which we find raw data
 	std::string m_rawDataFilePath;
+	std::string m_filteredDataFilePath;
 };
 

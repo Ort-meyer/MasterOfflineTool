@@ -9,6 +9,11 @@ using namespace glm;
 using namespace std;
 DataStill::DataStill()
 {
+	//// ACTUAL real thing
+	m_rawDataFilePath = GetAbsoluteFilePath("../RawData");
+
+
+
 	//// Real filtering. Thing's getting serious!
 	//m_rawDataFilePath = GetAbsoluteFilePath("../RawData");
 	//vector<string>*data = ReadFileIntoLines("Positions2017-02-02 - 11-45-27.debug");

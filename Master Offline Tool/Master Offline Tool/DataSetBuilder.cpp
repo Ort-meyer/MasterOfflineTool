@@ -8,6 +8,11 @@ using namespace FANN;
 using namespace std;
 DataSetBuilder::DataSetBuilder()
 {
+	// "Global" varialbes
+	m_dataFileEnding = "filteredData";
+	m_dataFilePath = "../FilteredData";
+
+	// Lots of trash we'll need to clean up
     m_factory = new NeuralNetworkFactory();
     m_factory->SetVariables(1, 20, 19,0.7f,1.0f,1.0f,10);
     // We let the network be responsible for deleting the training data after it is done
@@ -17,7 +22,7 @@ DataSetBuilder::DataSetBuilder()
 	m_bytes = 0;
 	m_kbytes = 0;
 	// DEBUG stuff
-	BuildDataSetFromFolder("DEBUGData2");
+	BuildDataSetFromFolder(m_dataFilePath);
 	// End debug stuff
 	m_factory = new NeuralNetworkFactory();
 
@@ -32,7 +37,7 @@ DataSetBuilder::~DataSetBuilder()
 void DataSetBuilder::BuildDataSetFromFolder(string p_directory)
 {
 	// Get the names of all our raw data files
-	vector<string> t_rawDataFileNames = GetAllFileNames(p_directory);
+	vector<string> t_rawDataFileNames = GetAllFileNames(p_directory, m_dataFileEnding);
 	// Convert each file of raw data into multiple data sets
 	vector<vector<DataSet>> t_rawDataFiles;
 	for (size_t i = 0; i < t_rawDataFileNames.size(); i++)
@@ -108,10 +113,7 @@ void DataSetBuilder::BuildDataSetFromFiles(std::vector<std::string> p_fileNames)
 vector<DataSet> DataSetBuilder::ConvertRawdataToDataSets(std::string p_fileName)
 {
 	vector<DataSet> r_dataSets;
-	// Read file into a stringstream
-	string path = "../Debug/DEBUGData/";
-	path += p_fileName;
-	ifstream file(path); // Most certainly needs tweaking
+	ifstream file(p_fileName); // Most certainly needs tweaking
 	if (file)
 	{
 		stringstream buffer;
@@ -208,18 +210,13 @@ std::vector<DataSet> DataSetBuilder::MergeDataFiles(vector<vector<DataSet>> p_da
 	}
 	return finalDataSets;
 }
-std::vector<std::string> DataSetBuilder::GetAllFileNames(std::string p_directory)
+std::vector<std::string> DataSetBuilder::GetAllFileNames(std::string p_directory, std::string p_fileEnding)
 {
-	string fullPath;
-	// Get current working directory and add the specific directory we want after
-	char buffer[MAX_PATH];
-	GetModuleFileName(NULL, buffer, MAX_PATH);
-	string::size_type pos = string(buffer).find_last_of("\\/");
-	fullPath = string(buffer).substr(0, pos);
-	// Add in directory and file ending of stuff we want
-	fullPath += "\\";
-	fullPath += p_directory;
-	fullPath += "/*.filteredData";
+
+	string folderPath = GetAbsoluteFilePath(p_directory);
+	string fullPath = folderPath;
+	fullPath += "/*.";
+	fullPath += p_fileEnding;
 	vector<string> t_rawDataFileNames;
 
 	WIN32_FIND_DATA FindFileData;
@@ -237,6 +234,28 @@ std::vector<std::string> DataSetBuilder::GetAllFileNames(std::string p_directory
 		std::string t_string = FindFileData.cFileName;
 		t_rawDataFileNames.push_back(t_string);
 	}
+	vector<string> t_fullPathFiles;
+	for (size_t i = 0; i < t_rawDataFileNames.size(); i++)
+	{
+		string fullFilePath = folderPath;
+		fullFilePath += "/";
+		fullFilePath += t_rawDataFileNames.at(i);
+		t_fullPathFiles.push_back(fullFilePath);
+	}
 	FindClose(hFind);
-	return t_rawDataFileNames;
+	return t_fullPathFiles;
+}
+
+std::string DataSetBuilder::GetAbsoluteFilePath(std::string p_directory)
+{
+	string fullPath;
+	// Get current working directory and add the specific directory we want after
+	char buffer[MAX_PATH];
+	GetModuleFileName(NULL, buffer, MAX_PATH);
+	string::size_type pos = string(buffer).find_last_of("\\/");
+	fullPath = string(buffer).substr(0, pos);
+	// Add in directory and file ending of stuff we want
+	fullPath += "\\";
+	fullPath += p_directory;
+	return fullPath;
 }
