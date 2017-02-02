@@ -27,7 +27,7 @@ private:
 	/**
 	Interprets p_lines as a list of lines to be written into a file. 
 	Will write into p_fileName*/
-	void WriteToFile(std::vector<std::string> p_lines, std::string p_fileName);
+	void WriteToFile(const std::vector<std::string>& p_lines, std::string p_fileName);
 
 	/**
 	Reads through all files specified and normalizes values within and outputs

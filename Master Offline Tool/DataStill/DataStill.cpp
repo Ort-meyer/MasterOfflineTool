@@ -18,6 +18,7 @@ DataStill::DataStill()
 	*data = NormalizeValues(dataTobeNormalized)->at(0);
 	data = MergeDataOntoSameLine(*data, 2);
 	data = FilterAvrage(*data, 2);
+	WriteToFile(*data, "finaldata.filteredData");
 
 	//vector<string> innames;
 	//vector<string> outnames;
@@ -80,6 +81,23 @@ vector<string>* DataStill::FilterDisplacement(const std::vector<std::string>& p_
 }
 
 /////// GENERAL METODS///////
+
+void DataStill::WriteToFile(const std::vector<std::string>& p_lines, std::string p_fileName)
+{
+	// Complete absolut file path
+	string outFilePath = m_rawDataFilePath;
+	outFilePath += "/";
+	outFilePath += p_fileName;
+
+	// Open and write
+	ofstream outFile;
+	outFile.open(outFilePath);
+	for (size_t i = 0; i < p_lines.size(); i++)
+	{
+		outFile << p_lines.at(i) << endl;
+	}
+	outFile.close();
+}
 
 std::vector<std::vector<std::string>>* DataStill::NormalizeValues(const std::vector<vector<std::string>>& p_filesInLines)
 {
@@ -439,19 +457,4 @@ std::vector<std::string>* DataStill::ReadFileIntoLines(std::string p_fileName)
 	return lines;
 }
 
-void DataStill::WriteToFile(std::vector<std::string> p_lines, std::string p_fileName)
-{
-	// Complete absolut file path
-	string outFilePath = m_rawDataFilePath;
-	outFilePath += "/";
-	outFilePath += p_fileName;
 
-	// Open and write
-	ofstream outFile;
-	outFile.open(outFilePath);
-	for (size_t i = 0; i < p_lines.size(); i++)
-	{
-		outFile << p_lines.at(i);
-	}
-	outFile.close();
-}
