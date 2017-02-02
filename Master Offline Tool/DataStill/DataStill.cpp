@@ -12,14 +12,22 @@ DataStill::DataStill()
 
 	m_rawDataFilePath = GetAbsoluteFilePath("DEBUGData");
 
-	vector<string>* data = ReadFileIntoLines("CUSTOMDATA.rawdata");
-	vector<vector<string>> dataTobeNormalized;
-	dataTobeNormalized.push_back(*data);
-	*data = NormalizeValues(dataTobeNormalized)->at(0);
-	data = MergeDataOntoSameLine(*data, 2);
-	data = FilterAvrage(*data, 2);
-	WriteToFile(*data, "finaldata.filteredData");
-
+	//vector<string>* data = ReadFileIntoLines("CUSTOMDATA.rawdata");
+	////NORMALIZE TEST
+	//vector<vector<string>> dataTobeNormalized;
+	//dataTobeNormalized.push_back(*data);
+	//*data = NormalizeValues(dataTobeNormalized)->at(0);
+	////MERGE TEST
+	//data = MergeDataOntoSameLine(*data, 3);
+	////AVRAGE TEST
+	while (true)
+	{
+		vector<string>* data = ReadFileIntoLines("CUSTOMDATA.rawdata");
+		int increment;
+		cin >> increment;
+		data = FilterAvrage(*data, increment);
+		WriteToFile(*data, "finaldata.filteredData");
+	}
 	//vector<string> innames;
 	//vector<string> outnames;
 	//FilterDisplacement("Positions2017-02-01 - 13-16-28.debug", "PositionsNotLost.filteredData");
@@ -262,7 +270,7 @@ std::vector<std::string>* DataStill::AvrageNumbers(const std::vector<string>& p_
 	// Figure out how many inputs each data row stores
 	vector<int> nrOfInputs;
 	// We use only the first data entry, since all data entries have to be foramtted the same
-	for (size_t i = 0; i < nrOfValueRows; i++)
+	for (size_t i = 0; i < nrOfValueRows && i < p_rows.size(); i++)
 	{
 		int inputs = std::distance(istream_iterator<string>(istringstream(p_rows.at(i + 1)) >> ws), istream_iterator<string>());
 		nrOfInputs.push_back(inputs);
@@ -313,12 +321,15 @@ std::vector<std::string>* DataStill::AvrageNumbers(const std::vector<string>& p_
 			if (dataEntriesOfthisSet.size()> 0)
 				allDataEntries.push_back(dataEntriesOfthisSet);
 		}
+
+		
+
 		// Now we avrage the numbers
 		/**
 		Each inner vector is one row of values.
 		Each outer vector contains one data set*/
-		// Check if there's numbers to avrage
-		if (allDataEntries.size() > 0)
+		// Check if there's numbers to avrage. I hate these ugly checks..
+		if (allDataEntries.size() > 0 && allDataEntries.size()%p_nrToAvrage==0)
 		{
 			// Make room for our values
 			vector<vector<float>> avrages;
