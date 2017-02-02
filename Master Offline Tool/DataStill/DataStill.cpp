@@ -6,6 +6,8 @@
 #include <GLM\glm.hpp>
 #include <FileHandler.h>
 #include <Windows.h>
+
+#include "KeyMaskInterpreter.h"
 using namespace glm;
 using namespace std;
 DataStill::DataStill()
@@ -37,8 +39,6 @@ DataStill::DataStill()
 	//cout << "filter done" << endl;
 	//// Write
 	//WriteToFile(*data, "filteredPositiondata.filteredData");
-
-
 
 	//int debug = 10;
 	//// DEBUG stuff below
@@ -506,3 +506,4 @@ void DataStill::SplitDataIntoTrueAndFalseVectors(
 		}
 	}
 }
+

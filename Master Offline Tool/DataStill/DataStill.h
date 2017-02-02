@@ -7,7 +7,7 @@ public:
 	DataStill();
 	~DataStill();
 
-private:
+
 	///////////////////Specific methods///////////////
 	/**
 	Transforms world positions into displacement vectors.
@@ -65,7 +65,7 @@ private:
 	output file name*/
 	std::vector<std::string>*  FilterAvrage(const std::vector<std::string>& p_lines, int p_numToAvrage);
 
-
+private:
 	/////////////////////HELP METHODS/////////////////
 	/**
 	Adds p_increment rows together and returns vector of added values.
