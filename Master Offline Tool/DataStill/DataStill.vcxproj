@@ -68,11 +68,13 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="DataStill.cpp" />
+    <ClCompile Include="DataStillManager.cpp" />
     <ClCompile Include="KeyMaskInterpreter.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DataStill.h" />
+    <ClInclude Include="DataStillManager.h" />
     <ClInclude Include="KeyMaskInterpreter.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
