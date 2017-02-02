@@ -10,36 +10,23 @@ using namespace std;
 DataStill::DataStill()
 {
 
-	m_rawDataFilePath = GetAbsoluteFilePath("DEBUGData");
-
-	//vector<string>* data = ReadFileIntoLines("CUSTOMDATA.rawdata");
-	////NORMALIZE TEST
-	//vector<vector<string>> dataTobeNormalized;
-	//dataTobeNormalized.push_back(*data);
-	//*data = NormalizeValues(dataTobeNormalized)->at(0);
-	////MERGE TEST
-	//data = MergeDataOntoSameLine(*data, 3);
-	////AVRAGE TEST
+	m_rawDataFilePath = GetAbsoluteFilePath("../RawData");
 	while (true)
 	{
 		vector<string>* data = ReadFileIntoLines("CUSTOMDATA.rawdata");
 		int increment;
+		//vector<string>* data = ReadFileIntoLines("CUSTOMDATA.rawdata");
+		////NORMALIZE TEST
+		//vector<vector<string>> dataTobeNormalized;
+		//dataTobeNormalized.push_back(*data);
+		//*data = NormalizeValues(dataTobeNormalized)->at(0);
+		////MERGE TEST
+		//data = MergeDataOntoSameLine(*data, 3);
+		////AVRAGE TEST
 		cin >> increment;
 		data = FilterAvrage(*data, increment);
 		WriteToFile(*data, "finaldata.filteredData");
 	}
-	//vector<string> innames;
-	//vector<string> outnames;
-	//FilterDisplacement("Positions2017-02-01 - 13-16-28.debug", "PositionsNotLost.filteredData");
-	//innames.push_back("PositionsNotLost.filteredData");
-	//outnames.push_back("normalizedPositionNotlost.filteredData");
-	//
-	//	FilterDisplacement("Positions2017-02-01 - 13-11-40.debug", "PositionsLost.filteredData");
-	//innames.push_back("PositionsLost.filteredData");
-	//outnames.push_back("normalizedPositionLost.filteredData");
-	//
-	//NormalizeValues(innames, outnames);
-
 }
 
 
