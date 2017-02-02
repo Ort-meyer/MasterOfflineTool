@@ -116,8 +116,6 @@ vector<string>* DataStill::FilterDisplacement(const std::vector<std::string>& p_
 
 /////// GENERAL METODS///////
 
-
-
 void DataStill::FlagDataOutput(std::vector<std::string>& o_lines, int p_backtrack, int p_outputToFlagTo)
 {
 	string t_outputToFlagTo = to_string((long double)p_outputToFlagTo);

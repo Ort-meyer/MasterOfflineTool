@@ -31,15 +31,22 @@ void DataStillManager::FiltrateAllFilesInDirectory(std::string p_directoryPath)
         {
             // It's a keypresses file, perform special thingies here!
             keyMaskInterpeter.ReinterpretRawKeyData(fileContent);
+            fileContent = still.AddDataTogether(*fileContent, 60);
         }
         else if (filesInDirectory[currentFile].compare(m_positionRawDataBegining) == m_positionRawDataBegining.length())
         {
             // It's a positions file, perform special thingies here!
+            fileContent = still.FilterDisplacement(*fileContent);
+            fileContent = still.FilterAvrage(*fileContent, 60);
         }
         else if (filesInDirectory[currentFile].compare(m_rotationRawDataBegining) == m_rotationRawDataBegining.length())
         {
             // It's a rotations file, perform special thingies here!
+            fileContent = still.FilterAvrage(*fileContent, 60);
         }
+        // Perform general things, same for each file
+        fileContent = still.MergeDataOntoSameLine(*fileContent, 5);
+        still.WriteToFile(*fileContent, directoryPath + filesInDirectory[currentFile]);
         delete fileContent;
     }
 }

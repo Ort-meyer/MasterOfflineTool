@@ -65,14 +65,16 @@ public:
 	output file name*/
 	std::vector<std::string>*  FilterAvrage(const std::vector<std::string>& p_lines, int p_numToAvrage);
 
+    /**
+    Adds p_increment rows together and returns vector of added values.
+    Index and output will be that of the first data row.
+    WARNING! Make sure different outputs are NOT mixed when using this
+    method.*/
+    std::vector<std::string>* AddDataTogether(const std::vector<std::string>& p_lines, int p_increment);
+
 private:
 	/////////////////////HELP METHODS/////////////////
-	/**
-	Adds p_increment rows together and returns vector of added values.
-	Index and output will be that of the first data row.
-	WARNING! Make sure different outputs are NOT mixed when using this 
-	method.*/
-	std::vector<std::string>* AddDataTogether(const std::vector<std::string>& p_lines, int p_increment);
+
 
 	/**
 	Help method used to avrage numbers based on what rows are sent in. This
