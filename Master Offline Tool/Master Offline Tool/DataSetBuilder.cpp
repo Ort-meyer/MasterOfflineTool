@@ -17,7 +17,7 @@ DataSetBuilder::DataSetBuilder()
 	m_bytes = 0;
 	m_kbytes = 0;
 	// DEBUG stuff
-	BuildDataSetFromFolder("DEBUGData");
+	BuildDataSetFromFolder("DEBUGData2");
 	// End debug stuff
 	m_factory = new NeuralNetworkFactory();
 
@@ -219,7 +219,7 @@ std::vector<std::string> DataSetBuilder::GetAllFileNames(std::string p_directory
 	// Add in directory and file ending of stuff we want
 	fullPath += "\\";
 	fullPath += p_directory;
-	fullPath += "/*.rawdata";
+	fullPath += "/*.filteredData";
 	vector<string> t_rawDataFileNames;
 
 	WIN32_FIND_DATA FindFileData;
