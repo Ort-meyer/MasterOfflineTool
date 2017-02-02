@@ -21,9 +21,15 @@
     <ClCompile Include="DataStill.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="KeyMaskInterpreter.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DataStill.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="KeyMaskInterpreter.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
