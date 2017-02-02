@@ -24,10 +24,7 @@ private:
 
 	//////////////////General methods////////////////
 
-	/**
-	Interprets p_lines as a list of lines to be written into a file. 
-	Will write into p_fileName*/
-	void WriteToFile(const std::vector<std::string>& p_lines, std::string p_fileName);
+
 
 	/**
 	Searchs through all data entries for p_outputToFlagTo output, then backtracks
@@ -97,16 +94,6 @@ private:
 		std::vector<std::string>* p_trueVector, 
 		std::vector<std::string>* p_falseVector, 
 		int p_nrOfDataRowsPerEntry);
-	/**
-	Help method that returns the file specified as a vector of strings where
-	each string is a line fron the read file.*/
-	std::vector<std::string>* ReadFileIntoLines(std::string p_fileName);
-
-	/**
-	Returns the full path to files we might want to open
-	Parameter is directory path as given relative to program .exe*/
-	std::string GetAbsoluteFilePath(std::string p_directory);
-
 
 	// Stores full path to directory in which we find raw data
 	std::string m_rawDataFilePath;

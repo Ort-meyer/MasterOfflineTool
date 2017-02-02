@@ -1,5 +1,6 @@
 #include "DataSetBuilder.h"
 #include "NeuralNetworkFactory.h"
+#include <FileHandler.h>
 #include <fstream>
 #include <iostream>
 #include <iterator>
@@ -37,7 +38,7 @@ DataSetBuilder::~DataSetBuilder()
 void DataSetBuilder::BuildDataSetFromFolder(string p_directory)
 {
 	// Get the names of all our raw data files
-	vector<string> t_rawDataFileNames = GetAllFileNames(p_directory, m_dataFileEnding);
+	vector<string> t_rawDataFileNames = FileHandler::GetAllFileNames(p_directory, m_dataFileEnding);
 	// Convert each file of raw data into multiple data sets
 	vector<vector<DataSet>> t_rawDataFiles;
 	for (size_t i = 0; i < t_rawDataFileNames.size(); i++)
@@ -210,52 +211,4 @@ std::vector<DataSet> DataSetBuilder::MergeDataFiles(vector<vector<DataSet>> p_da
 	}
 	return finalDataSets;
 }
-std::vector<std::string> DataSetBuilder::GetAllFileNames(std::string p_directory, std::string p_fileEnding)
-{
 
-	string folderPath = GetAbsoluteFilePath(p_directory);
-	string fullPath = folderPath;
-	fullPath += "/*.";
-	fullPath += p_fileEnding;
-	vector<string> t_rawDataFileNames;
-
-	WIN32_FIND_DATA FindFileData;
-	HANDLE hFind = FindFirstFile(fullPath.c_str(), &FindFileData);
-	if (hFind == INVALID_HANDLE_VALUE)
-	{
-		printf("FindFirstFile failed (%d)\n", GetLastError());
-		return t_rawDataFileNames;
-	}
-	//FindNextFile(hFind, &FindFileData); // Do I need this?
-	std::string t_string = FindFileData.cFileName;
-	t_rawDataFileNames.push_back(t_string);
-	while (FindNextFile(hFind, &FindFileData))
-	{
-		std::string t_string = FindFileData.cFileName;
-		t_rawDataFileNames.push_back(t_string);
-	}
-	vector<string> t_fullPathFiles;
-	for (size_t i = 0; i < t_rawDataFileNames.size(); i++)
-	{
-		string fullFilePath = folderPath;
-		fullFilePath += "/";
-		fullFilePath += t_rawDataFileNames.at(i);
-		t_fullPathFiles.push_back(fullFilePath);
-	}
-	FindClose(hFind);
-	return t_fullPathFiles;
-}
-
-std::string DataSetBuilder::GetAbsoluteFilePath(std::string p_directory)
-{
-	string fullPath;
-	// Get current working directory and add the specific directory we want after
-	char buffer[MAX_PATH];
-	GetModuleFileName(NULL, buffer, MAX_PATH);
-	string::size_type pos = string(buffer).find_last_of("\\/");
-	fullPath = string(buffer).substr(0, pos);
-	// Add in directory and file ending of stuff we want
-	fullPath += "\\";
-	fullPath += p_directory;
-	return fullPath;
-}

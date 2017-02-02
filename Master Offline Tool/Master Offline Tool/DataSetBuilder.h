@@ -29,15 +29,6 @@ private:
     NeuralNetworkFactory* m_factory;
 
 	/**
-	Method that returns vector of paths to all files within the specified
-	directory. Directory is only local directory, */
-	std::vector<std::string> GetAllFileNames(std::string p_directory, std::string p_fileEnding);
-
-	/**
-	Returns the full path to files we might want to open
-	Parameter is directory path as given relative to program .exe*/
-	std::string GetAbsoluteFilePath(std::string p_directory);
-	/**
 	Loads file from provided path and converts data into our own
 	dataset file format*/
 	std::vector<DataSet> ConvertRawdataToDataSets(std::string p_fullPath);

@@ -11,13 +11,12 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{C23FD13A-5F2F-4D55-8C6A-F851E8DC4706}</ProjectGuid>
-    <RootNamespace>DataStill</RootNamespace>
-    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
+    <ProjectGuid>{CFA499CD-39AF-4A95-B860-3D3109F7D5DC}</ProjectGuid>
+    <RootNamespace>Utilities</RootNamespace>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
+    <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v100</PlatformToolset>
     <CharacterSet>MultiByte</CharacterSet>
@@ -40,23 +39,17 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>../Utilities;../../3rd Party;$(IncludePath)</IncludePath>
-    <LibraryPath>../Utilities/lib;$(LibraryPath)</LibraryPath>
+    <OutDir>lib</OutDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <BrowseInformation>true</BrowseInformation>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>Utilities.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
-    <Bscmake>
-      <PreserveSBR>true</PreserveSBR>
-    </Bscmake>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -73,15 +66,10 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="DataStill.cpp" />
-    <ClCompile Include="DataStillManager.cpp" />
-    <ClCompile Include="KeyMaskInterpreter.cpp" />
-    <ClCompile Include="main.cpp" />
+    <ClInclude Include="FileHandler.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="DataStill.h" />
-    <ClInclude Include="DataStillManager.h" />
-    <ClInclude Include="KeyMaskInterpreter.h" />
+    <ClCompile Include="FileHandler.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

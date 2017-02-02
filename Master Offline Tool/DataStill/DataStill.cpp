@@ -4,13 +4,14 @@
 #include <iterator>
 #include <sstream>
 #include <GLM\glm.hpp>
+#include <FileHandler.h>
 #include <Windows.h>
 using namespace glm;
 using namespace std;
 DataStill::DataStill()
 {
 	//// ACTUAL real thing
-	m_rawDataFilePath = GetAbsoluteFilePath("../RawData");
+	m_rawDataFilePath = FileHandler::GetAbsoluteFilePath("../RawData");
 
 
 
@@ -41,10 +42,12 @@ DataStill::DataStill()
 
 	//int debug = 10;
 	//// DEBUG stuff below
-	m_rawDataFilePath = GetAbsoluteFilePath("DEBUGData");
+	m_rawDataFilePath = FileHandler::GetAbsoluteFilePath("DEBUGData");
 	while (true)
 	{
-		vector<string>* data = ReadFileIntoLines("CUSTOMDATA.rawdata");
+		////// DOES NOT WORK ANYMORE/////
+		vector<string>* data = FileHandler::ReadFileIntoLines("CUSTOMDATA.rawdata");
+		////// ABOVE DOESN'T WORK////////
 		int increment;
 		cin >> increment;
 		data = AddDataTogether(*data, increment);
@@ -60,8 +63,8 @@ DataStill::DataStill()
 		//data = FilterAvrage(*data, increment);
 	
 	
-	
-		WriteToFile(*data, "finaldata.filteredData");
+		////// DOES NOT WORK ANYMORE/////
+		FileHandler::WriteToFile(*data, "finaldata.filteredData");
 	}
 }
 
@@ -113,22 +116,7 @@ vector<string>* DataStill::FilterDisplacement(const std::vector<std::string>& p_
 
 /////// GENERAL METODS///////
 
-void DataStill::WriteToFile(const std::vector<std::string>& p_lines, std::string p_fileName)
-{
-	// Complete absolut file path
-	string outFilePath = m_rawDataFilePath;
-	outFilePath += "/";
-	outFilePath += p_fileName;
 
-	// Open and write
-	ofstream outFile;
-	outFile.open(outFilePath);
-	for (size_t i = 0; i < p_lines.size(); i++)
-	{
-		outFile << p_lines.at(i) << endl;
-	}
-	outFile.close();
-}
 
 void DataStill::FlagDataOutput(std::vector<std::string>& o_lines, int p_backtrack, int p_outputToFlagTo)
 {
@@ -209,20 +197,6 @@ std::vector<std::vector<std::string>>* DataStill::NormalizeValues(const std::vec
 		}
 	}
 	return r_filesInLines;
-}
-
-std::string DataStill::GetAbsoluteFilePath(std::string p_directory)
-{
-	string fullPath;
-	// Get current working directory and add the specific directory we want after
-	char buffer[MAX_PATH];
-	GetModuleFileName(NULL, buffer, MAX_PATH);
-	string::size_type pos = string(buffer).find_last_of("\\/");
-	fullPath = string(buffer).substr(0, pos);
-	// Add in directory and file ending of stuff we want
-	fullPath += "\\";
-	fullPath += p_directory;
-	return fullPath;
 }
 
 std::vector<std::string>* DataStill::MergeDataOntoSameLine(const std::vector<std::string>& p_lines, int p_numToMerge)
@@ -531,21 +505,4 @@ void DataStill::SplitDataIntoTrueAndFalseVectors(
 			}
 		}
 	}
-}
-
-std::vector<std::string>* DataStill::ReadFileIntoLines(std::string p_fileName)
-{
-	// Read all lines of file into vector of strings
-	string inFilePath = m_rawDataFilePath;
-	inFilePath += "/";
-	inFilePath += p_fileName;
-	vector<string>* lines = new vector<string>();
-	ifstream inFile(inFilePath);
-	string line;
-	while (std::getline(inFile, line))
-	{
-		lines->push_back(line);
-	}
-	inFile.close();
-	return lines;
 }
