@@ -38,7 +38,7 @@ enum Key1BitMask:int
     LeftControl = 0x20000000,
     LeftAlt = 0x40000000,
 };
-enum Key2BitMask
+enum Key2BitMask: int
 {
     Zero = 0x1,
     One = 0x2,
@@ -53,7 +53,7 @@ enum Key2BitMask
     LeftMouseButton = 0x400,
     RightMouseButton = 0x800,
     SpaceBar = 0x1000,
-    Escape = 0x2000,
+    Escapea = 0x2000,
     Tilde = 0x4000,
     BackSpace = 0x8000,
     Enter = 0x10000,
