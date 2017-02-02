@@ -11,20 +11,26 @@ DataStill::DataStill()
 {
 
 	m_rawDataFilePath = GetAbsoluteFilePath("../RawData");
+	m_rawDataFilePath = GetAbsoluteFilePath("DEBUGData");
 	while (true)
 	{
 		vector<string>* data = ReadFileIntoLines("CUSTOMDATA.rawdata");
 		int increment;
-		//vector<string>* data = ReadFileIntoLines("CUSTOMDATA.rawdata");
+		cin >> increment;
+
+		////DATA FLAGGING TEST
+		FlagDataOutput(*data, increment, 1);
 		////NORMALIZE TEST
 		//vector<vector<string>> dataTobeNormalized;
 		//dataTobeNormalized.push_back(*data);
 		//*data = NormalizeValues(dataTobeNormalized)->at(0);
 		////MERGE TEST
-		//data = MergeDataOntoSameLine(*data, 3);
+		//data = MergeDataOntoSameLine(*data, increment);
 		////AVRAGE TEST
-		cin >> increment;
-		data = FilterAvrage(*data, increment);
+		//data = FilterAvrage(*data, increment);
+
+
+
 		WriteToFile(*data, "finaldata.filteredData");
 	}
 }
@@ -92,6 +98,26 @@ void DataStill::WriteToFile(const std::vector<std::string>& p_lines, std::string
 		outFile << p_lines.at(i) << endl;
 	}
 	outFile.close();
+}
+
+void DataStill::FlagDataOutput(std::vector<std::string>& o_lines, int p_backtrack, int p_outputToFlagTo)
+{
+	string t_outputToFlagTo = to_string((long double)p_outputToFlagTo);
+	// Start at an output 
+	for (size_t outputIter = 2; outputIter < o_lines.size(); outputIter += 3)
+	{
+		// Check if this output matches what we're looking for
+		int res = strcmp(o_lines.at(outputIter).c_str(), t_outputToFlagTo.c_str()); // The cast here feels REALLY risky
+		if (res == 0)
+		{
+			// Walk backwards and change output
+			int lastLineToRead = outputIter - (p_backtrack+1) * 3;
+			for (int j = outputIter - 3; j > lastLineToRead && j >= 2; j -= 3)
+			{
+				o_lines.at(j) = t_outputToFlagTo;
+			}
+		}
+	}
 }
 
 std::vector<std::vector<std::string>>* DataStill::NormalizeValues(const std::vector<vector<std::string>>& p_filesInLines)

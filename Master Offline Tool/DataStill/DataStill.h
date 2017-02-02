@@ -30,6 +30,11 @@ private:
 	void WriteToFile(const std::vector<std::string>& p_lines, std::string p_fileName);
 
 	/**
+	Searchs through all data entries for p_outputToFlagTo output, then backtracks
+	lines and changes output of p_backtrack earlier data entires to p_outputToFlagTo.*/
+	void FlagDataOutput(std::vector<std::string>& p_lines, int p_backtrack, int p_outputToFlagTo);
+
+	/**
 	Reads through all files specified and normalizes values within and outputs
 	results into respective p_filtereFileNames name. Make sure the two parameters 
 	are mapped. All values will be between -1 and 1
