@@ -71,6 +71,13 @@ private:
 
 	/////////////////////HELP METHODS/////////////////
 	/**
+	Adds p_increment rows together and returns vector of added values.
+	Index and output will be that of the first data row.
+	WARNING! Make sure different outputs are NOT mixed when using this 
+	method.*/
+	std::vector<std::string>* AddDataTogether(const std::vector<std::string>& p_lines, int p_increment);
+
+	/**
 	Help method used to avrage numbers based on what rows are sent in. This
 	is meant to be called sending in the true and false vectors of lines read
 	from the data files. Return value is a single string with all avraged rows*/

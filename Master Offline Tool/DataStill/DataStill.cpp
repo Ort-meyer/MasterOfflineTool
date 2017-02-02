@@ -9,55 +9,55 @@ using namespace glm;
 using namespace std;
 DataStill::DataStill()
 {
-	// Real filtering. Thing's getting serious!
-	m_rawDataFilePath = GetAbsoluteFilePath("../RawData");
-	vector<string>*data = ReadFileIntoLines("Positions2017-02-02 - 11-45-27.debug");
-	// Flag
-	this->FlagDataOutput(*data, 360, 1);
-	cout << "filter done" << endl;
-	// Position -> displacement
-	data = this->FilterDisplacement(*data);
-	cout << "filter done" << endl;
-	// Normalize
-	vector<vector<string>> dataTobeNormalized;
-	dataTobeNormalized.push_back(*data);
-	*data = NormalizeValues(dataTobeNormalized)->at(0);
-	cout << "filter done" << endl;
-	// Avrage
-	data = this->FilterAvrage(*data, 60);
-	cout << "filter done" << endl;
-	// Merge to line
-	data = this->MergeDataOntoSameLine(*data, 3);
-	cout << "filter done" << endl;
-	// Write
-	WriteToFile(*data, "filteredPositiondata.filteredData");
+	//// Real filtering. Thing's getting serious!
+	//m_rawDataFilePath = GetAbsoluteFilePath("../RawData");
+	//vector<string>*data = ReadFileIntoLines("Positions2017-02-02 - 11-45-27.debug");
+	//// Flag
+	//this->FlagDataOutput(*data, 360, 1);
+	//cout << "filter done" << endl;
+	//// Position -> displacement
+	//data = this->FilterDisplacement(*data);
+	//cout << "filter done" << endl;
+	//// Normalize
+	//vector<vector<string>> dataTobeNormalized;
+	//dataTobeNormalized.push_back(*data);
+	//*data = NormalizeValues(dataTobeNormalized)->at(0);
+	//cout << "filter done" << endl;
+	//// Avrage
+	//data = this->FilterAvrage(*data, 60);
+	//cout << "filter done" << endl;
+	//// Merge to line
+	//data = this->MergeDataOntoSameLine(*data, 3);
+	//cout << "filter done" << endl;
+	//// Write
+	//WriteToFile(*data, "filteredPositiondata.filteredData");
 
 
 
-	int debug = 10;
-	// DEBUG stuff below
-	//m_rawDataFilePath = GetAbsoluteFilePath("DEBUGData");
-	//while (true)
-	//{
-	//	vector<string>* data = ReadFileIntoLines("CUSTOMDATA.rawdata");
-	//	int increment;
-	//	cin >> increment;
-	//
-	//	////DATA FLAGGING TEST
-	//	FlagDataOutput(*data, increment, 1);
-	//	////NORMALIZE TEST
-	//	//vector<vector<string>> dataTobeNormalized;
-	//	//dataTobeNormalized.push_back(*data);
-	//	//*data = NormalizeValues(dataTobeNormalized)->at(0);
-	//	////MERGE TEST
-	//	//data = MergeDataOntoSameLine(*data, increment);
-	//	////AVRAGE TEST
-	//	//data = FilterAvrage(*data, increment);
-	//
-	//
-	//
-	//	WriteToFile(*data, "finaldata.filteredData");
-	//}
+	//int debug = 10;
+	//// DEBUG stuff below
+	m_rawDataFilePath = GetAbsoluteFilePath("DEBUGData");
+	while (true)
+	{
+		vector<string>* data = ReadFileIntoLines("CUSTOMDATA.rawdata");
+		int increment;
+		cin >> increment;
+		data = AddDataTogether(*data, increment);
+		////DATA FLAGGING TEST
+		//FlagDataOutput(*data, increment, 1);
+		////NORMALIZE TEST
+		//vector<vector<string>> dataTobeNormalized;
+		//dataTobeNormalized.push_back(*data);
+		//*data = NormalizeValues(dataTobeNormalized)->at(0);
+		////MERGE TEST
+		//data = MergeDataOntoSameLine(*data, increment);
+		////AVRAGE TEST
+		//data = FilterAvrage(*data, increment);
+	
+	
+	
+		WriteToFile(*data, "finaldata.filteredData");
+	}
 }
 
 
@@ -83,7 +83,7 @@ vector<string>* DataStill::FilterDisplacement(const std::vector<std::string>& p_
 	// Iterate over all positions and generate displacements
 	for (size_t i = numLinesPerDataEntry; i < p_lines.size() - 2; i += numLinesPerDataEntry)
 	{
-		
+
 		string index = p_lines.at(i);
 		string output = p_lines.at(i + 2);
 
@@ -136,7 +136,7 @@ void DataStill::FlagDataOutput(std::vector<std::string>& o_lines, int p_backtrac
 		if (res == 0)
 		{
 			// Walk backwards and change output
-			int lastLineToRead = outputIter - (p_backtrack+1) * 3;
+			int lastLineToRead = outputIter - (p_backtrack + 1) * 3;
 			for (int j = outputIter - 3; j > lastLineToRead && j >= 2; j -= 3)
 			{
 				o_lines.at(j) = t_outputToFlagTo;
@@ -172,7 +172,7 @@ std::vector<std::vector<std::string>>* DataStill::NormalizeValues(const std::vec
 			}
 		}
 	}
-	
+
 	vector<vector<string>>* r_filesInLines = new vector<vector<string>>();
 	r_filesInLines->resize(p_filesInLines.size());
 	// Now divide every value with this value and write to file
@@ -302,6 +302,45 @@ std::vector<std::string>*  DataStill::FilterAvrage(const std::vector<string>& p_
 
 /////// HELP METHODS///////
 
+std::vector<std::string>* DataStill::AddDataTogether(const std::vector<std::string>& p_lines, int p_increment)
+{
+	vector<string>* r_lines = new vector<string>();
+	int numInputs = std::distance(istream_iterator<string>(istringstream(p_lines.at(1)) >> ws), istream_iterator<string>());
+	for (size_t batchIter = 1; batchIter < p_lines.size(); batchIter += 3 * p_increment)
+	{
+		// Check if next batch will go out of scope
+		if (batchIter + p_increment * 3 > p_lines.size())
+			break;
+		string index = p_lines.at(batchIter - 1);
+		string output = p_lines.at(batchIter + 1);
+		vector<float> thisRow;
+		thisRow.resize(numInputs);
+		// Go through the rows of this batch
+		for (size_t rowIter = batchIter; rowIter < batchIter + p_increment * 3; rowIter += 3)
+		{
+			// Add together values for each input cell
+			istringstream in(p_lines.at(rowIter));
+			for (size_t dataValueIter = 0; dataValueIter < numInputs; dataValueIter++)
+			{
+				float thisValue;
+				in >> thisValue;
+				thisRow.at(dataValueIter) += thisValue;
+			}
+		}
+		// Write stuff back
+		r_lines->push_back(index);
+		stringstream ss;
+		for (size_t floats = 0; floats < thisRow.size(); floats++)
+		{
+			ss << thisRow.at(floats) << " ";
+		}
+		r_lines->push_back(ss.str());
+		r_lines->push_back(output);
+
+	}
+	return r_lines;
+}
+
 std::vector<std::string>* DataStill::AvrageNumbers(const std::vector<string>& p_rows, int p_nrOfdataRowsPerEntry, int p_nrToAvrage)
 {
 	int nrOfValueRows = p_nrOfdataRowsPerEntry - 2; // Hard-coded. Index is one row, output is one row
@@ -360,14 +399,14 @@ std::vector<std::string>* DataStill::AvrageNumbers(const std::vector<string>& p_
 				allDataEntries.push_back(dataEntriesOfthisSet);
 		}
 
-		
+
 
 		// Now we avrage the numbers
 		/**
 		Each inner vector is one row of values.
 		Each outer vector contains one data set*/
 		// Check if there's numbers to avrage. I hate these ugly checks..
-		if (allDataEntries.size() > 0 && allDataEntries.size()%p_nrToAvrage==0)
+		if (allDataEntries.size() > 0 && allDataEntries.size() % p_nrToAvrage == 0)
 		{
 			// Make room for our values
 			vector<vector<float>> avrages;
