@@ -48,7 +48,10 @@ void DataStillManager::FiltrateAllFilesInDirectory(std::string p_directoryPath)
         }
         // Perform general things, same for each file
         fileContent = still.MergeDataOntoSameLine(*fileContent, 5);
-        FileHandler::WriteToFile(*fileContent, directoryPath + filesInDirectory[currentFile]);
+		std::string outputFilename = directoryPath + filesInDirectory[currentFile];
+		outputFilename += "after";
+
+		FileHandler::WriteToFile(*fileContent, outputFilename);
         delete fileContent;
     }
 }
