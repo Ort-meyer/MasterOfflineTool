@@ -66,15 +66,20 @@ public:
 	std::vector<std::string>*  FilterAvrage(const std::vector<std::string>& p_lines, int p_numToAvrage);
 
     /**
+    General filter for adding a given number of rows of input data together.
+    TODO Fix so that only data adjacent to eachother in time is added together.
+    */
+    std::vector<std::string>* FilterAdd(const std::vector<std::string>& p_lines, const int& p_numToAdd);
+
+private:
+	/////////////////////HELP METHODS/////////////////
+
+    /**
     Adds p_increment rows together and returns vector of added values.
     Index and output will be that of the first data row.
     WARNING! Make sure different outputs are NOT mixed when using this
     method.*/
     std::vector<std::string>* AddDataTogether(const std::vector<std::string>& p_lines, int p_increment);
-
-private:
-	/////////////////////HELP METHODS/////////////////
-
 
 	/**
 	Help method used to avrage numbers based on what rows are sent in. This

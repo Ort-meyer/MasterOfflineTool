@@ -38,8 +38,8 @@ vector<string>* DataStill::FilterDisplacement(const std::vector<std::string>& p_
 	for (size_t i = numLinesPerDataEntry; i < p_lines.size() - 2; i += numLinesPerDataEntry)
 	{
 
-		string index = p_lines.at(i);
-		string output = p_lines.at(i + 2);
+		string index = p_lines.at(i - numLinesPerDataEntry);
+		string output = p_lines.at(i + 2 - numLinesPerDataEntry);
 
 		// Read next position into vector
 		istringstream in(p_lines.at(i + 1));
@@ -223,6 +223,25 @@ std::vector<std::string>*  DataStill::FilterAvrage(const std::vector<string>& p_
 	return r_lines;
 }
 
+std::vector<std::string>* DataStill::FilterAdd(const std::vector<std::string>& p_lines, const int & p_numToAdd)
+{
+    int nrOfRowsPerDataEntry = 3; // Will have to be tweaked!
+    int strideToData = 1; //How many rows are skipped before data is read, for each data point
+    int nrOfDataPoints = p_lines.size() / nrOfRowsPerDataEntry;
+    // Read into two vectors: one with true, one with false. Makes things easier
+    vector<string> trueList;
+    vector<string> falseList;
+    SplitDataIntoTrueAndFalseVectors(p_lines, &trueList, &falseList, nrOfRowsPerDataEntry);
+    // Use our amazing help method
+    vector<string>* trueAdded = AddDataTogether(trueList, p_numToAdd);
+    vector<string>* falseAdded = AddDataTogether(falseList, p_numToAdd);
+    vector<string>* r_lines = new vector<string>();
+    // Merge true and false lists before returning
+    r_lines = trueAdded;
+    r_lines->insert(r_lines->end(), falseAdded->begin(), falseAdded->end());
+    return r_lines;
+}
+
 /////// HELP METHODS///////
 
 std::vector<std::string>* DataStill::AddDataTogether(const std::vector<std::string>& p_lines, int p_increment)
@@ -404,7 +423,6 @@ std::vector<std::string>* DataStill::MergeVectorDataOntoSameLine(const std::vect
 				{
 					string line = p_dataLines.at(startRow + j);
 					t_mergedDataRows.at(j).append(line);
-					t_mergedDataRows.at(j) += " ";
 				}
 			}
 		}

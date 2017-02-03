@@ -17,88 +17,50 @@ DataStillManager::~DataStillManager()
 {
 }
 
-void DataStillManager::FiltrateAllFilesInDirectory(std::string p_directoryPath)
+void DataStillManager::FiltrateAllFilesInDirectory(const std::string& p_readDirectoryPath, const std::string& p_writeDirectoryPath
+    , const std::string& p_readFileEnding, const std::string& p_writeFileEnding)
 {
     DataStill still;
     KeyMaskInterpreter keyMaskInterpeter;
-    std::string directoryPath = GetAbsoluteFilePath(p_directoryPath);
-    std::vector<std::string> filesInDirectory = GetAllFileNames(p_directoryPath, "debug");
+    std::string directoryPath = FileHandler::GetAbsoluteFilePath(p_readDirectoryPath);
+    std::string outputPath = FileHandler::GetAbsoluteFilePath(p_writeDirectoryPath);
+    std::vector<std::string> filesInDirectory = FileHandler::GetAllFileNames(p_readDirectoryPath, p_readFileEnding);
     size_t numberOfFilesInDirectory = filesInDirectory.size();
     for (size_t currentFile = 0; currentFile < numberOfFilesInDirectory; currentFile++)
     {
-        std::vector<std::string>* fileContent = FileHandler::ReadFileIntoLines(directoryPath + filesInDirectory[currentFile]);
-        int a = filesInDirectory[currentFile].compare(m_keyPressesRawDataBegining);
-        // This does not work as comparison
-        if (filesInDirectory[currentFile].compare(m_keyPressesRawDataBegining) == m_keyPressesRawDataBegining.length())
+        std::vector<std::string>* fileContent = FileHandler::ReadFileIntoLines(filesInDirectory[currentFile]);
+        still.FlagDataOutput(*fileContent, 60 * 5, 1);
+        // here we seperate the file name from the absolute path
+        size_t fileNameBegins = filesInDirectory[currentFile].find_last_of("//");
+        std::string fileName = filesInDirectory[currentFile].substr(fileNameBegins+1);
+
+        // In this if, and the following elses, we take the beginning of the file name, as long as the identifyer we want to compare with
+        // and then we simply compare that substring to the wanted string. So basically we take the word in the beginning in a file name
+        // and see what it is
+        if (fileName.substr(0, m_keyPressesRawDataBegining.length()).compare(m_keyPressesRawDataBegining) == 0)
         {
             // It's a keypresses file, perform special thingies here!
             keyMaskInterpeter.ReinterpretRawKeyData(fileContent);
-            fileContent = still.AddDataTogether(*fileContent, 60);
+            fileContent = still.FilterAdd(*fileContent, 60);
         }
-        else if (filesInDirectory[currentFile].compare(m_positionRawDataBegining) == m_positionRawDataBegining.length())
+        else if (fileName.substr(0, m_positionRawDataBegining.length()).compare(m_positionRawDataBegining) == 0)
         {
             // It's a positions file, perform special thingies here!
             fileContent = still.FilterDisplacement(*fileContent);
             fileContent = still.FilterAvrage(*fileContent, 60);
         }
-        else if (filesInDirectory[currentFile].compare(m_rotationRawDataBegining) == m_rotationRawDataBegining.length())
+        else if (fileName.substr(0, m_rotationRawDataBegining.length()).compare(m_rotationRawDataBegining) == 0)
         {
             // It's a rotations file, perform special thingies here!
             fileContent = still.FilterAvrage(*fileContent, 60);
         }
         // Perform general things, same for each file
         fileContent = still.MergeDataOntoSameLine(*fileContent, 5);
-		std::string outputFilename = directoryPath + filesInDirectory[currentFile];
-		outputFilename += "after";
+		std::string outputFilename = outputPath + fileName;
+        outputFilename.erase(outputFilename.end() - p_readFileEnding.length(), outputFilename.end());
+		outputFilename += p_writeFileEnding;
 
 		FileHandler::WriteToFile(*fileContent, outputFilename);
         delete fileContent;
     }
-}
-
-std::vector<std::string> DataStillManager::GetAllFileNames(std::string p_directory, const std::string& p_fileEnding)
-{
-    std::string fullPath;
-    // Get current working directory and add the specific directory we want after
-    char buffer[MAX_PATH];
-    GetModuleFileName(NULL, buffer, MAX_PATH);
-    std::string::size_type pos = std::string(buffer).find_last_of("\\/");
-    fullPath = std::string(buffer).substr(0, pos);
-    // Add in directory and file ending of stuff we want
-    fullPath += "\\";
-    fullPath += p_directory;
-    fullPath += "/*." + p_fileEnding;
-    std::vector<std::string> t_rawDataFileNames;
-
-    WIN32_FIND_DATA FindFileData;
-    HANDLE hFind = FindFirstFile(fullPath.c_str(), &FindFileData);
-    if (hFind == INVALID_HANDLE_VALUE)
-    {
-        printf("FindFirstFile failed (%d)\n", GetLastError());
-        return t_rawDataFileNames;
-    }
-    //FindNextFile(hFind, &FindFileData); // Do I need this?
-    std::string t_string = FindFileData.cFileName;
-    t_rawDataFileNames.push_back(t_string);
-    while (FindNextFile(hFind, &FindFileData))
-    {
-        std::string t_string = FindFileData.cFileName;
-        t_rawDataFileNames.push_back(t_string);
-    }
-    FindClose(hFind);
-    return t_rawDataFileNames;
-}
-
-std::string DataStillManager::GetAbsoluteFilePath(std::string p_directory)
-{
-    std::string fullPath;
-    // Get current working directory and add the specific directory we want after
-    char buffer[MAX_PATH];
-    GetModuleFileName(NULL, buffer, MAX_PATH);
-    std::string::size_type pos = std::string(buffer).find_last_of("\\/");
-    fullPath = std::string(buffer).substr(0, pos);
-    // Add in directory and file ending of stuff we want
-    fullPath += "\\";
-    fullPath += p_directory;
-    return fullPath;
 }
