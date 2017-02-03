@@ -21,6 +21,7 @@ struct NetworkSettings
 	bool deterministicWeights;
 
     FANN::training_data* trainingData;
+    FANN::training_data* validationData;
     /**
     Saves all the inparams to the structs variables, should be used for all but input- and output-cells
     Note that the pointer to hidden cells is set to the inparam, so dont delete it after this func
@@ -60,12 +61,18 @@ public:
 	void TrainOnData(const int& p_numberOfEpochs, const int& p_reportFrequency, const float& p_errorAccaptance);
 	/**
 	Validates a trained neural network by running it on data
-	specified by "validation data file name"*/
+	specified by "validation data file name"
+    REMOVED*/
 	void ValidateOnFile();
+    /**
+    Validates the network if any validation data is set
+    */
+    void ValidateNetwork();
     /**
     Trains and validates the data using a increasing amount of epochs, validating after each training session
     */
     void TrainAndValidateNetwork();
+
 	
 protected:
     // HELPER FUNCTIONS

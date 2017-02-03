@@ -1,4 +1,6 @@
 #pragma once
+#include <FANN\header\floatfann.h>
+#include <FANN\header\fann_cpp.h>
 #include <vector>
 #include <string>
 class NeuralNetworkFactory;
@@ -37,8 +39,5 @@ private:
 
 	std::string m_dataFilePath;
 	std::string m_dataFileEnding;
-
-	int m_bytes;
-	int m_kbytes;
 };
 

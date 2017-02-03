@@ -13,6 +13,10 @@ DataSetBuilder::DataSetBuilder()
 	m_dataFileEnding = "filteredData";
 	m_dataFilePath = "../FilteredData";
 
+    // DEBUG stuff
+    BuildDataSetFromFolder(m_dataFilePath);
+    // End debug stuff
+
 	// Lots of trash we'll need to clean up
     m_factory = new NeuralNetworkFactory();
     m_factory->SetVariables(1, 20, 19,0.7f,1.0f,1.0f,10);
@@ -20,16 +24,11 @@ DataSetBuilder::DataSetBuilder()
     FANN::training_data* data = new FANN::training_data();
     data->read_train_from_file("CalcTrainingData.data");
     //m_factory->CreateNewNeuralNetworkCombinationsFromData(data);
-	m_bytes = 0;
-	m_kbytes = 0;
-	// DEBUG stuff
-	BuildDataSetFromFolder(m_dataFilePath);
-	// End debug stuff
+
 	m_factory = new NeuralNetworkFactory();
 
 
 }
-
 
 DataSetBuilder::~DataSetBuilder()
 {
@@ -95,12 +94,17 @@ void DataSetBuilder::BuildDataSetFromFolder(string p_directory)
 		}
 
 
-		training_data data;
-		
-		data.set_train_data(dataSetSize, mergedData.at(i).at(0).inputs, inputs, 1, outputs);
+		training_data data;       
+        data.set_train_data(dataSetSize, mergedData.at(i).at(0).inputs, inputs, 1, outputs); 
+
 		NeuralNetworkFactory netFac;
-		netFac.SetVariables(1, 3, 1, 0.3, 0.3, 0.3, 1);
-		netFac.CreateNewNeuralNetworkCombinationsFromData(&data);
+        //netFac.CreateSpecificNeuralNetwork(&data, )
+        int* myInt = new int(20);
+		//netFac.SetVariables(1, 3, 1, 0.3, 0.3, 0.3, 1);
+        netFac.CreateSpecificNeuralNetwork(&data, 1, myInt, FANN::activation_function_enum::SIGMOID_SYMMETRIC, FANN::activation_function_enum::SIGMOID_SYMMETRIC,
+            0.7f, 1.0f, 1.0f, true, 10000, 1000, 0.0001f,&data);
+		//netFac.CreateNewNeuralNetworkCombinationsFromData(&data);
+        delete myInt;
 	}
 
 
@@ -169,8 +173,6 @@ std::vector<DataSet> DataSetBuilder::MergeDataFiles(vector<vector<DataSet>> p_da
 	// Iterate through first data file
 	for (size_t i = 0; i < p_dataFiles.at(0).size(); i++)
 	{
-		m_kbytes++;
-		cout << m_kbytes << endl;
 		vector<DataSet> theseSets;
 		// Find a data set
 		DataSet thisSet = p_dataFiles.at(0).at(i);
