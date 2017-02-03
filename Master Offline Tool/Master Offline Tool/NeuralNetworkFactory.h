@@ -37,6 +37,15 @@ public:
 	Validation along with other info about the network is printed to file
 	*/
 	void CreateNewNeuralNetworkCombinationsFromData(FANN::training_data* p_trainingData);
+
+    /**
+    Creates a specific neural network from the given settings and trains it on the training data
+    If no hidden layers will be used the activation funciton for hidden layers is ignored
+    */
+    void CreateSpecificNeuralNetwork(FANN::training_data* p_trainingData, const int& p_numberOfHiddenLayers, int* p_hiddenLayerCells,
+        const FANN::activation_function_enum& p_outputActivationFunction, const FANN::activation_function_enum& p_hiddenActivationFunction,
+        const float& p_learningRateSteepness, const float& p_steepnessOutput, const float& p_steepnessHidden, const bool& p_deteministicWeights,
+        const int& p_numberOfEpochsToTrain, const int& p_reportRate, const float& p_accaptableError);
 private:
 	// First in a series of creating all different combinations of neural nets
 	void CreateHiddenLayerCombinations(NetworkSettings * p_netWorkSettings, int* p_hiddenCells, const int& p_numberOfLayers, const int& p_depth);

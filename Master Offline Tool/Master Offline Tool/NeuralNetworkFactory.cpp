@@ -53,6 +53,25 @@ void NeuralNetworkFactory::CreateNewNeuralNetworkCombinationsFromData(FANN::trai
     }
 }
 
+void NeuralNetworkFactory::CreateSpecificNeuralNetwork(FANN::training_data * p_trainingData, const int & p_numberOfHiddenLayers,
+    int * p_hiddenLayerCells, const FANN::activation_function_enum & p_outputActivationFunction,
+    const FANN::activation_function_enum & p_hiddenActivationFunction, const float & p_learningRateSteepness,
+    const float & p_steepnessOutput, const float & p_steepnessHidden, const bool & p_deteministicWeights,
+    const int& p_numberOfEpochsToTrain, const int& p_reportRate, const float& p_accaptableError)
+{
+    NetworkSettings newNetSettings;
+    // Set the constant variables
+    newNetSettings.inputCells = p_trainingData->num_input_train_data();
+    newNetSettings.outputCells = p_trainingData->num_output_train_data();
+    newNetSettings.trainingData = p_trainingData;
+    newNetSettings.SetVaryingVariables(p_numberOfHiddenLayers, p_hiddenLayerCells, p_learningRateSteepness, p_steepnessOutput, 
+        p_steepnessHidden, p_hiddenActivationFunction, p_outputActivationFunction, p_deteministicWeights);
+    NeuralNetwork newNet;
+    newNet.SetSettings(newNetSettings);
+    newNet.SetupNetwork();
+    newNet.TrainOnData(p_numberOfEpochsToTrain, p_reportRate, p_accaptableError);
+}
+
 void NeuralNetworkFactory::CreateHiddenLayerCombinations(NetworkSettings * p_netWorkSettings, int* p_hiddenCells, const int& p_numberOfLayers, const int& p_depth)
 {
     while (true)
