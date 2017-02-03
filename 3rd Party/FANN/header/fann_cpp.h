@@ -412,7 +412,22 @@ namespace FANN
         {
             if (train_data != NULL)
             {
-                fann_destroy_train(train_data);
+                if (train_data->errno_f==fann_errno_enum::FANN_E_NO_ERROR)
+                {
+                    // Hopefully this means that the train_data was read from file. this is not a good fix...
+                    fann_destroy_train(train_data);
+                }
+                else
+                {
+                    // Here we are counting on the fact that errno_f is not set when calling set_train_data
+                    if (train_data->input != NULL)
+                        fann_safe_free(train_data->input[0]);
+                    if (train_data->output != NULL)
+                        fann_safe_free(train_data->output[0]);
+                    fann_safe_free(train_data->input);
+                    fann_safe_free(train_data->output);
+                    fann_safe_free(train_data);
+                }
                 train_data = NULL;
             }
         }
@@ -665,7 +680,6 @@ namespace FANN
             data->num_data = num_data;
             data->num_input = num_input;
             data->num_output = num_output;
-
         	fann_type *data_input = (fann_type *)calloc(num_input*num_data, sizeof(fann_type));
         	fann_type *data_output = (fann_type *)calloc(num_output*num_data, sizeof(fann_type));
 
