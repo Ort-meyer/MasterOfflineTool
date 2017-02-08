@@ -13,6 +13,7 @@
     <ClCompile Include="NeuralNetworkFactory.cpp">
       <Filter>Source</Filter>
     </ClCompile>
+    <ClCompile Include="FileCombiner.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DataSetBuilder.h">
@@ -24,6 +25,7 @@
     <ClInclude Include="NeuralNetworkFactory.h">
       <Filter>Header</Filter>
     </ClInclude>
+    <ClInclude Include="FileCombiner.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Header">
