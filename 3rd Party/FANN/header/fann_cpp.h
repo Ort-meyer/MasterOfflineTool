@@ -378,7 +378,7 @@ namespace FANN
         */
         training_data(const training_data &data)
         {
-            destroy_train();
+            //destroy_train();
             if (data.train_data != NULL)
             {
                 train_data = fann_duplicate_train_data(data.train_data);
