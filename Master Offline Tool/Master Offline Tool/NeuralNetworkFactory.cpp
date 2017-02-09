@@ -69,7 +69,7 @@ void NeuralNetworkFactory::CreateSpecificNeuralNetwork(FANN::training_data * p_t
     const FANN::activation_function_enum & p_hiddenActivationFunction, const float & p_learningRateSteepness,
     const float & p_steepnessOutput, const float & p_steepnessHidden, const bool & p_deteministicWeights,
     const int& p_numberOfEpochsToTrain, const int& p_reportRate, const float& p_accaptableError, FANN::training_data* p_validationData,
-   const int& p_numBestNetworks)
+   const int& p_numBestNetworks, const std::string& p_netIdString)
 {
     NetworkSettings newNetSettings;
     // Set the constant variables
@@ -90,7 +90,7 @@ void NeuralNetworkFactory::CreateSpecificNeuralNetwork(FANN::training_data * p_t
     }
 
     newNetSettings.SetVaryingVariables(p_numberOfHiddenLayers, p_hiddenLayerCells, p_learningRateSteepness, p_steepnessOutput, 
-        p_steepnessHidden, p_hiddenActivationFunction, p_outputActivationFunction, p_deteministicWeights);
+        p_steepnessHidden, p_hiddenActivationFunction, p_outputActivationFunction, p_deteministicWeights, p_netIdString);
     NeuralNetwork newNet;
     newNet.SetSettings(newNetSettings);
     newNet.SetupNetwork();

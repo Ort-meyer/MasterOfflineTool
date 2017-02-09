@@ -2,8 +2,8 @@
 #include <FANN\header\floatfann.h>
 #include <FANN\header\fann_cpp.h>
 #include <vector>
-class NeuralNetwork;
-struct NetworkSettings;
+#include <string>
+#include "NeuralNetwork.h"
 class NeuralNetworkFactory
 {
 public:
@@ -52,7 +52,7 @@ public:
         const FANN::activation_function_enum& p_outputActivationFunction, const FANN::activation_function_enum& p_hiddenActivationFunction,
         const float& p_learningRateSteepness, const float& p_steepnessOutput, const float& p_steepnessHidden, const bool& p_deteministicWeights,
         const int& p_numberOfEpochsToTrain, const int& p_reportRate, const float& p_accaptableError, FANN::training_data* p_validationData=nullptr,
-       const int& p_numBestNetworks = 5);
+       const int& p_numBestNetworks = 5, const std::string& p_netIdString = "");
 
     void SetValidationData(FANN::training_data* p_validationData) { m_validationData = p_validationData; };
     

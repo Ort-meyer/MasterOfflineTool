@@ -105,7 +105,7 @@ void FileCombiner::FeedDataToNeuralNetworkFactory()
             FANN::training_data validationData = CreateTrainingDataFromListOfDataSet(oneCombosValidationData);
 
             t_factory.CreateSpecificNeuralNetwork(&trainingData, 1, myInt, FANN::activation_function_enum::SIGMOID_SYMMETRIC, FANN::activation_function_enum::SIGMOID_SYMMETRIC,
-                0.7f, 1.0f, 1.0f, true, 10000, 1000, 0.0001f, &validationData);
+                0.7f, 1.0f, 1.0f, true, 10000, 1000, 0.0001f, &validationData, 5, m_dataSetBuilder->GetComboNameFromIndex(combo));
             //netFac.CreateNewNeuralNetworkCombinationsFromData(&data);
             //t_factory.CreateNewNeuralNetworkCombinationsFromData(&trainingData);
             delete myInt;
