@@ -1,6 +1,7 @@
 #include "FileCombiner.h"
 #include "DataSetBuilder.h"
 #include "NeuralNetworkFactory.h"
+#include "NeuralNetwork.h"
 #include <FANN\header\floatfann.h>
 #include <FANN\header\fann_cpp.h>
 #include <FileHandler.h>
@@ -23,6 +24,26 @@ FileCombiner::FileCombiner(): m_dataSetBuilder(new DataSetBuilder())
 FileCombiner::~FileCombiner()
 {
     delete m_dataSetBuilder;
+}
+
+void FileCombiner::SaveBestNetToFile(const NeuralNetworkFactory& p_factory, const std::string & p_fileName, const std::string & p_folder)
+{
+    std::string t_folderFullPath = FileHandler::GetAbsoluteFilePath(p_folder);
+    std::vector<NetworkSettings> netSettings;
+    std::vector<std::string> t_lines;
+    t_lines.push_back("YEEEEEEEEY");
+    size_t length = netSettings.size();
+    for (size_t net = 0; net < length; net++)
+    {
+        std::string newEntry = "";
+        // Add all the important network info
+        newEntry += netSettings.at(net).deterministicWeights;
+        
+        // Add the new entry to all the lines that should be writen
+        t_lines.push_back(newEntry);
+    }
+    FileHandler::WriteToFile(t_lines, t_folderFullPath + p_fileName);
+
 }
 
 void FileCombiner::CombineFilesInFolder(const std::string& p_folderName, const std::string& p_fileEnding)
@@ -86,8 +107,12 @@ void FileCombiner::FeedDataToNeuralNetworkFactory()
             t_factory.CreateSpecificNeuralNetwork(&trainingData, 1, myInt, FANN::activation_function_enum::SIGMOID_SYMMETRIC, FANN::activation_function_enum::SIGMOID_SYMMETRIC,
                 0.7f, 1.0f, 1.0f, true, 10000, 1000, 0.0001f, &validationData);
             //netFac.CreateNewNeuralNetworkCombinationsFromData(&data);
+            //t_factory.CreateNewNeuralNetworkCombinationsFromData(&trainingData);
             delete myInt;
         }
+        // When we get here we have completed one combination of inputs with all combinations of validation and training data between persons
+        // Here we save the best net setting to file
+        SaveBestNetToFile(t_factory, m_dataSetBuilder->GetComboNameFromIndex(combo) + ".netSetting");
     }
 }
 
