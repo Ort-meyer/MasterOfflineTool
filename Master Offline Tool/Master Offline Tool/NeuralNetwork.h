@@ -28,7 +28,7 @@ struct NetworkSettings
     */
     void SetVaryingVariables(const int& p_hiddenLayers, int* p_hiddenCells, const float& p_learningRate, const float& p_steepnessOutput,
         const float& p_steepnessHidden, const FANN::activation_function_enum& p_functionHidden, 
-        const FANN::activation_function_enum& p_functionOutput, const bool& p_deterministicWeights)
+        const FANN::activation_function_enum& p_functionOutput, const bool& p_deterministicWeights, const std::string p_netID = "noID")
     {
         hiddenLayers = p_hiddenLayers;
         hiddenCells = p_hiddenCells;
@@ -38,6 +38,7 @@ struct NetworkSettings
         functionHidden = p_functionHidden;
         functionOutput = p_functionOutput;
         deterministicWeights = p_deterministicWeights;
+        idString = p_netID;
     }
     
     /* 
@@ -45,6 +46,11 @@ struct NetworkSettings
     Should NOT be set at creation. This is derived after having run the network through validation.
     It's just easier to have this struct contain the number. We're lazy that way*/
     float mse;
+
+    /**
+    String used to identify this network. This is meant to be used to differentiate networks from
+    one another in a sensible way*/
+    std::string idString;
 };
 
 class NeuralNetwork
