@@ -60,6 +60,14 @@ public:
     Sets the number of best networks we want to store. This is 5 by default*/
     void SetBestNetworkSize(const int& p_bestNetworks) {m_numBestNetworks = p_bestNetworks; };
 
+    /**
+    Returns a vector of the best networks that the factory has run since reset or startup*/
+    std::vector<NetworkSettings> GetBestNetworks() { return m_bestNetworks; };
+
+    /**
+    Clears the list of best vectors*/
+    void ClearBestVectors() { m_bestNetworks.clear(); };
+
 private:
 	// First in a series of creating all different combinations of neural nets
 	void CreateHiddenLayerCombinations(NetworkSettings * p_netWorkSettings, int* p_hiddenCells, const int& p_numberOfLayers, const int& p_depth);
