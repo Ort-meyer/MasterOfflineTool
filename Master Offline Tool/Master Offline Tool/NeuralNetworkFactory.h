@@ -93,8 +93,5 @@ private:
 
     // Will be used as validation data
     FANN::training_data* m_validationData;
-
-    // All the training data the network should train on
-    std::vector<FANN::training_data*> m_trainingData;
 };
 

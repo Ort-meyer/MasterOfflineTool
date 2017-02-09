@@ -10,6 +10,7 @@ The DatasetBuiler will build these sets from the raw data it
 reads.*/
 struct DataSet
 {	
+    std::string name;
 	int index;
 	int inputs;
 	std::vector<float> values;
@@ -27,6 +28,8 @@ public:
 	of all combinations of raw data sets*/
 	void BuildDataSetFromFolder(std::string p_directory);
     std::vector<std::vector<DataSet>>* BuildDataSetFromFiles(const std::vector<std::string>& p_fileNames);
+
+    std::string GetComboNameFromIndex(const int& p_index);
 private:
     NeuralNetworkFactory* m_factory;
 
@@ -36,6 +39,9 @@ private:
 	std::vector<DataSet> ConvertRawdataToDataSets(std::string p_fullPath);
 
 	std::vector<DataSet> MergeDataFiles(std::vector<std::vector<DataSet>> p_dataFiles);
+
+    // Will keep track of what combo is what
+    std::vector<std::string> m_comboIndexToString;
 
 	std::string m_dataFilePath;
 	std::string m_dataFileEnding;

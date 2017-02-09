@@ -4,6 +4,7 @@
 #include <FANN\header\floatfann.h>
 #include <FANN\header\fann_cpp.h>
 #include <FileHandler.h>
+#include <algorithm>
 #include <iostream>
 static FileCombiner m_this;
 
@@ -11,8 +12,11 @@ FileCombiner::FileCombiner(): m_dataSetBuilder(new DataSetBuilder())
 {
     std::string t_stampLayout = "YYYY-MM-DD - hh-mm-ss";
     m_stampSize = t_stampLayout.length();
+    m_validationAmount = 1;
     CombineFilesInFolder();
     FeedDataToNeuralNetworkFactory();
+    int a;
+    std::cin >> a;
 }
 
 
@@ -31,6 +35,8 @@ void FileCombiner::CombineFilesInFolder(const std::string& p_folderName, const s
         int t_stampBegins = t_rawDataFileNames[i].length() - p_fileEnding.length() - 1 - m_stampSize;
         std::string t_stamp = t_rawDataFileNames[i].substr(t_stampBegins, m_stampSize);
         std::vector<std::string> t_filesInCombination = GetAllFilesWithStampAndShrinkList(t_stamp, t_rawDataFileNames);
+        // Sort to make sure the files are always sent in in the same order
+        std::sort(t_filesInCombination.begin(), t_filesInCombination.end());
         m_allCombosOfData.push_back(m_dataSetBuilder->BuildDataSetFromFiles(t_filesInCombination));
     }
     m_dataSetCombinationsPerPerson = m_allCombosOfData[0]->size();
@@ -39,7 +45,7 @@ void FileCombiner::CombineFilesInFolder(const std::string& p_folderName, const s
 void FileCombiner::FeedDataToNeuralNetworkFactory()
 {
     NeuralNetworkFactory t_factory;
-    size_t numberOfPersons = m_allCombosOfData.size();
+    int numberOfPersons = m_allCombosOfData.size();
     // The trainingdata attached to one combo
     std::vector<FANN::training_data> t_allTrainingData;
     
@@ -47,21 +53,41 @@ void FileCombiner::FeedDataToNeuralNetworkFactory()
 
     for (size_t combo = 0; combo < numberOfCombos; combo++)
     {
-        std::vector<DataSet> oneCombo;
-        for (size_t person = 0; person < numberOfPersons; person++)
+        std::cout << m_dataSetBuilder->GetComboNameFromIndex(combo) << std::endl;
+        // This loop is for cross validation
+        for (size_t validationSet = 0; validationSet < numberOfPersons; validationSet++)
         {
-            // This make it so oneCombo contains all persons data that is combined in a specific way
-            oneCombo.insert(oneCombo.end(), m_allCombosOfData[person]->at(combo).begin(), m_allCombosOfData[person]->at(combo).end());
+            // This is used to make the validationset wrap around the vector
+            int low = numberOfPersons - validationSet - m_validationAmount;
+            int validationSetAmountOverSize = min(low, 0);
+            validationSetAmountOverSize = abs(validationSetAmountOverSize);
+            std::vector<DataSet> oneCombosTrainingData;
+            std::vector<DataSet> oneCombosValidationData;
+            // This loop is to add all persons (excpet the validaiton set) to the training data that will be created later
+            for (size_t person = 0; person < numberOfPersons; person++)
+            {
+                // If the current preson is inside the validation range
+                if (person >= validationSet && person < validationSet + m_validationAmount || person<validationSetAmountOverSize)
+                {
+                    oneCombosValidationData.insert(oneCombosValidationData.end(), m_allCombosOfData[person]->at(combo).begin(), m_allCombosOfData[person]->at(combo).end());
+                }
+                else
+                {
+                    // This make it so oneCombo contains all persons data that is combined in a specific way
+                    oneCombosTrainingData.insert(oneCombosTrainingData.end(), m_allCombosOfData[person]->at(combo).begin(), m_allCombosOfData[person]->at(combo).end());
+                }
+            }
+            //netFac.CreateSpecificNeuralNetwork(&data, )
+            int* myInt = new int(20);
+            //netFac.SetVariables(1, 3, 1, 0.3, 0.3, 0.3, 1);
+            FANN::training_data trainingData = CreateTrainingDataFromListOfDataSet(oneCombosTrainingData);
+            FANN::training_data validationData = CreateTrainingDataFromListOfDataSet(oneCombosValidationData);
+
+            t_factory.CreateSpecificNeuralNetwork(&trainingData, 1, myInt, FANN::activation_function_enum::SIGMOID_SYMMETRIC, FANN::activation_function_enum::SIGMOID_SYMMETRIC,
+                0.7f, 1.0f, 1.0f, true, 10000, 1000, 0.0001f, &validationData);
+            //netFac.CreateNewNeuralNetworkCombinationsFromData(&data);
+            delete myInt;
         }
-        //netFac.CreateSpecificNeuralNetwork(&data, )
-        int* myInt = new int(20);
-        //netFac.SetVariables(1, 3, 1, 0.3, 0.3, 0.3, 1);
-        FANN::training_data trainingData = CreateTrainingDataFromListOfDataSet(oneCombo);
-        trainingData.save_train("What is this");
-        t_factory.CreateSpecificNeuralNetwork(&trainingData, 1, myInt, FANN::activation_function_enum::SIGMOID_SYMMETRIC, FANN::activation_function_enum::SIGMOID_SYMMETRIC,
-            0.7f, 1.0f, 1.0f, true, 10000, 1000, 0.0001f);
-        //netFac.CreateNewNeuralNetworkCombinationsFromData(&data);
-        delete myInt;
     }
 }
 
@@ -87,7 +113,6 @@ std::vector<std::string> FileCombiner::GetAllFilesWithStampAndShrinkList(const s
 
 FANN::training_data FileCombiner::CreateTrainingDataFromListOfDataSet(std::vector<DataSet>& p_allCombosOfData)
 {
-    // Now to actually make it work
     int dataSetSize = p_allCombosOfData.size();
 
     // Build mergedData into something useful

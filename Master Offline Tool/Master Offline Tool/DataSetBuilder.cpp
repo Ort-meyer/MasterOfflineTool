@@ -131,6 +131,7 @@ vector<vector<DataSet>>* DataSetBuilder::BuildDataSetFromFiles(const std::vector
                                         // Find which big data sets we want to merge
     int n = p_fileNames.size();
     int cap = 1 << n;
+    m_comboIndexToString.resize(cap + 1);
     for (int i = 1; i < cap; ++i)
     {
         vector<vector<DataSet>> t_dataFilesToMerge;
@@ -140,11 +141,17 @@ vector<vector<DataSet>>* DataSetBuilder::BuildDataSetFromFiles(const std::vector
             {
                 t_dataFilesToMerge.push_back(t_filteredDataFiles.at(j));
                 //cout << vec[j] << " ";
+                m_comboIndexToString[i - 1] += p_fileNames[j].substr(77,3);
             }
         }
         mergedData->push_back(MergeDataFiles(t_dataFilesToMerge));
     }
     return mergedData;
+}
+
+std::string DataSetBuilder::GetComboNameFromIndex(const int & p_index)
+{
+    return m_comboIndexToString[p_index];
 }
 
 vector<DataSet> DataSetBuilder::ConvertRawdataToDataSets(std::string p_fileName)
