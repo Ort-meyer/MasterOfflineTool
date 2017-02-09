@@ -142,8 +142,8 @@ vector<vector<DataSet>>* DataSetBuilder::BuildDataSetFromFiles(const std::vector
             {
                 t_dataFilesToMerge.push_back(t_filteredDataFiles.at(j));
                 //cout << vec[j] << " ";
-
-                m_comboIndexToString[i - 1] += p_fileNames[j].substr(77, 3);
+                size_t fileNameStart = p_fileNames[j].find_last_of("/") + 1;
+                m_comboIndexToString[i - 1] += p_fileNames[j].substr(fileNameStart, 3);
            
             }
         }
