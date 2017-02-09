@@ -2,6 +2,7 @@
 #include "NeuralNetwork.h"
 
 #include <iostream>
+using namespace std;
 NeuralNetworkFactory::NeuralNetworkFactory(): m_validationData(nullptr)
 {
 }
@@ -180,6 +181,7 @@ void NeuralNetworkFactory::CreateFANNFunctionHiddenSpecificCombinations(NetworkS
 
 void NeuralNetworkFactory::CreateTheNetwork(NetworkSettings * p_netWorkSettings)
 {
+   vector<NetworkSettings> t_bestNetworks;
     // We create a new net and save it after passing the accuiered setting
     NeuralNetwork* newNet = new NeuralNetwork();
     newNet->SetSettings(*p_netWorkSettings);
