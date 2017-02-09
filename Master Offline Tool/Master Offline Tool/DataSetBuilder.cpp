@@ -9,23 +9,23 @@ using namespace FANN;
 using namespace std;
 DataSetBuilder::DataSetBuilder()
 {
-	// "Global" varialbes
-	m_dataFileEnding = "filteredData";
-	m_dataFilePath = "../FilteredData";
+	//// "Global" varialbes
+	//m_dataFileEnding = "filteredData";
+	//m_dataFilePath = "../FilteredData";
 
-    // DEBUG stuff
-    BuildDataSetFromFolder(m_dataFilePath);
-    // End debug stuff
+ //   // DEBUG stuff
+ //   BuildDataSetFromFolder(m_dataFilePath);
+ //   // End debug stuff
 
-	// Lots of trash we'll need to clean up
-    m_factory = new NeuralNetworkFactory();
-    m_factory->SetVariables(1, 20, 19,0.7f,1.0f,1.0f,10);
-    // We let the network be responsible for deleting the training data after it is done
-    FANN::training_data* data = new FANN::training_data();
-    data->read_train_from_file("CalcTrainingData.data");
-    //m_factory->CreateNewNeuralNetworkCombinationsFromData(data);
+	//// Lots of trash we'll need to clean up
+ //   m_factory = new NeuralNetworkFactory();
+ //   m_factory->SetVariables(1, 20, 19,0.7f,1.0f,1.0f,10);
+ //   // We let the network be responsible for deleting the training data after it is done
+ //   FANN::training_data* data = new FANN::training_data();
+ //   data->read_train_from_file("CalcTrainingData.data");
+ //   //m_factory->CreateNewNeuralNetworkCombinationsFromData(data);
 
-	m_factory = new NeuralNetworkFactory();
+	//m_factory = new NeuralNetworkFactory();
 
 
 }
@@ -110,9 +110,41 @@ void DataSetBuilder::BuildDataSetFromFolder(string p_directory)
 
 }
 
-void DataSetBuilder::BuildDataSetFromFiles(std::vector<std::string> p_fileNames)
+vector<vector<DataSet>>* DataSetBuilder::BuildDataSetFromFiles(const std::vector<std::string>& p_fileNames)
 {
-
+    // Convert each file of raw data into multiple data sets
+    vector<vector<DataSet>> t_filteredDataFiles;
+    for (size_t i = 0; i < p_fileNames.size(); i++)
+    {
+        t_filteredDataFiles.push_back(ConvertRawdataToDataSets(p_fileNames.at(i)));
+    }
+    /*
+    mergedData is a vector of vectors of data sets. Each "outer" vector is a
+    kombination of the data set we want to merge. In other words, if we have
+    three different types of input, mergedData.size() will always be 7, as that
+    is how many combinations that exist.
+    Each "inner" vector is the data sets for that particular kombination of
+    inputs. That is to say, each inner vector contains the actual values that
+    the neural network will make use of.*/
+    // Outer vector contains combination while inner vector contains data
+    vector<vector<DataSet>>* mergedData = new vector<vector<DataSet>>(); // This is what we'll feed networks
+                                        // Find which big data sets we want to merge
+    int n = p_fileNames.size();
+    int cap = 1 << n;
+    for (int i = 1; i < cap; ++i)
+    {
+        vector<vector<DataSet>> t_dataFilesToMerge;
+        for (int j = 0; j < n; ++j)
+        {
+            if (i & (1 << j))
+            {
+                t_dataFilesToMerge.push_back(t_filteredDataFiles.at(j));
+                //cout << vec[j] << " ";
+            }
+        }
+        mergedData->push_back(MergeDataFiles(t_dataFilesToMerge));
+    }
+    return mergedData;
 }
 
 vector<DataSet> DataSetBuilder::ConvertRawdataToDataSets(std::string p_fileName)

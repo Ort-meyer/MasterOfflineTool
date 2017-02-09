@@ -1,9 +1,5 @@
-#include "DataSetBuilder.h"
-#include <iostream>
+#include "FileCombiner.h"
 
 int main()
 {
-    DataSetBuilder ds;
-    int a;
-    std::cin >> a;
 }

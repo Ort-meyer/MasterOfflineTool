@@ -26,7 +26,7 @@ public:
 	Reads through a directory and generates combined data sets
 	of all combinations of raw data sets*/
 	void BuildDataSetFromFolder(std::string p_directory);
-    void BuildDataSetFromFiles(std::vector<std::string> p_fileNames);
+    std::vector<std::vector<DataSet>>* BuildDataSetFromFiles(const std::vector<std::string>& p_fileNames);
 private:
     NeuralNetworkFactory* m_factory;
 

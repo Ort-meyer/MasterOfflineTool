@@ -95,6 +95,7 @@ void NeuralNetworkFactory::CreateSpecificNeuralNetwork(FANN::training_data * p_t
     newNet.ValidateNetwork();
 }
 
+
 void NeuralNetworkFactory::CreateHiddenLayerCombinations(NetworkSettings * p_netWorkSettings, int* p_hiddenCells, const int& p_numberOfLayers, const int& p_depth)
 {
     while (true)
