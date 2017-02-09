@@ -73,7 +73,14 @@ public:
     */
     void TrainAndValidateNetwork();
 
-	
+	 /**
+    Returns MSE of this particular network*/  
+    float GetMSE() { return m_net.get_MSE(); };
+
+    /**
+    Returns network settings of this particular network*/
+    NetworkSettings GetNetworkSettings() { return m_networkSettings; };
+
 protected:
     // HELPER FUNCTIONS
     void InitializeWeights();
