@@ -68,13 +68,15 @@ void NeuralNetworkFactory::CreateSpecificNeuralNetwork(FANN::training_data * p_t
     int * p_hiddenLayerCells, const FANN::activation_function_enum & p_outputActivationFunction,
     const FANN::activation_function_enum & p_hiddenActivationFunction, const float & p_learningRateSteepness,
     const float & p_steepnessOutput, const float & p_steepnessHidden, const bool & p_deteministicWeights,
-    const int& p_numberOfEpochsToTrain, const int& p_reportRate, const float& p_accaptableError, FANN::training_data* p_validationData)
+    const int& p_numberOfEpochsToTrain, const int& p_reportRate, const float& p_accaptableError, FANN::training_data* p_validationData,
+   const int& p_numBestNetworks)
 {
     NetworkSettings newNetSettings;
     // Set the constant variables
     newNetSettings.inputCells = p_trainingData->num_input_train_data();
     newNetSettings.outputCells = p_trainingData->num_output_train_data();
     newNetSettings.trainingData = p_trainingData;
+    m_numBestNetworks = p_numBestNetworks;
 
     // Se if we have any validation data
     if (p_validationData == nullptr)
@@ -94,6 +96,7 @@ void NeuralNetworkFactory::CreateSpecificNeuralNetwork(FANN::training_data * p_t
     newNet.SetupNetwork();
     newNet.TrainOnData(p_numberOfEpochsToTrain, p_reportRate, p_accaptableError);
     newNet.ValidateNetwork();
+    UpdateBestNetworks(newNet.GetNetworkSettings());
 }
 
 
@@ -181,7 +184,6 @@ void NeuralNetworkFactory::CreateFANNFunctionHiddenSpecificCombinations(NetworkS
 
 void NeuralNetworkFactory::CreateTheNetwork(NetworkSettings * p_netWorkSettings)
 {
-   vector<NetworkSettings> t_bestNetworks;
     // We create a new net and save it after passing the accuiered setting
     NeuralNetwork* newNet = new NeuralNetwork();
     newNet->SetSettings(*p_netWorkSettings);
@@ -198,6 +200,7 @@ void NeuralNetworkFactory::CreateTheNetwork(NetworkSettings * p_netWorkSettings)
             // Note that after training and validation is done the network will delete itself
             m_networks.at(i)->TrainAndValidateNetwork();
             // TODO Join threads
+            this->UpdateBestNetworks(m_networks.at(i)->GetNetworkSettings());
 			
 			float percentDone = ((float)m_networksTrainedWithCurrentData / (float)m_totalNrOfnetworks) * 100.0f;
             std::cout << "Networks Trained: " << m_networksTrainedWithCurrentData << 
@@ -208,4 +211,28 @@ void NeuralNetworkFactory::CreateTheNetwork(NetworkSettings * p_netWorkSettings)
             m_networks.erase(m_networks.begin() + i);
         }
     }
+}
+
+void NeuralNetworkFactory::UpdateBestNetworks(NetworkSettings p_settings)
+{
+   // Fill up list of best networks if not already full
+   if (m_bestNetworks.size() < m_numBestNetworks)
+      m_bestNetworks.push_back(p_settings);
+   else
+   {
+      // Find the worst mse of the best networks
+      float t_worst = m_bestNetworks.at(0).mse;
+      int t_index = 0;
+      for (size_t i = 0; i < m_bestNetworks.size(); i++)
+      {
+         if (m_bestNetworks.at(i).mse > t_worst)
+         {
+            t_index = i;
+            t_worst = m_bestNetworks.at(i).mse;
+         }
+      }
+      // Check if new network is better than worst
+      if(p_settings.mse < t_worst)
+         m_bestNetworks.at(t_index) = p_settings;
+   }
 }

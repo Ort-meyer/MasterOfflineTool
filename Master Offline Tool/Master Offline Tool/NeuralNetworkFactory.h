@@ -14,7 +14,8 @@ public:
 	Sets up different settings the factory needs to know how many different combinations to try
 	*/
 	void SetVariables(const int& p_maxNumberOfHiddenLayers, const int& p_maxNumberOfHiddenCellsPerLayer, const int& p_numberOfHiddenCellIncrement,
-		const float& p_learningRateIncrement, const float& p_hiddenSteepnessIncrement, const float& p_outputSteepnessIncrement, const int& p_maxNetsInMemoryAtOneTime)
+		const float& p_learningRateIncrement, const float& p_hiddenSteepnessIncrement, const float& p_outputSteepnessIncrement, const int& p_maxNetsInMemoryAtOneTime,
+   const int& p_bestNetworks = 5)
 	{
 		m_maxNumberOfHiddenLayers = p_maxNumberOfHiddenLayers;
 		m_maxNumberOfHiddenCellsPerLayer = p_maxNumberOfHiddenCellsPerLayer;
@@ -23,6 +24,7 @@ public:
 		m_hiddenSteepnessIncrement = p_hiddenSteepnessIncrement;
 		m_outputSteepnessIncrement = p_outputSteepnessIncrement;
 		m_maxNetsInMemoryAtOneTime = p_maxNetsInMemoryAtOneTime;
+      m_numBestNetworks = p_bestNetworks;
 		m_totalNrOfnetworks = 1;
 		m_totalNrOfnetworks *= m_maxNumberOfHiddenLayers;
 		m_totalNrOfnetworks *= m_maxNumberOfHiddenCellsPerLayer / m_numberOfHiddenCellIncrement;
@@ -49,9 +51,15 @@ public:
     void CreateSpecificNeuralNetwork(FANN::training_data* p_trainingData, const int& p_numberOfHiddenLayers, int* p_hiddenLayerCells,
         const FANN::activation_function_enum& p_outputActivationFunction, const FANN::activation_function_enum& p_hiddenActivationFunction,
         const float& p_learningRateSteepness, const float& p_steepnessOutput, const float& p_steepnessHidden, const bool& p_deteministicWeights,
-        const int& p_numberOfEpochsToTrain, const int& p_reportRate, const float& p_accaptableError, FANN::training_data* p_validationData=nullptr);
+        const int& p_numberOfEpochsToTrain, const int& p_reportRate, const float& p_accaptableError, FANN::training_data* p_validationData=nullptr,
+       const int& p_numBestNetworks = 5);
 
     void SetValidationData(FANN::training_data* p_validationData) { m_validationData = p_validationData; };
+    
+    /**
+    Sets the number of best networks we want to store. This is 5 by default*/
+    void SetBestNetworkSize(const int& p_bestNetworks) {m_numBestNetworks = p_bestNetworks; };
+
 private:
 	// First in a series of creating all different combinations of neural nets
 	void CreateHiddenLayerCombinations(NetworkSettings * p_netWorkSettings, int* p_hiddenCells, const int& p_numberOfLayers, const int& p_depth);
@@ -67,6 +75,12 @@ private:
 
 	// Last step in the chain, here we simply create and ave the network
 	void CreateTheNetwork(NetworkSettings* p_netWorkSettings);
+
+   /**
+   Checks m_bestNetworks if the new settings are any good and updates if necessary.
+   If m_bestNetworks isn't full of networks (if m_bestNetworks.size() > m_numBestNetworks)
+   the new network is simply added to the list*/
+   void UpdateBestNetworks(NetworkSettings p_settings);
 
 	std::vector<NeuralNetwork*> m_networks;
 	int m_maxNumberOfHiddenLayers;
@@ -91,7 +105,12 @@ private:
 	// Variable to keep track of how many networks we need to run
 	int m_totalNrOfnetworks;
 
+   // How many networks we want to consider "best"
+   int m_numBestNetworks;
+
     // Will be used as validation data
     FANN::training_data* m_validationData;
+
+    std::vector<NetworkSettings> m_bestNetworks;
 };
 

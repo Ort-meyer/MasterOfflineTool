@@ -46,6 +46,7 @@ void NeuralNetwork::ValidateNetwork()
     {
         m_net.test_data(*m_networkSettings.validationData);
         std::cout << "Mean Square Error according to FANN: " << m_net.get_MSE() << endl;
+        m_networkSettings.mse = m_net.get_MSE();
         float fullError = 0;
         float* input = *m_networkSettings.validationData->get_input();
         float* output = *m_networkSettings.validationData->get_output();
