@@ -51,10 +51,11 @@ public:
     void CreateSpecificNeuralNetwork(FANN::training_data* p_trainingData, const int& p_numberOfHiddenLayers, int* p_hiddenLayerCells,
         const FANN::activation_function_enum& p_outputActivationFunction, const FANN::activation_function_enum& p_hiddenActivationFunction,
         const float& p_learningRateSteepness, const float& p_steepnessOutput, const float& p_steepnessHidden, const bool& p_deteministicWeights,
-        const int& p_numberOfEpochsToTrain, const int& p_reportRate, const float& p_accaptableError, FANN::training_data* p_validationData=nullptr,
-       const int& p_numBestNetworks = 5, const std::string& p_netIdString = "");
+        const int& p_numberOfEpochsToTrain, const int& p_reportRate, const float& p_accaptableError, FANN::training_data* p_validationData=nullptr, const std::string& p_netIdString = "");
 
     void SetValidationData(FANN::training_data* p_validationData) { m_validationData = p_validationData; };
+
+    void SetNumBestNetworks(const int& p_numBestNetworks) { m_numBestNetworks = p_numBestNetworks; };
     
     /**
     Sets the number of best networks we want to store. This is 5 by default*/

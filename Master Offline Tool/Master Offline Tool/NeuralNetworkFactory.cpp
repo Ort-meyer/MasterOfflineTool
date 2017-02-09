@@ -69,14 +69,13 @@ void NeuralNetworkFactory::CreateSpecificNeuralNetwork(FANN::training_data * p_t
     const FANN::activation_function_enum & p_hiddenActivationFunction, const float & p_learningRateSteepness,
     const float & p_steepnessOutput, const float & p_steepnessHidden, const bool & p_deteministicWeights,
     const int& p_numberOfEpochsToTrain, const int& p_reportRate, const float& p_accaptableError, FANN::training_data* p_validationData,
-   const int& p_numBestNetworks, const std::string& p_netIdString)
+    const std::string& p_netIdString)
 {
     NetworkSettings newNetSettings;
     // Set the constant variables
     newNetSettings.inputCells = p_trainingData->num_input_train_data();
     newNetSettings.outputCells = p_trainingData->num_output_train_data();
     newNetSettings.trainingData = p_trainingData;
-    m_numBestNetworks = p_numBestNetworks;
 
     // Se if we have any validation data
     if (p_validationData == nullptr)
