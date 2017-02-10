@@ -7,6 +7,7 @@
 #include <FileHandler.h>
 #include <algorithm>
 #include <iostream>
+#include <sstream>
 static FileCombiner m_this;
 
 FileCombiner::FileCombiner(): m_dataSetBuilder(new DataSetBuilder())
@@ -34,15 +35,15 @@ void FileCombiner::SaveBestNetToFile(const NeuralNetworkFactory& p_factory, cons
     size_t length = netSettings.size();
     for (size_t net = 0; net < length; net++)
     {
-        std::string newEntry = "";
+        std::ostringstream newEntry;
         // Add all the important network info
-        newEntry += "Combo: ";
-        newEntry += netSettings.at(net).idString;
-        newEntry += "MSE: ";
-        //newEntry += std::to_string(netSettings.at(net).mse);
+        newEntry << "Combo: ";
+        newEntry << netSettings.at(net).idString;
+        newEntry << " MSE: ";
+        newEntry << netSettings.at(net).mse;
         
         // Add the new entry to all the lines that should be writen
-        t_lines.push_back(newEntry);
+        t_lines.push_back(newEntry.str());
     }
     FileHandler::WriteToFile(t_lines, t_folderFullPath + p_fileName);
 }
