@@ -63,7 +63,7 @@ public:
 
     /**
     Returns a vector of the best networks that the factory has run since reset or startup*/
-    std::vector<NetworkSettings> GetBestNetworks() { return m_bestNetworks; };
+    std::vector<NetworkSettings> GetBestNetworks() const { return m_bestNetworks; };
 
     /**
     Clears the list of best vectors*/

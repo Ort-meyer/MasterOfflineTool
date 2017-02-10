@@ -7,6 +7,7 @@
 #include <FileHandler.h>
 #include <algorithm>
 #include <iostream>
+#include <sstream>
 static FileCombiner m_this;
 
 FileCombiner::FileCombiner(): m_dataSetBuilder(new DataSetBuilder())
@@ -29,21 +30,22 @@ FileCombiner::~FileCombiner()
 void FileCombiner::SaveBestNetToFile(const NeuralNetworkFactory& p_factory, const std::string & p_fileName, const std::string & p_folder)
 {
     std::string t_folderFullPath = FileHandler::GetAbsoluteFilePath(p_folder);
-    std::vector<NetworkSettings> netSettings;
+    std::vector<NetworkSettings> netSettings = p_factory.GetBestNetworks();
     std::vector<std::string> t_lines;
-    t_lines.push_back("YEEEEEEEEY");
     size_t length = netSettings.size();
     for (size_t net = 0; net < length; net++)
     {
-        std::string newEntry = "";
+        std::ostringstream newEntry;
         // Add all the important network info
-        newEntry += netSettings.at(net).deterministicWeights;
+        newEntry << "Combo: ";
+        newEntry << netSettings.at(net).idString;
+        newEntry << " MSE: ";
+        newEntry << netSettings.at(net).mse;
         
         // Add the new entry to all the lines that should be writen
-        t_lines.push_back(newEntry);
+        t_lines.push_back(newEntry.str());
     }
     FileHandler::WriteToFile(t_lines, t_folderFullPath + p_fileName);
-
 }
 
 void FileCombiner::CombineFilesInFolder(const std::string& p_folderName, const std::string& p_fileEnding)
@@ -113,6 +115,8 @@ void FileCombiner::FeedDataToNeuralNetworkFactory()
         // When we get here we have completed one combination of inputs with all combinations of validation and training data between persons
         // Here we save the best net setting to file
         SaveBestNetToFile(t_factory, m_dataSetBuilder->GetComboNameFromIndex(combo) + ".netSetting");
+        // Then we clear the best vector before we start the next combo
+        t_factory.ClearBestVectors();
     }
 }
 
