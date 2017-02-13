@@ -14,9 +14,8 @@ public:
 
     
 private:
-    void ProcessFilesAndSaveToFile(const std::vector<std::string>& p_files, const std::string& p_writeDirectoryPath
+    void ProcessFilesAndSaveToFile(std::vector<std::string> p_files, const std::string& p_writeDirectoryPath
         , const std::string& p_readFileEnding, const std::string& p_writeFileEnding);
-
     std::string m_keyPressesRawDataBegining;
     std::string m_positionRawDataBegining;
     std::string m_rotationRawDataBegining;

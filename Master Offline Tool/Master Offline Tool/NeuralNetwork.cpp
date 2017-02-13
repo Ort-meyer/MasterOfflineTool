@@ -51,13 +51,20 @@ void NeuralNetwork::ValidateNetwork()
         float* input = *m_networkSettings.validationData->get_input();
         float* output = *m_networkSettings.validationData->get_output();
         int length = m_networkSettings.validationData->length_train_data();
+        int successful = 0;
         for (size_t i = 0; i < length; i++)
         {
              // Needs to make this work for several output cells too, Or do WE?
         	float* netOutput = m_net.run(&input[i * m_networkSettings.inputCells]);
-        	std::cout << "Net: " << *netOutput << " Acctual: " << output[i] << endl;
+         float diff = abs(*netOutput - output[i]);
+         float tolerance = 0.1;
+         if (diff < tolerance)
+            successful++;
+        	//std::cout << "Net: " << *netOutput << " Acctual: " << output[i] << endl;
         	fullError += abs(abs(*netOutput) - abs(output[i]));
         }
+        cout << "number of successful: " << successful << " Out of a total of: " << length << endl;
+        cout << "Successrate: " << ((float)successful / (float)length) * 100 << "%" << endl;
         std::cout << "mean error: " << fullError / static_cast<float>(length) << endl;
     }
 }

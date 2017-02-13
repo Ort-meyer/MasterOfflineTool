@@ -4,8 +4,9 @@
 #include <Windows.h>
 #include <FileHandler.h>
 #include <algorithm>
-
-
+#include <iostream>
+#include <thread>
+using namespace std;
 DataStillManager::DataStillManager()
 {
     m_keyPressesRawDataBegining = "Keypresses";
@@ -28,10 +29,10 @@ void DataStillManager::FiltrateAllFilesInDirectory(const std::string& p_readDire
     
     std::vector<std::string> filesInDirectory = FileHandler::GetAllFileNames(p_readDirectoryPath, p_readFileEnding);
     std::sort(filesInDirectory.begin(), filesInDirectory.end());
-
+    
+    vector<thread> t_threads;
     while (filesInDirectory.size()> 0)
     {
-
         // Contains files of the same type, like all position files for example
         std::vector<std::string> t_allFilesOfType;
         std::string t_firstFileType;
@@ -57,13 +58,29 @@ void DataStillManager::FiltrateAllFilesInDirectory(const std::string& p_readDire
             }
         }
         // When we get here all files of the same type should be in t_allfilesoftype. Send it of to processing
-        ProcessFilesAndSaveToFile(t_allFilesOfType, p_writeDirectoryPath, p_readFileEnding, p_writeFileEnding);
+        t_threads.push_back(thread(&DataStillManager::ProcessFilesAndSaveToFile,this, t_allFilesOfType, p_writeDirectoryPath,p_readFileEnding, p_writeFileEnding));
+        //ProcessFilesAndSaveToFile(t_allFilesOfType, p_writeDirectoryPath, p_readFileEnding, p_writeFileEnding);
     }
+   for (size_t i = 0; i < t_threads.size(); i++)
+   {
+      t_threads.at(i).join();
+   }
 }
 
-void DataStillManager::ProcessFilesAndSaveToFile(const std::vector<std::string>& p_files, const std::string& p_writeDirectoryPath
+void derp(int t, int f)
+{
+   int q = t + f;
+}
+
+void merp()
+{
+   std::thread thread(derp, 1, 2);
+}
+
+void DataStillManager::ProcessFilesAndSaveToFile(std::vector<std::string> p_files, const std::string& p_writeDirectoryPath
     , const std::string& p_readFileEnding, const std::string& p_writeFileEnding)
 {
+   cout << "starting process" << endl;
     DataStill still;
     KeyMaskInterpreter keyMaskInterpeter;
     std::string outputPath = FileHandler::GetAbsoluteFilePath(p_writeDirectoryPath);
@@ -80,11 +97,12 @@ void DataStillManager::ProcessFilesAndSaveToFile(const std::vector<std::string>&
     for (size_t currentFile = 0; currentFile < length; currentFile++)
     {
         std::vector<std::string>* fileContent = &t_allFileContent->at(currentFile);
-        still.FlagDataOutput(*fileContent, 60 * 5, 1);
+        //still.FlagDataOutput(*fileContent, 60 * 5, 1);
 
         // In this if, and the following elses, we take the beginning of the file name, as long as the identifyer we want to compare with
         // and then we simply compare that substring to the wanted string. So basically we take the word in the beginning in a file name
         // and see what it is
+        ////////////////// KEY PRESSES //////////////////////
         if (p_files[currentFile].find(m_keyPressesRawDataBegining) != std::string::npos)
         {
             // It's a keypresses file, perform special thingies here!
@@ -92,12 +110,14 @@ void DataStillManager::ProcessFilesAndSaveToFile(const std::vector<std::string>&
             // TODO doesn't this introduce a memory leak, since we change the pointer of fileContent to a new one but doesn't remove the old one
             fileContent = still.FilterAdd(*fileContent, 60);
         }
+        ////////////////// POSITIONS //////////////////////
         else if (p_files[currentFile].find(m_positionRawDataBegining) != std::string::npos)
         {
             // It's a positions file, perform special thingies here!
             fileContent = still.FilterDisplacement(*fileContent);
             fileContent = still.FilterAvrage(*fileContent, 60);
         }
+        ////////////////// ROTATIONS //////////////////////
         else if (p_files[currentFile].find(m_rotationRawDataBegining) != std::string::npos)
         {
             // It's a rotations file, perform special thingies here!

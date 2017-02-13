@@ -101,16 +101,16 @@ void FileCombiner::FeedDataToNeuralNetworkFactory()
                 }
             }
             //netFac.CreateSpecificNeuralNetwork(&data, )
-            int* myInt = new int(20);
+            int ints[2] = { 20, 20 };
             //netFac.SetVariables(1, 3, 1, 0.3, 0.3, 0.3, 1);
             FANN::training_data trainingData = CreateTrainingDataFromListOfDataSet(oneCombosTrainingData);
             FANN::training_data validationData = CreateTrainingDataFromListOfDataSet(oneCombosValidationData);
             t_factory.SetNumBestNetworks(5);
-            t_factory.CreateSpecificNeuralNetwork(&trainingData, 1, myInt, FANN::activation_function_enum::SIGMOID_SYMMETRIC, FANN::activation_function_enum::SIGMOID_SYMMETRIC,
+            t_factory.CreateSpecificNeuralNetwork(&trainingData, 2, ints, FANN::activation_function_enum::SIGMOID, FANN::activation_function_enum::SIGMOID,
                 0.7f, 1.0f, 1.0f, true, 10000, 1000, 0.0001f, &validationData, m_dataSetBuilder->GetComboNameFromIndex(combo));
             //netFac.CreateNewNeuralNetworkCombinationsFromData(&data);
             //t_factory.CreateNewNeuralNetworkCombinationsFromData(&trainingData);
-            delete myInt;
+            
         }
         // When we get here we have completed one combination of inputs with all combinations of validation and training data between persons
         // Here we save the best net setting to file
