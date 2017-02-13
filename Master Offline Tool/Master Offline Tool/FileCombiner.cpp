@@ -68,6 +68,7 @@ void FileCombiner::CombineFilesInFolder(const std::string& p_folderName, const s
 void FileCombiner::FeedDataToNeuralNetworkFactory()
 {
     NeuralNetworkFactory t_factory;
+    t_factory.SetMaxNetworksInMemory(4);
     int numberOfPersons = m_allCombosOfData.size();
     // The trainingdata attached to one combo
     std::vector<FANN::training_data> t_allTrainingData;

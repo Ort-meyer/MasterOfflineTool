@@ -83,7 +83,7 @@ public:
     /**
     Trains and validates the data using a increasing amount of epochs, validating after each training session
     */
-    void TrainAndValidateNetwork();
+    void TrainAndValidateNetwork(const int& p_epochs, const int& p_reportRate, const float& p_errorAcceptance);
 
 	 /**
     Returns MSE of this particular network*/  

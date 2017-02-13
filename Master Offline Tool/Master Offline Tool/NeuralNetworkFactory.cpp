@@ -10,6 +10,7 @@ NeuralNetworkFactory::NeuralNetworkFactory(): m_validationData(nullptr)
 
 NeuralNetworkFactory::~NeuralNetworkFactory()
 {
+    JoinNetworkThreads();
 }
 
 void NeuralNetworkFactory::CreateNewNeuralNetworkCombinationsFromData(FANN::training_data* p_trainingData, FANN::training_data* p_validationData)
@@ -75,27 +76,27 @@ void NeuralNetworkFactory::CreateSpecificNeuralNetwork(FANN::training_data * p_t
     // Set the constant variables
     newNetSettings.inputCells = p_trainingData->num_input_train_data();
     newNetSettings.outputCells = p_trainingData->num_output_train_data();
-    newNetSettings.trainingData = p_trainingData;
+    newNetSettings.trainingData = new FANN::training_data(*p_trainingData);
 
     // Se if we have any validation data
     if (p_validationData == nullptr)
     {
         // If m_validationdata is nullptr no validation will take place
-        newNetSettings.validationData = m_validationData;
+        newNetSettings.validationData = new FANN::training_data(*m_validationData);
     }
     else
     {
-        newNetSettings.validationData = p_validationData;
+        newNetSettings.validationData = new FANN::training_data(*p_validationData);;
     }
 
     newNetSettings.SetVaryingVariables(p_numberOfHiddenLayers, p_hiddenLayerCells, p_learningRateSteepness, p_steepnessOutput, 
         p_steepnessHidden, p_hiddenActivationFunction, p_outputActivationFunction, p_deteministicWeights, p_netIdString);
-    NeuralNetwork newNet;
-    newNet.SetSettings(newNetSettings);
-    newNet.SetupNetwork();
-    newNet.TrainOnData(p_numberOfEpochsToTrain, p_reportRate, p_accaptableError);
-    newNet.ValidateNetwork();
-    UpdateBestNetworks(newNet.GetNetworkSettings());
+    LaunchNewNet(&newNetSettings, p_numberOfEpochsToTrain, p_reportRate, p_accaptableError);
+    return;
+    //NeuralNetwork* newNet = new NeuralNetwork();
+    //newNet->SetSettings(newNetSettings);
+    //newNet->SetupNetwork();
+    //newNet->TrainAndValidateNetwork(p_numberOfEpochsToTrain, p_reportRate, p_accaptableError);
 }
 
 
@@ -184,32 +185,34 @@ void NeuralNetworkFactory::CreateFANNFunctionHiddenSpecificCombinations(NetworkS
 void NeuralNetworkFactory::CreateTheNetwork(NetworkSettings * p_netWorkSettings)
 {
     // We create a new net and save it after passing the accuiered setting
+    LaunchNewNet(p_netWorkSettings, 10000, 0, 0.0001);
+}
+
+void NeuralNetworkFactory::LaunchNewNet(NetworkSettings * p_netWorkSettings, const int & p_epochs, const int & p_reportRate, const float & p_acceptedError)
+{
+    ThreadedNetwork* newThreadedNetwork = new ThreadedNetwork();
     NeuralNetwork* newNet = new NeuralNetwork();
     newNet->SetSettings(*p_netWorkSettings);
     newNet->SetupNetwork();
-    m_networks.push_back(newNet);
-    size_t size = m_networks.size();
-    if (size > m_maxNetsInMemoryAtOneTime)
+    newThreadedNetwork->net = newNet;
+    // There is still place in the active network list
+    if (m_networks.size() >= m_maxNetsInMemoryAtOneTime)
     {
-        // A inverted for loop for easy removes while we dont have it threaded
-        for (int i = size - 1; i >= 0; i--)
-        {
-            m_networksTrainedWithCurrentData++;
-            // TODO Train and validate the network, use threads here if needed.
-            // Note that after training and validation is done the network will delete itself
-            m_networks.at(i)->TrainAndValidateNetwork();
-            // TODO Join threads
-            this->UpdateBestNetworks(m_networks.at(i)->GetNetworkSettings());
-			
-			float percentDone = ((float)m_networksTrainedWithCurrentData / (float)m_totalNrOfnetworks) * 100.0f;
-            std::cout << "Networks Trained: " << m_networksTrainedWithCurrentData << 
-				std::endl << "which is " << percentDone << "% of total" << std::endl;
-			
-            // Remove the networks
-            delete m_networks.at(i);
-            m_networks.erase(m_networks.begin() + i);
-        }
+        JoinNetworkThreads();
     }
+    newThreadedNetwork->thread = std::thread(&NeuralNetwork::TrainAndValidateNetwork, newNet, p_epochs, p_reportRate, p_acceptedError);
+    m_networks.push_back(newThreadedNetwork);
+}
+
+void NeuralNetworkFactory::JoinNetworkThreads()
+{
+    for (size_t i = 0; i < m_networks.size(); i++)
+    {
+        m_networks[i]->thread.join();
+        UpdateBestNetworks(m_networks[i]->net->GetNetworkSettings());
+        delete m_networks[i]->net;
+    }
+    m_networks.clear();
 }
 
 void NeuralNetworkFactory::UpdateBestNetworks(NetworkSettings p_settings)

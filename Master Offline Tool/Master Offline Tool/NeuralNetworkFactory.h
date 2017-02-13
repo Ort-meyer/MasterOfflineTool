@@ -4,6 +4,15 @@
 #include <vector>
 #include <string>
 #include "NeuralNetwork.h"
+#include <thread>
+#include <atomic>
+
+struct ThreadedNetwork
+{
+    NeuralNetwork* net;
+    std::thread thread;
+};
+
 class NeuralNetworkFactory
 {
 public:
@@ -69,6 +78,11 @@ public:
     Clears the list of best vectors*/
     void ClearBestVectors() { m_bestNetworks.clear(); };
 
+    /**
+    Sets how many networks can be in memory at the same time before a thread joining is performed
+    */
+    void SetMaxNetworksInMemory(const int& p_max) { m_maxNetsInMemoryAtOneTime = p_max; };
+
 private:
 	// First in a series of creating all different combinations of neural nets
 	void CreateHiddenLayerCombinations(NetworkSettings * p_netWorkSettings, int* p_hiddenCells, const int& p_numberOfLayers, const int& p_depth);
@@ -85,13 +99,19 @@ private:
 	// Last step in the chain, here we simply create and ave the network
 	void CreateTheNetwork(NetworkSettings* p_netWorkSettings);
 
+    // Creates a new net and launches it to train on the training data specified
+    void LaunchNewNet(NetworkSettings* p_netWorkSettings, const int& p_epochs, const int& p_reportRate, const float& p_acceptedError);
+
+    // Joins the networks and makes sure they are done
+    void JoinNetworkThreads();
+
    /**
    Checks m_bestNetworks if the new settings are any good and updates if necessary.
    If m_bestNetworks isn't full of networks (if m_bestNetworks.size() > m_numBestNetworks)
    the new network is simply added to the list*/
    void UpdateBestNetworks(NetworkSettings p_settings);
 
-	std::vector<NeuralNetwork*> m_networks;
+	std::vector<ThreadedNetwork*> m_networks;
 	int m_maxNumberOfHiddenLayers;
 	int m_maxNumberOfHiddenCellsPerLayer;
 	// States how much the hidden cell per layer will increase per loop run

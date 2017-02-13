@@ -69,10 +69,10 @@ void NeuralNetwork::ValidateNetwork()
     }
 }
 
-void NeuralNetwork::TrainAndValidateNetwork()
+void NeuralNetwork::TrainAndValidateNetwork(const int& p_epochs, const int& p_reportRate, const float& p_errorAcceptance)
 {
     // Start by training with one amount of epochs
-    TrainOnData(1000,100,0.0001f);
+    TrainOnData(p_epochs,p_reportRate,p_errorAcceptance);
     // Validate the trained network if we have any validation data
     ValidateNetwork();
 }
@@ -146,5 +146,7 @@ void NeuralNetwork::SetupNetwork()
 	m_net.set_activation_function_hidden(m_networkSettings.functionHidden);
 
 	m_net.set_callback(training_callback, NULL);
+
+    InitializeWeights();
 
 }
