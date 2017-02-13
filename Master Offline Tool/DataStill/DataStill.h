@@ -113,7 +113,7 @@ private:
    /**
    Takes all vectors of strings from input parameter and puts together into the
    same vector of strings and returns*/
-   std::vector<std::string>* MergeSetsOfLinesIntoSameSet(std::vector<std::vector<std::string>> p_setsOfLines);
+   std::vector<std::string>* MergeSetsOfLinesIntoSameSet(std::vector<std::vector<std::string>*> p_setsOfLines);
 
 	// Stores full path to directory in which we find raw data
 	std::string m_rawDataFilePath;

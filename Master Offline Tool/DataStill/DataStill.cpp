@@ -230,8 +230,11 @@ std::vector<std::string>*  DataStill::FilterAvrage(const std::vector<string>& p_
 	vector<string>* trueAvrages = AvrageNumbers(trueList, nrOfRowsPerDataEntry, p_numToAvrage);
 	vector<string>* falseAvrages = AvrageNumbers(falseList, nrOfRowsPerDataEntry, p_numToAvrage);
 	vector<string>* r_lines = new vector<string>();
+   vector<vector<string>*> t_setsOfLines;
+   t_setsOfLines.push_back(trueAvrages);
+   t_setsOfLines.push_back(falseAvrages);
 	// Merge true and false lists before returning
-	r_lines = trueAvrages;
+   r_lines = MergeSetsOfLinesIntoSameSet(t_setsOfLines);
 	r_lines->insert(r_lines->end(), falseAvrages->begin(), falseAvrages->end());
 	return r_lines;
 }
@@ -482,12 +485,12 @@ void DataStill::SplitDataIntoTrueAndFalseVectors(
 	}
 }
 
-std::vector<std::string>* DataStill::MergeSetsOfLinesIntoSameSet(std::vector<std::vector<std::string>> p_setsOfLines)
+std::vector<std::string>* DataStill::MergeSetsOfLinesIntoSameSet(std::vector<std::vector<std::string>*> p_setsOfLines)
 {
    vector<string>* r_lines = new vector<string>();
    for (size_t i = 0; i < p_setsOfLines.size(); i++)
    {
-      r_lines->insert(r_lines->end(), p_setsOfLines.at(i).begin(), p_setsOfLines.at(i).end());
+      r_lines->insert(r_lines->end(), p_setsOfLines.at(i)->begin(), p_setsOfLines.at(i)->end());
    }
    return r_lines;
 }
