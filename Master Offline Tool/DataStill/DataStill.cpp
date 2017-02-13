@@ -482,3 +482,13 @@ void DataStill::SplitDataIntoTrueAndFalseVectors(
 	}
 }
 
+std::vector<std::string>* DataStill::MergeSetsOfLinesIntoSameSet(std::vector<std::vector<std::string>> p_setsOfLines)
+{
+   vector<string>* r_lines = new vector<string>();
+   for (size_t i = 0; i < p_setsOfLines.size(); i++)
+   {
+      r_lines->insert(r_lines->end(), p_setsOfLines.at(i).begin(), p_setsOfLines.at(i).end());
+   }
+   return r_lines;
+}
+
