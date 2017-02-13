@@ -20,6 +20,14 @@ public:
 	vectors instead of world positions.
 	Returns pointer to the filtered data as a vector of strings*/
 	std::vector<std::string>* FilterDisplacement(const std::vector<std::string>& p_lines);
+
+   /**
+   Transforms rotations into displacement vectors. Input is the yaw,
+   pitch and roll of the camera of that frame, in radians.
+   Output values will two values on each row (we skip roll since it's
+   always 0) where each value is now the "radian displacement" a.k.a the
+   delta-angle.*/
+   std::vector<std::string>* FilterRotations(const std::vector<std::string>& p_lines);
 	
 
 	//////////////////General methods////////////////

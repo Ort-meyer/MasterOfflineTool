@@ -53,11 +53,24 @@ vector<string>* DataStill::FilterDisplacement(const std::vector<std::string>& p_
 		// Write displacement to file right away
 		r_lines->push_back(index);
 		stringstream t_stringStream;
-		t_stringStream << displacement.x << " " << displacement.y << " " << displacement.x << " " << endl;
+		t_stringStream << displacement.x << " " << displacement.y << " " << displacement.x << " ";
 		r_lines->push_back(t_stringStream.str());
 		r_lines->push_back(output);
 	}
 	return r_lines;
+}
+
+std::vector<std::string>* DataStill::FilterRotations(const std::vector<std::string>& p_lines)
+{
+   // Start by filtering displacements
+   vector<string>* r_lines = new vector<string>();
+   r_lines = FilterDisplacement(p_lines);
+   // Now remove roll values
+   for (size_t i = 1; i < r_lines->size()-1; i+=3)
+   {
+      r_lines->at(i) = r_lines->at(i).substr(0, r_lines->at(i).size() - 2);
+   }
+   return r_lines;
 }
 
 /////// GENERAL METODS///////

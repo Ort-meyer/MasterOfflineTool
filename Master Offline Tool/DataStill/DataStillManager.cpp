@@ -121,6 +121,7 @@ void DataStillManager::ProcessFilesAndSaveToFile(std::vector<std::string> p_file
         else if (p_files[currentFile].find(m_rotationRawDataBegining) != std::string::npos)
         {
             // It's a rotations file, perform special thingies here!
+           fileContent = still.FilterRotations(*fileContent);
             fileContent = still.FilterAvrage(*fileContent, 60);
         }
         // Perform general things, same for each file
