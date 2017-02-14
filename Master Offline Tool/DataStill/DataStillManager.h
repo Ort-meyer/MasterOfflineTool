@@ -2,6 +2,9 @@
 #include <string>
 #include <vector>
 
+// Whether we want to multithread the still's filtering
+#define MULTITHREAD
+
 class DataStillManager
 {
 public:

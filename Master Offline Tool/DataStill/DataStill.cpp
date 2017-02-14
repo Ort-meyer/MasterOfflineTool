@@ -239,6 +239,76 @@ std::vector<std::string>*  DataStill::FilterAvrage(const std::vector<string>& p_
     return r_lines;
 }
 
+std::vector<std::string>* DataStill::FilterAvrage2(const std::vector<std::string>& p_lines, int p_numToAvrage)
+{
+    vector<string>* r_lines = new vector<string>();
+    // Bool that tracks if we're currently searching for new data entries of same output to avrage
+    bool t_searching = false;
+    // Keeps track of how many values each data row has
+    const int numValues = std::distance(istream_iterator<string>(istringstream(p_lines.at(1)) >> ws), istream_iterator<string>());
+    // Stores the current values to be avraged
+    vector<float> t_currentValues;
+    t_currentValues.resize(numValues);
+    // Counts how many to avrage we've found
+    int t_numToAvrageCount = 0;
+    // Start looping over all data entries
+    for (size_t dataEntryStart = 0; dataEntryStart < p_lines.size(); dataEntryStart += 3)
+    {
+        string t_targetIndex;
+        string t_targetOutput;
+        // Check if we're looking for new values
+        if (!t_searching)
+        {
+            // We weren't! Set a target
+            t_targetIndex = p_lines.at(dataEntryStart);
+            t_targetOutput = p_lines.at(dataEntryStart + 2);
+            t_searching = true;
+        }
+        // Check if next output is the same as what we're looking for
+        string t_currentOutput = p_lines.at(dataEntryStart + 2);
+        if (t_targetOutput.compare(t_currentOutput) == 0)
+        {
+            // Next input is the same. Add together values
+            istringstream in(p_lines.at(dataEntryStart + 1));
+            for (size_t j = 0; j < numValues; j++)
+            {
+                float thisValue;
+                in >> thisValue;
+                t_currentValues.at(j) += thisValue;
+            }
+            t_numToAvrageCount++;
+
+            // Check if we've found our p_numToAvrage data entries
+            if (t_numToAvrageCount == p_numToAvrage)
+            {
+                // Divide all values to get avrage
+                stringstream ss;
+                for (size_t j = 0; j < numValues; j++)
+                {
+                    ss << t_currentValues.at(j) / p_numToAvrage << " ";
+                }
+                // Store output data entry, now with avraged number
+                r_lines->push_back(t_targetIndex);
+                r_lines->push_back(ss.str());
+                r_lines->push_back(t_targetOutput);
+
+                // Cleanup for next round
+                t_currentValues.clear();
+                t_currentValues.resize(numValues);
+                t_numToAvrageCount = 0;
+                t_searching = false;
+            }
+        }
+        else
+        {
+            t_currentValues.clear();
+            t_currentValues.resize(numValues);
+            t_searching = false;
+        }
+    }
+    return r_lines;
+}
+
 std::vector<std::string>* DataStill::FilterAdd(const std::vector<std::string>& p_lines, const int & p_numToAdd)
 {
     int nrOfRowsPerDataEntry = 3; // Will have to be tweaked!

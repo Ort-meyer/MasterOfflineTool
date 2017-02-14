@@ -74,6 +74,13 @@ public:
     std::vector<std::string>*  FilterAvrage(const std::vector<std::string>& p_lines, int p_numToAvrage);
 
     /**
+    General filter method that takes p_nuToAvrage numer of values and stores
+    as the avrage of those values.
+    p_rawDataFileName specifies input file, and p_filteredFileName specifies
+    output file name*/
+    std::vector<std::string>*  FilterAvrage2(const std::vector<std::string>& p_lines, int p_numToAvrage);
+
+    /**
     General filter for adding a given number of rows of input data together.
     TODO Fix so that only data adjacent to eachother in time is added together.
     */

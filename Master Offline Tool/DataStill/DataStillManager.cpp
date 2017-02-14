@@ -58,8 +58,11 @@ void DataStillManager::FiltrateAllFilesInDirectory(const std::string& p_readDire
             }
         }
         // When we get here all files of the same type should be in t_allfilesoftype. Send it of to processing
+#ifdef MULTITHREAD
         t_threads.push_back(thread(&DataStillManager::ProcessFilesAndSaveToFile, this, t_allFilesOfType, p_writeDirectoryPath, p_readFileEnding, p_writeFileEnding));
-        //ProcessFilesAndSaveToFile(t_allFilesOfType, p_writeDirectoryPath, p_readFileEnding, p_writeFileEnding);
+#else 
+        ProcessFilesAndSaveToFile(t_allFilesOfType, p_writeDirectoryPath, p_readFileEnding, p_writeFileEnding);
+#endif // MULTITHREAD
     }
     for (size_t i = 0; i < t_threads.size(); i++)
     {
@@ -115,14 +118,14 @@ void DataStillManager::ProcessFilesAndSaveToFile(std::vector<std::string> p_file
         {
             // It's a positions file, perform special thingies here!
             fileContent = still.FilterDisplacement(*fileContent);
-            fileContent = still.FilterAvrage(*fileContent, 60);
+            fileContent = still.FilterAvrage2(*fileContent, 60);
         }
         ////////////////// ROTATIONS //////////////////////
         else if (p_files[currentFile].find(m_rotationRawDataBegining) != std::string::npos)
         {
             // It's a rotations file, perform special thingies here!
             fileContent = still.FilterRotations(*fileContent);
-            fileContent = still.FilterAvrage(*fileContent, 60);
+            fileContent = still.FilterAvrage2(*fileContent, 60);
         }
         // Perform general things, same for each file
         fileContent = still.MergeDataOntoSameLine(*fileContent, 5);
