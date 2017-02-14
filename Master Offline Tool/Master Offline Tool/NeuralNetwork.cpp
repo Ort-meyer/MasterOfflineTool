@@ -66,6 +66,9 @@ void NeuralNetwork::ValidateNetwork()
         cout << "number of successful: " << successful << " Out of a total of: " << length << endl;
         cout << "Successrate: " << ((float)successful / (float)length) * 100 << "%" << endl;
         std::cout << "mean error: " << fullError / static_cast<float>(length) << endl;
+
+        m_networkSettings.correctPercentile = ((float)successful / (float)length) * 100;
+        m_networkSettings.meanError = fullError / static_cast<float>(length);
     }
 }
 

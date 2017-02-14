@@ -83,6 +83,9 @@ public:
     */
     void SetMaxNetworksInMemory(const int& p_max) { m_maxNetsInMemoryAtOneTime = p_max; };
 
+    // Joins the networks and makes sure they are done
+    void JoinNetworkThreads();
+
 private:
     // First in a series of creating all different combinations of neural nets
     void CreateHiddenLayerCombinations(NetworkSettings * p_netWorkSettings, int* p_hiddenCells, const int& p_numberOfLayers, const int& p_depth);
@@ -101,9 +104,6 @@ private:
 
     // Creates a new net and launches it to train on the training data specified
     void LaunchNewNet(NetworkSettings* p_netWorkSettings, const int& p_epochs, const int& p_reportRate, const float& p_acceptedError);
-
-    // Joins the networks and makes sure they are done
-    void JoinNetworkThreads();
 
     /**
     Checks m_bestNetworks if the new settings are any good and updates if necessary.

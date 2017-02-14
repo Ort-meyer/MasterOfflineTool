@@ -31,17 +31,39 @@ void FileCombiner::SaveBestNetToFile(const NeuralNetworkFactory& p_factory, cons
 {
     std::string t_folderFullPath = FileHandler::GetAbsoluteFilePath(p_folder);
     std::vector<NetworkSettings> netSettings = p_factory.GetBestNetworks();
+    std::sort(netSettings.begin(), netSettings.end(), NetworkSorting::SortNetworkSettingsByPercentile);
     std::vector<std::string> t_lines;
     size_t length = netSettings.size();
     for (size_t net = 0; net < length; net++)
     {
         std::ostringstream newEntry;
         // Add all the important network info
-        newEntry << "Combo: ";
+        newEntry << "ID: ";
         newEntry << netSettings.at(net).idString;
         newEntry << " MSE: ";
         newEntry << netSettings.at(net).mse;
-
+        newEntry << " Percentile correct: ";
+        newEntry << netSettings.at(net).correctPercentile;
+        newEntry << " Mean error: ";
+        newEntry << netSettings.at(net).meanError;
+        newEntry << std::endl << "---Network settings---" <<std::endl;
+        for (size_t i = 0; i < netSettings.at(net).hiddenLayers; i++)
+        {
+            newEntry << " hidden layers no: " << i+1 << " cells: " << netSettings.at(net).hiddenCells[i] << std::endl;
+        }
+        newEntry << " Function hidden: ";
+        newEntry << netSettings.at(net).functionHidden;
+        newEntry << " Function output: ";
+        newEntry << netSettings.at(net).functionOutput;
+        newEntry << " Learning rate: ";
+        newEntry << netSettings.at(net).learningRate;
+        newEntry << " Steepness hidden: ";
+        newEntry << netSettings.at(net).steepnessHidden;
+        newEntry << " Steepness output: ";
+        newEntry << netSettings.at(net).steepnessOutput;
+        newEntry << " Deterministic weights: ";
+        newEntry << netSettings.at(net).deterministicWeights;
+        newEntry << std::endl;
         // Add the new entry to all the lines that should be writen
         t_lines.push_back(newEntry.str());
     }
@@ -115,6 +137,8 @@ void FileCombiner::FeedDataToNeuralNetworkFactory()
         }
         // When we get here we have completed one combination of inputs with all combinations of validation and training data between persons
         // Here we save the best net setting to file
+        // Make sure all the nets are done
+        t_factory.JoinNetworkThreads();
         SaveBestNetToFile(t_factory, m_dataSetBuilder->GetComboNameFromIndex(combo) + ".netSetting");
         // Then we clear the best vector before we start the next combo
         t_factory.ClearBestVectors();

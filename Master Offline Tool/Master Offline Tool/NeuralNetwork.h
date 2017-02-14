@@ -3,6 +3,7 @@
 #include <FANN\header\fann_cpp.h>
 #include <string>
 
+
 // Should probably have a constructor, or at least default values
 struct NetworkSettings
 {
@@ -51,7 +52,25 @@ struct NetworkSettings
     String used to identify this network. This is meant to be used to differentiate networks from
     one another in a sensible way*/
     std::string idString;
+
+    /**
+    How high percentile that was correct when validating
+    */
+    float correctPercentile;
+
+    /**
+    Mean error
+    */
+    float meanError;
 };
+
+namespace NetworkSorting
+{
+    static bool SortNetworkSettingsByPercentile(const NetworkSettings& i, const NetworkSettings& j)
+    {
+        return i.correctPercentile > j.correctPercentile;
+    }
+}
 
 class NeuralNetwork
 {
