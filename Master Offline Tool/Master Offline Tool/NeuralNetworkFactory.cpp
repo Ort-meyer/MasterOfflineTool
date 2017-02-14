@@ -212,6 +212,7 @@ void NeuralNetworkFactory::JoinNetworkThreads()
         m_networks[i]->thread.join();
         UpdateBestNetworks(m_networks[i]->net->GetNetworkSettings());
         delete m_networks[i]->net;
+        delete m_networks[i];
     }
     m_networks.clear();
 }

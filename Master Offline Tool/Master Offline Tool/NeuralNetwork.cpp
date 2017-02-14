@@ -19,6 +19,8 @@ NeuralNetwork::NeuralNetwork()
 
 NeuralNetwork::~NeuralNetwork()
 {
+    delete m_networkSettings.trainingData;
+    delete m_networkSettings.validationData;
 }
 
 void NeuralNetwork::ValidateOnFile()
