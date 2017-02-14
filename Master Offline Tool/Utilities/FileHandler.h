@@ -22,5 +22,10 @@ namespace FileHandler
     Interprets p_lines as a list of lines to be written into a file.
     Will write into p_fileName*/
     void WriteToFile(const std::vector<std::string>& p_lines, std::string p_fullFilePath);
+
+    /**
+    Interprets p_lines as a list of lines to be appended to the end of a file.
+    Will write into p_fileName*/
+    void AppendToFile(const std::vector<std::string>& p_lines, const std::string & p_fullFilePath);
 };
 

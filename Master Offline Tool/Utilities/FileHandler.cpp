@@ -82,3 +82,15 @@ void FileHandler::WriteToFile(const std::vector<std::string>& p_lines, std::stri
     }
     outFile.close();
 }
+
+void FileHandler::AppendToFile(const std::vector<std::string>& p_lines, const std::string& p_fullFilePath)
+{  
+  std::ofstream outfile;
+
+  outfile.open(p_fullFilePath, std::ios_base::app);
+  for (size_t i = 0; i < p_lines.size(); i++)
+  {
+      outfile << p_lines.at(i) << endl;
+  }
+  outfile.close();
+}
