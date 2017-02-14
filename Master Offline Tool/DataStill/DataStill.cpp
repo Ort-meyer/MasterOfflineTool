@@ -62,13 +62,46 @@ vector<string>* DataStill::FilterDisplacement(const std::vector<std::string>& p_
 
 std::vector<std::string>* DataStill::FilterRotations(const std::vector<std::string>& p_lines)
 {
-    // Start by filtering displacements
     vector<string>* r_lines = new vector<string>();
-    r_lines = FilterDisplacement(p_lines);
-    // Now remove roll values
-    for (size_t i = 1; i < r_lines->size() - 1; i += 3)
+    istringstream in(p_lines.at(1));
+    vec2 t_currentRot;
+    for (size_t j = 0; j < 2; j++)
     {
-        r_lines->at(i) = r_lines->at(i).substr(0, r_lines->at(i).size() - 2);
+        in >> t_currentRot[j];
+    }
+
+    for (size_t i = 3; i < p_lines.size() - 2; i += 3)
+    {
+
+        string index = p_lines.at(i - 3);
+        string output = p_lines.at(i + 2 - 3);
+
+        istringstream in(p_lines.at(i + 1));
+        vec2 t_newRot;
+        for (size_t j = 0; j < 2; j++)
+        {
+            in >> t_newRot[j];
+        }
+        // This is the haxy bit. Basically it finds the shortest angle between the two points
+        vec2 t_displacement;
+        for (size_t j = 0; j < 2; j++)
+        {
+            // Taken from http://stackoverflow.com/questions/9505862/shortest-distance-between-two-degree-marks-on-a-circle
+            double first = t_currentRot[j];
+            double second = t_newRot[j];
+            double raw_diff = first > second ? first - second : second - first;
+            double mod_diff = std::fmod(raw_diff, 2*3.1415);
+            double dist = mod_diff > 3.1415 ? 2 * 3.1415 - mod_diff : mod_diff;
+            t_displacement[j] = dist;
+        }
+
+        t_currentRot = t_newRot;
+        // Write displacement to file right away
+        r_lines->push_back(index);
+        stringstream t_stringStream;
+        t_stringStream << t_displacement.x << " " << t_displacement.y;
+        r_lines->push_back(t_stringStream.str());
+        r_lines->push_back(output);
     }
     return r_lines;
 }
