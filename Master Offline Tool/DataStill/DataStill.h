@@ -86,6 +86,12 @@ public:
     */
     std::vector<std::string>* FilterAdd(const std::vector<std::string>& p_lines, const int& p_numToAdd);
 
+    /**
+    General filter for adding a given number of rows of input data together.
+    TODO Fix so that only data adjacent to eachother in time is added together.
+    */
+    std::vector<std::string>* FilterAdd2(const std::vector<std::string>& p_lines, const int& p_numToAdd);
+
 private:
     /////////////////////HELP METHODS/////////////////
 

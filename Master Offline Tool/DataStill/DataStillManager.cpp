@@ -111,7 +111,7 @@ void DataStillManager::ProcessFilesAndSaveToFile(std::vector<std::string> p_file
             // It's a keypresses file, perform special thingies here!
             keyMaskInterpeter.ReinterpretRawKeyData(fileContent);
             // TODO doesn't this introduce a memory leak, since we change the pointer of fileContent to a new one but doesn't remove the old one
-            fileContent = still.FilterAdd(*fileContent, 60);
+            fileContent = still.FilterAdd2(*fileContent, 60);
         }
         ////////////////// POSITIONS //////////////////////
         else if (p_files[currentFile].find(m_positionRawDataBegining) != std::string::npos)
