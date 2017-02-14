@@ -27,7 +27,7 @@ public:
     Reads through a directory and generates combined data sets
     of all combinations of raw data sets*/
     void BuildDataSetFromFolder(std::string p_directory);
-    std::vector<std::vector<DataSet>>* BuildDataSetFromFiles(const std::vector<std::string>& p_fileNames);
+    std::vector<std::vector<DataSet>>* BuildDataSetFromFiles(const std::vector<std::string>& p_fileNames, const std::string& p_wantedCombo = "");
 
     std::string GetComboNameFromIndex(const int& p_index);
 private:

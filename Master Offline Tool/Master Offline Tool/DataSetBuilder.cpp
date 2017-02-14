@@ -110,7 +110,7 @@ void DataSetBuilder::BuildDataSetFromFolder(string p_directory)
 
 }
 
-vector<vector<DataSet>>* DataSetBuilder::BuildDataSetFromFiles(const std::vector<std::string>& p_fileNames)
+vector<vector<DataSet>>* DataSetBuilder::BuildDataSetFromFiles(const std::vector<std::string>& p_fileNames, const std::string& p_wantedCombo)
 {
     m_comboIndexToString.clear();
     // Convert each file of raw data into multiple data sets
@@ -132,10 +132,10 @@ vector<vector<DataSet>>* DataSetBuilder::BuildDataSetFromFiles(const std::vector
                                         // Find which big data sets we want to merge
     int n = p_fileNames.size();
     int cap = 1 << n;
-    m_comboIndexToString.resize(cap);
     for (int i = 1; i < cap; ++i)
     {
         vector<vector<DataSet>> t_dataFilesToMerge;
+        std::string t_comboName;
         for (int j = 0; j < n; ++j)
         {
             if (i & (1 << j))
@@ -143,10 +143,15 @@ vector<vector<DataSet>>* DataSetBuilder::BuildDataSetFromFiles(const std::vector
                 t_dataFilesToMerge.push_back(t_filteredDataFiles.at(j));
                 //cout << vec[j] << " ";
                 size_t fileNameStart = p_fileNames[j].find_last_of("/") + 1;
-                m_comboIndexToString[i - 1] += p_fileNames[j].substr(fileNameStart, 3);
+                t_comboName += p_fileNames[j].substr(fileNameStart, 3);
 
             }
         }
+        if (p_wantedCombo != "" && p_wantedCombo != t_comboName)
+        {
+            continue;
+        }
+        m_comboIndexToString.push_back(t_comboName);
         mergedData->push_back(MergeDataFiles(t_dataFilesToMerge));
     }
     return mergedData;

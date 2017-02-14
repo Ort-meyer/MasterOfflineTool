@@ -97,6 +97,7 @@ void NeuralNetworkFactory::CreateSpecificNeuralNetwork(FANN::training_data * p_t
     //newNet->SetSettings(newNetSettings);
     //newNet->SetupNetwork();
     //newNet->TrainAndValidateNetwork(p_numberOfEpochsToTrain, p_reportRate, p_accaptableError);
+    //UpdateBestNetworks(newNet->GetNetworkSettings());
 }
 
 
