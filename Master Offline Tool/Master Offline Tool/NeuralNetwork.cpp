@@ -7,6 +7,12 @@ int training_callback(FANN::neural_net &net, FANN::training_data &train,
     unsigned int max_epochs, unsigned int epochs_between_reports,
     float desired_error, unsigned int epochs, void *user_data)
 {
+    BestEpoch* bestEpoch = static_cast<BestEpoch*>(user_data);
+    if (bestEpoch->bestMSE > net.get_MSE())
+    {
+        bestEpoch->bestMSE = net.get_MSE();
+        bestEpoch->bestEpoch = epochs;
+    }
     cout << "Epochs     " << epochs << ". "
         << "Current Error: " << net.get_MSE() << endl;
     return 0;
@@ -14,6 +20,8 @@ int training_callback(FANN::neural_net &net, FANN::training_data &train,
 
 NeuralNetwork::NeuralNetwork()
 {
+    m_lowestMSE.bestMSE = 1000;
+    m_lowestMSE.bestEpoch = -1;
 }
 
 
@@ -169,8 +177,7 @@ void NeuralNetwork::SetupNetwork()
     // Hidden settings possibly should be inside an if-condition?
     m_net.set_activation_steepness_hidden(m_networkSettings.steepnessHidden);
     m_net.set_activation_function_hidden(m_networkSettings.functionHidden);
-
-    m_net.set_callback(training_callback, NULL);
+    m_net.set_callback(training_callback, &m_lowestMSE);
 
     InitializeWeights();
 

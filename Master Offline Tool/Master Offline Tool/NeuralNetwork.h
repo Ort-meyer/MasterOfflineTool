@@ -4,6 +4,12 @@
 #include <string>
 
 
+struct BestEpoch
+{
+    float bestMSE;
+    int bestEpoch;
+};
+
 // Should probably have a constructor, or at least default values
 struct NetworkSettings
 {
@@ -62,6 +68,11 @@ struct NetworkSettings
     Mean error
     */
     float meanError;
+
+    /**
+    how many epochs the network trained to reach the result
+    */
+    BestEpoch epochsTrained;
 };
 
 namespace NetworkSorting
@@ -124,5 +135,7 @@ protected:
     std::string m_validationDataFilename;
     // Settings for this particular network
     NetworkSettings m_networkSettings;
+    // The best MSE during training
+    BestEpoch m_lowestMSE;
 };
 
