@@ -84,6 +84,7 @@ void NeuralNetwork::TrainAndValidateNetwork(const int& p_epochs, const int& p_re
 
 void NeuralNetwork::InitializeWeights()
 {
+    srand(1337);
     // Set starting weights
     if (!m_networkSettings.deterministicWeights)
     {
