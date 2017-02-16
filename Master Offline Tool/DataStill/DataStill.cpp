@@ -209,6 +209,58 @@ std::vector<std::string>* DataStill::MergeDataOntoSameLine(const std::vector<std
     return r_lines;
 }
 
+std::vector<std::string>* DataStill::MergeDataOntoSameLine2(const std::vector<std::string>& p_lines, int p_numToMerge)
+{
+    vector<string>* r_lines = new vector<string>();
+    // Bool that tracks if we're currently searching for new data entries of same output to merge
+    bool t_searching = false;
+    // Counts how many to merge we've found
+    int t_numToMergeCount = 0;
+    // Start looping over all data entries
+    string t_targetIndex;
+    string t_targetOutput;
+    string t_thisMerge;
+    for (size_t dataEntryStart = 0; dataEntryStart < p_lines.size(); dataEntryStart += 3)
+    {
+        // Check if we're looking for new values
+        if (!t_searching)
+        {
+            // We weren't! Set a target
+            t_targetIndex = p_lines.at(dataEntryStart);
+            t_targetOutput = p_lines.at(dataEntryStart + 2);
+            t_searching = true;
+        }
+        // Check if next output is the same as what we're looking for
+        string t_currentOutput = p_lines.at(dataEntryStart + 2);
+        if (t_targetOutput.compare(t_currentOutput) == 0)
+        {
+            // Next input is the same, start adding to result string
+            t_thisMerge.append(p_lines.at(dataEntryStart + 1));
+            t_thisMerge.append(" ");
+            t_numToMergeCount++;
+            // Check if we've found our p_numToAvrage data entries
+            if (t_numToMergeCount == p_numToMerge)
+            {
+                // Save results
+                r_lines->push_back(t_targetIndex);
+                r_lines->push_back(t_thisMerge);
+                r_lines->push_back(t_targetOutput);
+
+                // Cleanup for next round
+                t_thisMerge.clear();
+                t_numToMergeCount = 0;
+                t_searching = false;
+            }
+        }
+        else
+        {
+            t_thisMerge.clear();
+            t_searching = false;
+        }
+    }
+    return r_lines;
+}
+
 std::vector<std::string>* DataStill::FilterAwayDataRemove(const std::vector<string>& p_lines, int p_increment)
 {
     int nrOfRowsPerdataSet = 3; // Will have to be tweaked!
@@ -285,10 +337,11 @@ std::vector<std::string>* DataStill::FilterAvrage2(const std::vector<std::string
     // Counts how many to avrage we've found
     int t_numToAvrageCount = 0;
     // Start looping over all data entries
+    string t_targetIndex;
+    string t_targetOutput;
     for (size_t dataEntryStart = 0; dataEntryStart < p_lines.size(); dataEntryStart += 3)
     {
-        string t_targetIndex;
-        string t_targetOutput;
+
         // Check if we're looking for new values
         if (!t_searching)
         {
@@ -374,10 +427,11 @@ std::vector<std::string>* DataStill::FilterAdd2(const std::vector<std::string>& 
     // Counts how many to avrage we've found
     int t_numToAvrageCount = 0;
     // Start looping over all data entries
+    string t_targetIndex;
+    string t_targetOutput;
     for (size_t dataEntryStart = 0; dataEntryStart < p_lines.size(); dataEntryStart += 3)
     {
-        string t_targetIndex;
-        string t_targetOutput;
+
         // Check if we're looking for new values
         if (!t_searching)
         {
@@ -407,7 +461,7 @@ std::vector<std::string>* DataStill::FilterAdd2(const std::vector<std::string>& 
                 stringstream ss;
                 for (size_t j = 0; j < numValues; j++)
                 {
-                    ss << t_currentValues.at(j);
+                    ss << t_currentValues.at(j) << " ";
                 }
                 // Store output data entry, now with avraged number
                 r_lines->push_back(t_targetIndex);

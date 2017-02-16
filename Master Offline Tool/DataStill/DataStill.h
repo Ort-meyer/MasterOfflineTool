@@ -52,6 +52,12 @@ public:
     std::vector<std::string>* MergeDataOntoSameLine(const std::vector<std::string>& p_lines, int p_numToMerge);
 
     /**
+    Takes p_numToMerge data sets and put them onto the same line.
+    Index will be that of the first of the data sets.*/
+    std::vector<std::string>* MergeDataOntoSameLine2(const std::vector<std::string>& p_lines, int p_numToMerge);
+
+    /**
+    DOES NOT WORK PROPERLY
     General filter method to remove every p_increment:th point of data
     For instance, setting p_increment to 3 will remove every 3rd data point.
     p_rawDataFileName specifies input file, and p_filteredFileName specifies
@@ -59,6 +65,7 @@ public:
     std::vector<std::string>* FilterAwayDataRemove(const std::vector<std::string>& p_lines, int p_increment);
 
     /**
+    DOES NOT WORK PROPERLY
     General filter method to keep every p_increment:th point of data
     For instance, setting p_increment to 3 will keep every 3rd data point,
     every other data point will be removed
@@ -67,6 +74,7 @@ public:
     std::vector<std::string>*  FilterAwayDataKeep(const std::vector<std::string>& p_lines, int p_increment);
 
     /**
+    DOES NOT WORK PROPERLY
     General filter method that takes p_nuToAvrage numer of values and stores
     as the avrage of those values.
     p_rawDataFileName specifies input file, and p_filteredFileName specifies
@@ -81,6 +89,7 @@ public:
     std::vector<std::string>*  FilterAvrage2(const std::vector<std::string>& p_lines, int p_numToAvrage);
 
     /**
+    DOES NOT WORK PROPERLY
     General filter for adding a given number of rows of input data together.
     TODO Fix so that only data adjacent to eachother in time is added together.
     */

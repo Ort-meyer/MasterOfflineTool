@@ -99,6 +99,8 @@ void DataStillManager::ProcessFilesAndSaveToFile(std::vector<std::string> p_file
         t_allFileContent->push_back(*FileHandler::ReadFileIntoLines(p_files.at(currentFile)));
     }
 
+    bool normalize = true;
+
     for (size_t currentFile = 0; currentFile < length; currentFile++)
     {
         std::vector<std::string>* fileContent = &t_allFileContent->at(currentFile);
@@ -133,16 +135,18 @@ void DataStillManager::ProcessFilesAndSaveToFile(std::vector<std::string> p_file
         else if (p_files[currentFile].find(m_timeofdayRawDataBegining) != std::string::npos)
         {
             // It's a rotations file, perform special thingies here!
-            fileContent = still.FilterAwayDataKeep(*fileContent, 60);
+            fileContent = still.FilterAvrage2(*fileContent, 60);
+            normalize = false;
         }
         // Perform general things, same for each file
-        fileContent = still.MergeDataOntoSameLine(*fileContent, 5);
+        fileContent = still.MergeDataOntoSameLine2(*fileContent, 5);
 
         // Finally we save the data in the new pointer to the container
         t_allFileContent->at(currentFile) = *fileContent;
         delete fileContent;
     }
-    t_allFileContent = still.NormalizeValues(*t_allFileContent);
+    if (normalize)
+        t_allFileContent = still.NormalizeValues(*t_allFileContent);
 
 
 
