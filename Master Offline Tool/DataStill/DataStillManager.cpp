@@ -12,9 +12,11 @@ DataStillManager::DataStillManager()
     m_keyPressesRawDataBegining = "Keypresses";
     m_positionRawDataBegining = "Positions";
     m_rotationRawDataBegining = "Rotations";
+    m_timeofdayRawDataBegining = "TimeOfDay";
     m_fileTypes.push_back(m_keyPressesRawDataBegining);
     m_fileTypes.push_back(m_positionRawDataBegining);
     m_fileTypes.push_back(m_rotationRawDataBegining);
+    m_fileTypes.push_back(m_timeofdayRawDataBegining);
 }
 
 
@@ -126,6 +128,12 @@ void DataStillManager::ProcessFilesAndSaveToFile(std::vector<std::string> p_file
             // It's a rotations file, perform special thingies here!
             fileContent = still.FilterRotations(*fileContent);
             fileContent = still.FilterAvrage2(*fileContent, 60);
+        }
+        ////////////////// TimeOfDay //////////////////////
+        else if (p_files[currentFile].find(m_timeofdayRawDataBegining) != std::string::npos)
+        {
+            // It's a rotations file, perform special thingies here!
+            fileContent = still.FilterAwayDataKeep(*fileContent, 60);
         }
         // Perform general things, same for each file
         fileContent = still.MergeDataOntoSameLine(*fileContent, 5);

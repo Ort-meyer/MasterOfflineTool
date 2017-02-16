@@ -22,6 +22,7 @@ private:
     std::string m_keyPressesRawDataBegining;
     std::string m_positionRawDataBegining;
     std::string m_rotationRawDataBegining;
+    std::string m_timeofdayRawDataBegining;
     std::vector<std::string> m_fileTypes;
 };
 
