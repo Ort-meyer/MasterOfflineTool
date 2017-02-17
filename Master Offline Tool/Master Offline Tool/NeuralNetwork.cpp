@@ -20,8 +20,9 @@ int training_callback(FANN::neural_net &net, FANN::training_data &train,
 
 NeuralNetwork::NeuralNetwork()
 {
-    m_lowestMSE.bestMSE = 1000;
-    m_lowestMSE.bestEpoch = -1;
+    m_bestEpoch.bestMSE = 1000;
+    m_bestEpoch.bestEpoch = -1;
+    m_MSEExcaptableDifference = 0.001f;
 }
 
 
@@ -84,10 +85,34 @@ void NeuralNetwork::ValidateNetwork()
 
 void NeuralNetwork::TrainAndValidateNetwork(const int& p_epochs, const int& p_reportRate, const float& p_errorAcceptance)
 {
+    m_networkSettings.didRetrain = false;
+    m_firstTrainError = 1000;
     // Start by training with one amount of epochs
     TrainOnData(p_epochs, p_reportRate, p_errorAcceptance);
+    // If we, after training, find out that the best MSE according to FANN is that much lower than the one we got we retrain
+    if (m_bestEpoch.bestMSE < m_net.get_MSE() - m_MSEExcaptableDifference)
+    {
+        // We still need to validate before we retrain to get the validation error
+        ValidateNetwork();
+        m_firstTrainError = m_networkSettings.meanError;
+        InitializeWeights();
+        TrainOnData(m_bestEpoch.bestEpoch, 0, p_errorAcceptance);
+        m_networkSettings.didRetrain = true;
+    }
     // Validate the trained network if we have any validation data
+    // Then we validate again and see if the validation error is good or bad...
     ValidateNetwork();
+    if (m_firstTrainError > m_networkSettings.meanError)
+    {
+        // Apparently the retraining was good
+        m_networkSettings.retrainingWasGood = true;
+    }
+    else
+    {
+        // The retraining was not good. TODO figure out if we should retrain the network again with the original settings or just ignore
+        m_networkSettings.retrainingWasGood = false;
+    }
+    m_networkSettings.bestEpoch = m_bestEpoch;
 }
 
 void NeuralNetwork::InitializeWeights()
@@ -177,7 +202,7 @@ void NeuralNetwork::SetupNetwork()
     // Hidden settings possibly should be inside an if-condition?
     m_net.set_activation_steepness_hidden(m_networkSettings.steepnessHidden);
     m_net.set_activation_function_hidden(m_networkSettings.functionHidden);
-    m_net.set_callback(training_callback, &m_lowestMSE);
+    m_net.set_callback(training_callback, &m_bestEpoch);
 
     InitializeWeights();
 

@@ -38,14 +38,13 @@ void FileCombiner::SaveBestNetToFile(const NeuralNetworkFactory& p_factory, cons
     {
         std::ostringstream newEntry;
         // Add all the important network info
-        newEntry << "ID: ";
-        newEntry << netSettings.at(net).idString;
-        newEntry << " MSE: ";
-        newEntry << netSettings.at(net).mse;
-        newEntry << " Percentile correct: ";
-        newEntry << netSettings.at(net).correctPercentile;
-        newEntry << " Mean error: ";
-        newEntry << netSettings.at(net).meanError;
+        newEntry << "ID: " << netSettings.at(net).idString;
+        newEntry << " MSE: " << netSettings.at(net).mse;
+        newEntry << " Percentile correct: " << netSettings.at(net).correctPercentile;
+        newEntry << " Mean error: " << netSettings.at(net).meanError;
+        newEntry << " Did retraining: " << netSettings.at(net).didRetrain ? "true" : "false";
+        newEntry << " Retraining was good: " << netSettings.at(net).retrainingWasGood ? "true" : "false";
+        newEntry << " Number of Epochs trainined: " << netSettings.at(net).bestEpoch.bestEpoch;
         newEntry << std::endl << "---Network settings---" <<std::endl;
         for (size_t i = 0; i < netSettings.at(net).hiddenLayers; i++)
         {

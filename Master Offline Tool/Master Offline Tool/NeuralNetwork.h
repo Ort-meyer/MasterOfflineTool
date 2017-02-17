@@ -48,6 +48,7 @@ struct NetworkSettings
         idString = p_netID;
     }
 
+    // The following variables is about performans
     /*
     Mean square error of this network
     Should NOT be set at creation. This is derived after having run the network through validation.
@@ -72,7 +73,17 @@ struct NetworkSettings
     /**
     how many epochs the network trained to reach the result
     */
-    BestEpoch epochsTrained;
+    BestEpoch bestEpoch;
+
+    /**
+    If retraining was performed
+    */
+    bool didRetrain;
+
+    /**
+    If the reatraining gave beter validation results
+    */
+    bool retrainingWasGood;
 };
 
 namespace NetworkSorting
@@ -136,6 +147,10 @@ protected:
     // Settings for this particular network
     NetworkSettings m_networkSettings;
     // The best MSE during training
-    BestEpoch m_lowestMSE;
+    BestEpoch m_bestEpoch;
+    // How far from the best MSE we find excaptable
+    float m_MSEExcaptableDifference;
+    // The validation error the first training got, if retraining is needed
+    float m_firstTrainError;
 };
 
