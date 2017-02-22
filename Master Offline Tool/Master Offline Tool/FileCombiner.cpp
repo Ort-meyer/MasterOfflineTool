@@ -8,10 +8,12 @@
 #include <algorithm>
 #include <iostream>
 #include <sstream>
+#include "GnuPlotter.h"
 static FileCombiner m_this;
 
 FileCombiner::FileCombiner() : m_dataSetBuilder(new DataSetBuilder())
 {
+    GnuPlotter plotter;
     std::string t_stampLayout = "YYYY-MM-DD - hh-mm-ss";
     m_stampSize = t_stampLayout.length();
     m_validationAmount = 1;

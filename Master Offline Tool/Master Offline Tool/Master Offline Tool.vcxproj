@@ -74,6 +74,7 @@
   <ItemGroup>
     <ClCompile Include="DataSetBuilder.cpp" />
     <ClCompile Include="FileCombiner.cpp" />
+    <ClCompile Include="GnuPlotter.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="NeuralNetwork.cpp" />
     <ClCompile Include="NeuralNetworkFactory.cpp" />
@@ -81,6 +82,7 @@
   <ItemGroup>
     <ClInclude Include="DataSetBuilder.h" />
     <ClInclude Include="FileCombiner.h" />
+    <ClInclude Include="GnuPlotter.h" />
     <ClInclude Include="NeuralNetwork.h" />
     <ClInclude Include="NeuralNetworkFactory.h" />
   </ItemGroup>

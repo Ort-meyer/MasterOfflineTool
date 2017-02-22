@@ -14,6 +14,7 @@
       <Filter>Source</Filter>
     </ClCompile>
     <ClCompile Include="FileCombiner.cpp" />
+    <ClCompile Include="GnuPlotter.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DataSetBuilder.h">
@@ -26,6 +27,7 @@
       <Filter>Header</Filter>
     </ClInclude>
     <ClInclude Include="FileCombiner.h" />
+    <ClInclude Include="GnuPlotter.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Header">
