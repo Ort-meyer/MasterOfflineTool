@@ -13,8 +13,10 @@ public:
     ~GnuPlotter();
 
     
-
-    std::vector<std::string>* RevreseEngineerPositions(std::vector<std::string> p_lines);
+    /**
+    Lookes through the lines for the given index and fins relevant positions and builds 
+    a list which is then returned.*/
+    std::vector<std::string>* ReverseEngineerPositions(const std::vector<std::string>& p_lines, const int& p_index);
 
     /**
     Loads the neural network specified and runs it on all filtered data. Its results

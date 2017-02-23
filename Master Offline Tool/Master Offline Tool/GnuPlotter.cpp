@@ -3,6 +3,8 @@
 #include "DataSetBuilder.h"
 #include <algorithm>
 
+#define ROWSTOAVRAGE 60
+#define ROWSONSAMEROW 5
 
 using namespace FANN;
 using namespace std;
@@ -18,9 +20,26 @@ GnuPlotter::~GnuPlotter()
 }
 
 
-std::vector<std::string>* GnuPlotter::RevreseEngineerPositions(std::vector<std::string> p_lines)
+std::vector<std::string>* GnuPlotter::ReverseEngineerPositions(const std::vector<std::string>& p_lines, const int& p_index)
 {
-
+    vector<string>* r_lines = new vector<string>();
+    size_t t_numLines = p_lines.size();
+    for (size_t i_dataSetStart = 0; i_dataSetStart< t_numLines; i_dataSetStart+=3)
+    {
+        // Check if we've found the right index
+        if (p_lines.at(i_dataSetStart) == to_string(p_index))
+        {
+            // We can assume that the next x * y entries from an index are the positions we're looking for
+            size_t t_numRows = ROWSTOAVRAGE * ROWSONSAMEROW * 3; // times 3 since each entry is 3 rows
+            // Loop over relevant positions and put in return list
+            for (size_t i_pos = i_dataSetStart + 1; i_pos < t_numRows + i_dataSetStart + 1; i_pos += 3)
+            {
+                r_lines->push_back(p_lines.at(i_pos));
+            }
+            break;
+        }
+    }
+    return r_lines;
 }
 
 void GnuPlotter::RunNetworkAndPrepForGnuPlot(std::string p_annFilePath)
@@ -32,18 +51,21 @@ void GnuPlotter::RunNetworkAndPrepForGnuPlot(std::string p_annFilePath)
     size_t t_numPeople = m_people.size();
     for (size_t i_person = 0; i_person< t_numPeople; i_person++)
     {
+        Person* t_thisGuy = &m_people.at(i_person);
         // Run each data set through the network
-        size_t t_numDataSets = m_people.at(i_person).dataSets->size();
+        size_t t_numDataSets = t_thisGuy->dataSets->size();
         for (size_t i_dataSet = 0; i_dataSet< t_numDataSets; i_dataSet++)
         {
+            DataSet* t_thisDataSet = &t_thisGuy->dataSets->at(i_dataSet);
             // Run this data set
-            float* output = t_net.run(&m_people.at(i_person).dataSets->at(i_dataSet).values[0]);
+            //float* output = t_net.run(&t_thisDataSet->values[0]);
             // Cast so we get 0 or 1
-            *output += 0.5f; // Tweak as necessary
-            bool lost = (int)(*output);
-            if (lost)
+            //*output += 0.5f; // Tweak as necessary
+            //bool lost = (int)(*output);
+            if (true)//lost)
             {
                 /// Reverse engineer positions and write to file
+                vector<string>* t_lines = ReverseEngineerPositions(*t_thisGuy->rawPosData, t_thisDataSet->index);
             }
 
         }
