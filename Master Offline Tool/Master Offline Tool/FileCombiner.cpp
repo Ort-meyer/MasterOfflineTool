@@ -13,11 +13,11 @@ static FileCombiner m_this;
 
 FileCombiner::FileCombiner() : m_dataSetBuilder(new DataSetBuilder())
 {
-    GnuPlotter plotter;
     std::string t_stampLayout = "YYYY-MM-DD - hh-mm-ss";
     m_stampSize = t_stampLayout.length();
     m_validationAmount = 1;
     CreateAndTrainNetwork("../filteredData", "filteredData");
+    GnuPlotter plotter;
     CombineFilesInFolder("../filteredData", "filteredData");
 
     FeedDataToNeuralNetworkFactory();
@@ -64,7 +64,8 @@ void FileCombiner::CreateAndTrainNetwork(const std::string& p_folderName, const 
     t_netSettings.functionHidden = FANN::activation_function_enum::SIGMOID;
     t_netSettings.functionOutput = FANN::activation_function_enum::SIGMOID;
     t_netSettings.deterministicWeights = true;
-    t_netSettings.trainingData = &t_trainData;
+    t_netSettings.trainingData = new FANN::training_data(t_trainData);
+    t_netSettings.validationData = nullptr;
     t_ourNet.SetSettings(t_netSettings);
     t_ourNet.SetupNetwork();
     t_ourNet.TrainOnData(10000, 1000, 0.00001f);

@@ -2,7 +2,6 @@
 #include <FileHandler.h>
 #include "DataSetBuilder.h"
 #include <algorithm>
-
 #define ROWSTOAVRAGE 60
 #define ROWSONSAMEROW 5
 
@@ -11,7 +10,7 @@ using namespace std;
 GnuPlotter::GnuPlotter()
 {
     CreatePeople("../RawData", "../FilteredData");
-    RunNetworkAndPrepForGnuPlot("../SavedNetwork/mynet.ann");
+    RunNetworkAndPrepForGnuPlot("../SavedNetworks/test.ann");
     PrepGoldenDataForGnuPlot();
 }
 
@@ -60,12 +59,6 @@ void GnuPlotter::PrepGoldenDataForGnuPlot()
                // Merge with previous positions
                t_lines->insert(t_lines->end(), t_newLines->begin(), t_newLines->end());
             }
-            //else ////// ELSE SHOULD BE REMOVED COMPLETELY ///////////
-            //{
-            //    vector<string>* t_newLines = ReverseEngineerPositions(*t_thisGuy->rawPosData, t_thisDataSet->index);
-            //    // Merge with previous positions
-            //    t_lines->insert(t_lines->end(), t_newLines->begin(), t_newLines->end());
-            //}
         }
 
         // Done with data sets. Time to save results to file
@@ -93,14 +86,13 @@ void GnuPlotter::RunNetworkAndPrepForGnuPlot(std::string p_annFilePath)
         size_t t_numDataSets = t_thisGuy->dataSets->size();
         for (size_t i_dataSet = 0; i_dataSet< t_numDataSets; i_dataSet++)
         {
-            ////////////////////////// COMMENT STUFF BACK IN ////////////////////////
             DataSet* t_thisDataSet = &t_thisGuy->dataSets->at(i_dataSet);
             // Run this data set
-            //float* output = t_net.run(&t_thisDataSet->values[0]);
+            float* output = t_net.run(&t_thisDataSet->values[0]);
             // Cast so we get 0 or 1
-            //*output += 0.5f; // Tweak as necessary
-            //bool lost = (int)(*output);
-            if (true)//lost)
+            *output += 0.5f; // Tweak as necessary
+            bool lost = (int)(*output);
+            if (lost)
             {
                 // Reverse engineer positions and write to file
                 vector<string>* t_newLines = ReverseEngineerPositions(*t_thisGuy->rawPosData, t_thisDataSet->index);
