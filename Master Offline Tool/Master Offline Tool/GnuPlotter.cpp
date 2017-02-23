@@ -38,6 +38,27 @@ std::vector<std::string> GetAllFilesWithStampAndShrinkList(const std::string& p_
     return r_indices;
 }
 
+/**
+Searches through all raw position files to find position data for the tag specified*/
+std::vector<std::string>* GetRawPositions(const std::vector<std::string>p_posFileNames, const std::string& p_tag)
+{
+    // Find the correct file name
+    string t_thisFile;
+    size_t length = p_posFileNames.size();
+    for (size_t fileToLookAt = 0; fileToLookAt < length; fileToLookAt++)
+    {
+        // This should find if stamp is in file name
+        if (p_posFileNames[fileToLookAt].find(p_tag) != std::string::npos) {
+            {
+                t_thisFile = p_posFileNames[fileToLookAt];
+                break;
+            }
+        }
+    }
+
+    // Open file and return
+    return FileHandler::ReadFileIntoLines(t_thisFile);
+}
 
 void GnuPlotter::CreatePeople(std::string p_rawDataPath, std::string p_filteredDataPath)
 {
@@ -84,7 +105,7 @@ void GnuPlotter::CreatePeople(std::string p_rawDataPath, std::string p_filteredD
         thisGuy.dataSets = &t_dataSets->at(0);
 
         // Figure out which raw positions belong to this guy
-        
+        thisGuy.rawPosData = GetRawPositions(allPositionFiles, t_stamp);
 
         m_people.push_back(thisGuy);
     }
