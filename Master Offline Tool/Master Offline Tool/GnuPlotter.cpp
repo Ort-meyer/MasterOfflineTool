@@ -165,7 +165,7 @@ void GnuPlotter::CreatePeople(std::string p_rawDataPath, std::string p_filteredD
 
     /// Find raw position file names
     // Get all raw data
-    vector<string> t_allRawFileNames = FileHandler::GetAllFileNames(p_rawDataPath, "debug"); // remember to chance to .log file format!
+    vector<string> t_allRawFileNames = FileHandler::GetAllFileNames(p_rawDataPath, "rawData"); // remember to chance to .log file format!
     vector<string> t_allPositionFiles;
     // Filter so we only have those with position
     for (size_t i = 0; i < t_allRawFileNames.size(); i++)
