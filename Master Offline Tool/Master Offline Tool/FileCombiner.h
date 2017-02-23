@@ -13,6 +13,7 @@ class FileCombiner
 public:
     FileCombiner();
     ~FileCombiner();
+    void CreateAndTrainNetwork(const std::string & p_folderName, const std::string & p_fileEnding);
 private:
     void SaveBestNetToFile(const NeuralNetworkFactory& p_factory, const std::string& p_fileName, const std::string& p_folder = "../SavedNetSettings/");
     void CombineFilesInFolder(const std::string& p_folderName = "../FilteredData", const std::string& p_fileEnding = "filteredData");
