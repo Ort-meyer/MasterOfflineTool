@@ -52,6 +52,8 @@ void GnuPlotter::RunNetworkAndPrepForGnuPlot(std::string p_annFilePath)
     for (size_t i_person = 0; i_person< t_numPeople; i_person++)
     {
         Person* t_thisGuy = &m_people.at(i_person);
+        vector<string>* t_lines = new vector<string>();
+
         // Run each data set through the network
         size_t t_numDataSets = t_thisGuy->dataSets->size();
         for (size_t i_dataSet = 0; i_dataSet< t_numDataSets; i_dataSet++)
@@ -64,11 +66,18 @@ void GnuPlotter::RunNetworkAndPrepForGnuPlot(std::string p_annFilePath)
             //bool lost = (int)(*output);
             if (true)//lost)
             {
-                /// Reverse engineer positions and write to file
-                vector<string>* t_lines = ReverseEngineerPositions(*t_thisGuy->rawPosData, t_thisDataSet->index);
+                // Reverse engineer positions and write to file
+                vector<string>* t_newLines = ReverseEngineerPositions(*t_thisGuy->rawPosData, t_thisDataSet->index);
+                // Merge with previous positions
+                t_lines->insert(t_lines->end(), t_newLines->begin(), t_newLines->end());
             }
-
         }
+
+        // Done with data sets. Time to save results to file
+        string t_fileName = "../heatmaps/Calculated/";
+        t_fileName += t_thisGuy->name;
+        t_fileName += "heatmap.heatmap";
+        FileHandler::WriteToFile(*t_lines, t_fileName); // put in calculated folder since... well, it's calculated
     }
 }
 
