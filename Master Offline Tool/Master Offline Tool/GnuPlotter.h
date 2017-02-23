@@ -14,12 +14,14 @@ public:
 
     
 
+    std::vector<std::string>* RevreseEngineerPositions(std::vector<std::string> p_lines);
+
     /**
     Loads the neural network specified and runs it on all filtered data. Its results
     are then used to create a massive text file which gnuplot can use to create a heatmap.
     It also uses the raw positions to get the golden answer for comparisson.
     p_annFilePath is absolut file path to the ann file*/
-    //void RunNetworkAndPrepForGnuPlot(std::string p_annFilePath);
+    void RunNetworkAndPrepForGnuPlot(std::string p_annFilePath);
 
 private:
 

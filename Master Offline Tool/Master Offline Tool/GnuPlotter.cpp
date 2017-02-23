@@ -9,6 +9,7 @@ using namespace std;
 GnuPlotter::GnuPlotter()
 {
     CreatePeople("../RawData", "../FilteredData");
+    RunNetworkAndPrepForGnuPlot("../SavedNetwork/mynet.ann");
 }
 
 
@@ -17,6 +18,37 @@ GnuPlotter::~GnuPlotter()
 }
 
 
+std::vector<std::string>* GnuPlotter::RevreseEngineerPositions(std::vector<std::string> p_lines)
+{
+
+}
+
+void GnuPlotter::RunNetworkAndPrepForGnuPlot(std::string p_annFilePath)
+{
+    // Load network
+    neural_net t_net;
+    t_net.create_from_file(p_annFilePath);
+    // Run through all people (no, not like that...)
+    size_t t_numPeople = m_people.size();
+    for (size_t i_person = 0; i_person< t_numPeople; i_person++)
+    {
+        // Run each data set through the network
+        size_t t_numDataSets = m_people.at(i_person).dataSets->size();
+        for (size_t i_dataSet = 0; i_dataSet< t_numDataSets; i_dataSet++)
+        {
+            // Run this data set
+            float* output = t_net.run(&m_people.at(i_person).dataSets->at(i_dataSet).values[0]);
+            // Cast so we get 0 or 1
+            *output += 0.5f; // Tweak as necessary
+            bool lost = (int)(*output);
+            if (lost)
+            {
+                /// Reverse engineer positions and write to file
+            }
+
+        }
+    }
+}
 
 std::vector<std::string> GnuPlotter::GetAllFilesWithStampAndShrinkList(const std::string& p_stamp, std::vector<std::string>& o_files)
 {
