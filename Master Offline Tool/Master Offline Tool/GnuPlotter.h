@@ -18,6 +18,8 @@ public:
     a list which is then returned.*/
     std::vector<std::string>* ReverseEngineerPositions(const std::vector<std::string>& p_lines, const int& p_index);
 
+    void PrepGoldenDataForGnuPlot();
+
     /**
     Loads the neural network specified and runs it on all filtered data. Its results
     are then used to create a massive text file which gnuplot can use to create a heatmap.
