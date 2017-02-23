@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Drawing.Imaging;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -62,8 +63,8 @@ namespace Heatmap_builder
             int[] position = new int[2];
             string thisLine = allLines[0];
             string[] numbers = thisLine.Split(' ');
-            position[0] = int.Parse(numbers[0]);
-            position[1] = int.Parse(numbers[1]);
+            position[0] = (int)double.Parse(numbers[0], CultureInfo.InvariantCulture);
+            position[1] = (int)double.Parse(numbers[1], CultureInfo.InvariantCulture);
             returnList.Add(position);
             minX = position[0];
             minY = position[1];
@@ -75,8 +76,8 @@ namespace Heatmap_builder
                 position = new int[2];
                 thisLine = allLines[i];
                 numbers = thisLine.Split(' ');
-                position[0] = int.Parse(numbers[0]); //X
-                position[1] = int.Parse(numbers[2]); //Z
+                position[0] = (int)double.Parse(numbers[0], CultureInfo.InvariantCulture);
+                position[1] = (int)double.Parse(numbers[1], CultureInfo.InvariantCulture);
                 returnList.Add(position);
                 minX = Math.Min(minX, position[0]);
                 minY = Math.Min(minY, position[1]);
