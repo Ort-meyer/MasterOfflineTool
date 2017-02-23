@@ -1,5 +1,7 @@
 #include "NeuralNetwork.h"
 #include <iostream>
+#include <vector>
+#include <FileHandler.h>
 using namespace std;
 
 
@@ -113,6 +115,17 @@ void NeuralNetwork::TrainAndValidateNetwork(const int& p_epochs, const int& p_re
         m_networkSettings.retrainingWasGood = false;
     }
     m_networkSettings.bestEpoch = m_bestEpoch;
+}
+
+void NeuralNetwork::SaveNetworkToFile(const std::string & p_fileName)
+{
+    string t_config;
+    m_net.save(p_fileName);
+   //// Hax so we can use our file writer
+   //vector<string> t_lines;
+   //t_lines.push_back(t_config);
+   //FileHandler::WriteToFile(t_lines, p_fileName);
+    
 }
 
 void NeuralNetwork::InitializeWeights()

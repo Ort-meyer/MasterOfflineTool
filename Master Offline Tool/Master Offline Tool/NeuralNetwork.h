@@ -134,6 +134,10 @@ public:
     Returns network settings of this particular network*/
     NetworkSettings GetNetworkSettings() { return m_networkSettings; };
 
+    /**
+    Saves the network to the filename specified*/
+    void SaveNetworkToFile(const std::string& p_fileName);
+
 protected:
     // HELPER FUNCTIONS
     void InitializeWeights();

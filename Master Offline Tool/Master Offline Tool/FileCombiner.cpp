@@ -69,6 +69,8 @@ void FileCombiner::CreateAndTrainNetwork(const std::string& p_folderName, const 
     t_ourNet.SetupNetwork();
     t_ourNet.TrainOnData(10000, 1000, 0.00001f);
 
+    t_ourNet.SaveNetworkToFile("../SavedNetworks/test.ann");
+
 
 
 
