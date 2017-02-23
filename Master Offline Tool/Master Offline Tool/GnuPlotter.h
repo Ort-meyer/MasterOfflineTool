@@ -12,6 +12,8 @@ public:
     GnuPlotter();
     ~GnuPlotter();
 
+    
+
     /**
     Loads the neural network specified and runs it on all filtered data. Its results
     are then used to create a massive text file which gnuplot can use to create a heatmap.
@@ -20,6 +22,12 @@ public:
     //void RunNetworkAndPrepForGnuPlot(std::string p_annFilePath);
 
 private:
+
+    // Shamelessly nicked method from konrad. Does what it says it does
+    std::vector<std::string> GetAllFilesWithStampAndShrinkList(const std::string & p_stamp, std::vector<std::string>& o_files);
+    /**
+    Searches through all raw position files to find position data for the tag specified*/
+    std::vector<std::string>* GetRawPositions(const std::vector<std::string> p_posFileNames, const std::string & p_tag);
 
     void CreatePeople(std::string p_rawDataPath, std::string p_filteredDataPath);
 

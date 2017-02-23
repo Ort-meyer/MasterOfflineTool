@@ -17,8 +17,8 @@ GnuPlotter::~GnuPlotter()
 }
 
 
-////// Shamelessly stolen and put here. We should really refactor shit...////////
-std::vector<std::string> GetAllFilesWithStampAndShrinkList(const std::string& p_stamp, std::vector<std::string>& o_files)
+
+std::vector<std::string> GnuPlotter::GetAllFilesWithStampAndShrinkList(const std::string& p_stamp, std::vector<std::string>& o_files)
 {
     std::vector<std::string> r_indices;
     size_t length = o_files.size();
@@ -40,7 +40,7 @@ std::vector<std::string> GetAllFilesWithStampAndShrinkList(const std::string& p_
 
 /**
 Searches through all raw position files to find position data for the tag specified*/
-std::vector<std::string>* GetRawPositions(const std::vector<std::string>p_posFileNames, const std::string& p_tag)
+std::vector<std::string>* GnuPlotter::GetRawPositions(const std::vector<std::string>p_posFileNames, const std::string& p_tag)
 {
     // Find the correct file name
     string t_thisFile;
@@ -65,16 +65,16 @@ void GnuPlotter::CreatePeople(std::string p_rawDataPath, std::string p_filteredD
 
     /// Find raw position file names
     // Get all raw data
-    vector<string> allRawFileNames = FileHandler::GetAllFileNames(p_rawDataPath, "debug"); // remember to chance to .log file format!
-    vector<string> allPositionFiles;
+    vector<string> t_allRawFileNames = FileHandler::GetAllFileNames(p_rawDataPath, "debug"); // remember to chance to .log file format!
+    vector<string> t_allPositionFiles;
     // Filter so we only have those with position
-    for (size_t i = 0; i < allRawFileNames.size(); i++)
+    for (size_t i = 0; i < t_allRawFileNames.size(); i++)
     {
-        size_t fileNameStart = allRawFileNames[i].find_last_of("/") + 1;
-        if (allRawFileNames[i].substr(fileNameStart, 3) == "Pos")
+        size_t fileNameStart = t_allRawFileNames[i].find_last_of("/") + 1;
+        if (t_allRawFileNames[i].substr(fileNameStart, 3) == "Pos")
         {
             // We found a position file!
-            allPositionFiles.push_back(allRawFileNames.at(i));
+            t_allPositionFiles.push_back(t_allRawFileNames.at(i));
         }
     }
 
@@ -95,18 +95,18 @@ void GnuPlotter::CreatePeople(std::string p_rawDataPath, std::string p_filteredD
         sort(t_filesInCombination.begin(), t_filesInCombination.end());
 
         // Create this guy
-        Person thisGuy;
-        thisGuy.name = t_stamp;
+        Person t_thisGuy;
+        t_thisGuy.name = t_stamp;
 
         // Add relevant data sets
-        thisGuy.dataSets;
+        t_thisGuy.dataSets;
         DataSetBuilder dsb;
         vector<vector<DataSet>>* t_dataSets = dsb.BuildDataSetFromFiles(t_filesInCombination, t_desiredCombo);
-        thisGuy.dataSets = &t_dataSets->at(0);
+        t_thisGuy.dataSets = &t_dataSets->at(0);
 
         // Figure out which raw positions belong to this guy
-        thisGuy.rawPosData = GetRawPositions(allPositionFiles, t_stamp);
+        t_thisGuy.rawPosData = GetRawPositions(t_allPositionFiles, t_stamp);
 
-        m_people.push_back(thisGuy);
+        m_people.push_back(t_thisGuy);
     }
 }
