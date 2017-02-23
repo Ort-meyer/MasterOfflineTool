@@ -42,9 +42,12 @@ void FileCombiner::SaveBestNetToFile(const NeuralNetworkFactory& p_factory, cons
         newEntry << " MSE: " << netSettings.at(net).mse;
         newEntry << " Percentile correct: " << netSettings.at(net).correctPercentile;
         newEntry << " Mean error: " << netSettings.at(net).meanError;
-        newEntry << " Did retraining: " << netSettings.at(net).didRetrain ? "true" : "false";
-        newEntry << " Retraining was good: " << netSettings.at(net).retrainingWasGood ? "true" : "false";
-        newEntry << " Number of Epochs trainined: " << netSettings.at(net).bestEpoch.bestEpoch;
+        newEntry << " Did retraining: " << (netSettings.at(net).didRetrain ? "true" : "false");
+        if (netSettings.at(net).didRetrain)
+        {
+            newEntry << " Retraining was good: " << (netSettings.at(net).retrainingWasGood ? "true" : "false");
+            newEntry << " Number of Epochs trainined: " << netSettings.at(net).bestEpoch.bestEpoch;
+        }
         newEntry << std::endl << "---Network settings---" <<std::endl;
         for (size_t i = 0; i < netSettings.at(net).hiddenLayers; i++)
         {
@@ -89,7 +92,7 @@ void FileCombiner::CombineFilesInFolder(const std::string& p_folderName, const s
 void FileCombiner::FeedDataToNeuralNetworkFactory()
 {
     NeuralNetworkFactory t_factory;
-    t_factory.SetMaxNetworksInMemory(4);
+    t_factory.SetMaxNetworksInMemory(1);
     int numberOfPersons = m_allCombosOfData.size();
     // The trainingdata attached to one combo
     std::vector<FANN::training_data> t_allTrainingData;
