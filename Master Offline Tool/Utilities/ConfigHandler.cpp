@@ -12,7 +12,8 @@ ConfigHandler* ConfigHandler::Get()
 
 ConfigHandler::ConfigHandler()
 {
-
+    m_entriesToAvrage = 60;
+    m_entriesToMerge = 5;
 }
 
 

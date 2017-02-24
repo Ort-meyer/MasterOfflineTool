@@ -9,6 +9,8 @@
 #include <iterator>
 #include <fstream>
 #include <thread>
+#include <ConfigHandler.h>
+
 using namespace std;
 DataStillManager::DataStillManager()
 {
@@ -125,8 +127,6 @@ void DataStillManager::ProcessFilesAndSaveToFile(std::vector<std::string> p_file
     for (size_t currentFile = 0; currentFile < length; currentFile++)
     {
         std::vector<std::string>* fileContent = &t_allFileContent->at(currentFile);
-        //still.FlagDataOutput(*fileContent, 60 * 5, 1);
-
         // In this if, and the following elses, we take the beginning of the file name, as long as the identifyer we want to compare with
         // and then we simply compare that substring to the wanted string. So basically we take the word in the beginning in a file name
         // and see what it is
@@ -136,30 +136,35 @@ void DataStillManager::ProcessFilesAndSaveToFile(std::vector<std::string> p_file
             // It's a keypresses file, perform special thingies here!
             keyMaskInterpeter.ReinterpretRawKeyData(fileContent);
             // TODO doesn't this introduce a memory leak, since we change the pointer of fileContent to a new one but doesn't remove the old one
-            fileContent = still.FilterAdd2(*fileContent, 30);
+
+            fileContent = still.FilterAdd2(*fileContent, ConfigHandler::Get()->m_entriesToAvrage);
 			CheckThatAllEntiresHaveSameNrOfWords(*fileContent);
+
+
+
         }
         ////////////////// POSITIONS //////////////////////
         else if (p_files[currentFile].find(m_positionRawDataBegining) != std::string::npos)
         {
             // It's a positions file, perform special thingies here!
             fileContent = still.FilterDisplacement(*fileContent);
-            fileContent = still.FilterAvrage2(*fileContent, 30);
-			CheckThatAllEntiresHaveSameNrOfWords(*fileContent);
+            fileContent = still.FilterAvrage2(*fileContent, ConfigHandler::Get()->m_entriesToAvrage);
+			CheckThatAllEntiresHaveSameNrOfWords(*fileContent);        
         }
         ////////////////// ROTATIONS //////////////////////
         else if (p_files[currentFile].find(m_rotationRawDataBegining) != std::string::npos)
         {
             // It's a rotations file, perform special thingies here!
             fileContent = still.FilterRotations(*fileContent);
-            fileContent = still.FilterAvrage2(*fileContent, 30);
+            fileContent = still.FilterAvrage2(*fileContent, ConfigHandler::Get()->m_entriesToAvrage);
 			CheckThatAllEntiresHaveSameNrOfWords(*fileContent);
         }
         ////////////////// TimeOfDay //////////////////////
         else if (p_files[currentFile].find(m_timeofdayRawDataBegining) != std::string::npos)
         {
             // It's a rotations file, perform special thingies here!
-            fileContent = still.FilterAvrage2(*fileContent, 30);
+
+            fileContent = still.FilterAvrage2(*fileContent, ConfigHandler::Get()->m_entriesToAvrage);
 			CheckThatAllEntiresHaveSameNrOfWords(*fileContent);
             normalize = false;
         }
@@ -168,8 +173,7 @@ void DataStillManager::ProcessFilesAndSaveToFile(std::vector<std::string> p_file
 			int derp = 2;
 		}
         // Perform general things, same for each file
-		//CheckThatAllEntiresHaveSameNrOfWords(*fileContent);
-        fileContent = still.MergeDataOntoSameLine2(*fileContent, 40);
+        fileContent = still.MergeDataOntoSameLine2(*fileContent, ConfigHandler::Get()->m_entriesToMerge);
 		CheckThatAllEntiresHaveSameNrOfWords(*fileContent);
 
         // Finally we save the data in the new pointer to the container

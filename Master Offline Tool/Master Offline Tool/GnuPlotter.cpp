@@ -2,8 +2,7 @@
 #include <FileHandler.h>
 #include "DataSetBuilder.h"
 #include <algorithm>
-#define ROWSTOAVRAGE 60
-#define ROWSONSAMEROW 5
+#include <ConfigHandler.h>
 
 using namespace FANN;
 using namespace std;
@@ -30,7 +29,7 @@ std::vector<std::string>* GnuPlotter::ReverseEngineerPositions(const std::vector
         if (p_lines.at(i_dataSetStart) == to_string(p_index))
         {
             // We can assume that the next x * y entries from an index are the positions we're looking for
-            size_t t_numRows = ROWSTOAVRAGE * ROWSONSAMEROW * 3; // times 3 since each entry is 3 rows
+            size_t t_numRows = ConfigHandler::Get()->m_entriesToAvrage *  ConfigHandler::Get() ->m_entriesToMerge * 3; // times 3 since each entry is 3 rows
             // Loop over relevant positions and put in return list
             for (size_t i_pos = i_dataSetStart + 1; i_pos < t_numRows + i_dataSetStart + 1; i_pos += 3)
             {
