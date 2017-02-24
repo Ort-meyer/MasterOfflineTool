@@ -9,18 +9,31 @@
 #include <iostream>
 #include <sstream>
 #include "GnuPlotter.h"
+#include <ConfigHandler.h>
 static FileCombiner m_this;
 
 FileCombiner::FileCombiner() : m_dataSetBuilder(new DataSetBuilder())
 {
     std::string t_stampLayout = "YYYY-MM-DD - hh-mm-ss";
     m_stampSize = t_stampLayout.length();
+
     m_validationAmount = 0;
     CombineFilesInFolder("../filteredData", "filteredData");
     CreateAndTrainNetwork("../filteredData", "filteredData");
     //GnuPlotter plotter;
 
-    FeedDataToNeuralNetworkFactory();
+
+    if (ConfigHandler::Get()->m_trainAllNetworks)
+    {
+        CombineFilesInFolder("../filteredData", "filteredData");
+        FeedDataToNeuralNetworkFactory();
+    }
+    else
+    {
+        CreateAndTrainNetwork("../filteredData", "filteredData");
+        GnuPlotter plotter;
+    }
+    
     int a;
     std::cin >> a;
 }
@@ -194,6 +207,7 @@ void FileCombiner::FeedDataToNeuralNetworkFactory()
             FANN::training_data validationData = CreateTrainingDataFromListOfDataSet(oneCombosValidationData);
             
             t_factory.SetNumBestNetworks(10000);
+
 
             // A bit of a ugly hax to make no validation data work...
             if (m_validationAmount != 0)

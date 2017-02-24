@@ -14,6 +14,8 @@ ConfigHandler::ConfigHandler()
 {
     m_entriesToAvrage = 60;
     m_entriesToMerge = 5;
+
+    m_trainAllNetworks = false;
 }
 
 
