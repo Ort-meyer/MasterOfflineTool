@@ -27,12 +27,12 @@ FileCombiner::FileCombiner() : m_dataSetBuilder(new DataSetBuilder())
 
     if (ConfigHandler::Get()->m_trainAllNetworks)
     {
-        CombineFilesInFolder("../filteredData", "filteredData");
+        CombineFilesInFolder("../filteredData", ConfigHandler::Get()->m_fileEndingFiltered);
         FeedDataToNeuralNetworkFactory();
     }
     else
     {
-        CreateAndTrainNetwork("../filteredData", "filteredData");
+        CreateAndTrainNetwork("../filteredData", ConfigHandler::Get()->m_fileEndingFiltered);
         GnuPlotter plotter;
     }
     
@@ -80,6 +80,7 @@ void FileCombiner::CreateAndTrainNetwork(const std::string& p_folderName, const 
     t_netSettings.functionOutput = FANN::activation_function_enum::SIGMOID_SYMMETRIC;
     t_netSettings.deterministicWeights = true;
     t_netSettings.trainingData = new FANN::training_data(t_trainData);
+
     t_netSettings.validationData = new FANN::training_data(t_trainData); // YEAH ABOUT THIS!
 	//t_netSettings.validationData = nullptr; // NOT THE RIGHT WAY
     NeuralNetworkFactory t_netFac;
@@ -88,6 +89,16 @@ void FileCombiner::CreateAndTrainNetwork(const std::string& p_folderName, const 
     //t_ourNet.SetupNetwork();
     //t_ourNet.TrainOnData(10000000, 5000, 0.00001f);
     //t_ourNet.SaveNetworkToFile("../SavedNetworks/test.ann");
+
+    //t_netSettings.validationData = nullptr;
+    //t_ourNet.SetSettings(t_netSettings);
+    //t_ourNet.SetupNetwork();
+    //t_ourNet.TrainOnData(10000, 1000, 0.00001f);
+
+    //std::string t_netname = "test";
+
+    //t_ourNet.SaveNetworkToFile("../SavedNetworks/" + t_netname + "." + ConfigHandler::Get()->m_fileEndingNeuralNet);
+
 
 
 
@@ -237,7 +248,11 @@ void FileCombiner::FeedDataToNeuralNetworkFactory()
         // Here we save the best net setting to file
         // Make sure all the nets are done
         t_factory.JoinNetworkThreads();
-        SaveBestNetToFile(t_factory, "bestFunctions.netSetting");
+
+        // SaveBestNetToFile(t_factory, "bestFunctions.netSetting");
+
+        SaveBestNetToFile(t_factory, m_dataSetBuilder->GetComboNameFromIndex(combo) + "." + ConfigHandler::Get()->m_fileEndingNetSettings);
+
         // Then we clear the best vector before we start the next combo
         t_factory.ClearBestVectors();
     }

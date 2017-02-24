@@ -16,7 +16,7 @@ public:
     void CreateAndTrainNetwork(const std::string & p_folderName, const std::string & p_fileEnding);
 private:
     void SaveBestNetToFile(const NeuralNetworkFactory& p_factory, const std::string& p_fileName, const std::string& p_folder = "../SavedNetSettings/");
-    void CombineFilesInFolder(const std::string& p_folderName = "../FilteredData", const std::string& p_fileEnding = "filteredData");
+    void CombineFilesInFolder(const std::string& p_folderName, const std::string& p_fileEnding);
     void FeedDataToNeuralNetworkFactory();
     // This function also reduces the size of the given vector to remove files already drawn out
     std::vector<std::string> GetAllFilesWithStampAndShrinkList(const std::string& p_stamp, std::vector<std::string>& o_files);

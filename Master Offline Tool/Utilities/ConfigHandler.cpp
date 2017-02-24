@@ -18,6 +18,11 @@ ConfigHandler::ConfigHandler()
     m_trainAllNetworks = false;
 
     m_numValidationSet = 1;
+
+    m_fileEndingFiltered = "filteredData";
+    m_fileEndingRawData = "rawData";
+    m_fileEndingNetSettings = "netSettings";
+    m_fileEndingNeuralNet = "ann";
 }
 
 

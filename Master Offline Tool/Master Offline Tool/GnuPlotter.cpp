@@ -4,6 +4,7 @@
 #include <algorithm>
 #include <ConfigHandler.h>
 
+
 using namespace FANN;
 using namespace std;
 GnuPlotter::GnuPlotter()
@@ -156,7 +157,7 @@ void GnuPlotter::CreatePeople(std::string p_rawDataPath, std::string p_filteredD
 
     /// Find raw position file names
     // Get all raw data
-    vector<string> t_allRawFileNames = FileHandler::GetAllFileNames(p_rawDataPath, "rawData"); // remember to chance to .log file format!
+    vector<string> t_allRawFileNames = FileHandler::GetAllFileNames(p_rawDataPath, ConfigHandler::Get()->m_fileEndingRawData); // remember to chance to .log file format!
     vector<string> t_allPositionFiles;
     // Filter so we only have those with position
     for (size_t i = 0; i < t_allRawFileNames.size(); i++)
@@ -171,10 +172,10 @@ void GnuPlotter::CreatePeople(std::string p_rawDataPath, std::string p_filteredD
 
     /// Build people
     string t_desiredCombo = "PosRot"; // Hard coded so far
-    std::vector<std::string> t_rawDataFileNames = FileHandler::GetAllFileNames(p_filteredDataPath, "filteredData");
+    std::vector<std::string> t_rawDataFileNames = FileHandler::GetAllFileNames(p_filteredDataPath, ConfigHandler::Get()->m_fileEndingFiltered);
 
     int stampSize = string("YYYY-MM-DD - hh-mm-ss").length();
-    int fileEndingSize = string("filteredData").length();
+    int fileEndingSize = string(ConfigHandler::Get()->m_fileEndingFiltered).length();
 
     // We know that the stamp is in the end of a file, just before the file ending
     for (size_t i = 0; i < t_rawDataFileNames.size(); )
