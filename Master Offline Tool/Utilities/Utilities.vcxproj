@@ -68,9 +68,11 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="ConfigHandler.h" />
     <ClInclude Include="FileHandler.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="ConfigHandler.cpp" />
     <ClCompile Include="FileHandler.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
