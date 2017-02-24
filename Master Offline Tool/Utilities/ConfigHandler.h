@@ -14,6 +14,10 @@ public:
     // Whether we want to do the entire permutation thing or not
     bool m_trainAllNetworks;
 
+    // AllnetworkTraining configs
+    // How many sets we want to validate on each run
+    int m_numValidationSet;
+
 private:
     ConfigHandler();
     ~ConfigHandler();

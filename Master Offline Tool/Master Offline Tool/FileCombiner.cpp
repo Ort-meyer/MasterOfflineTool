@@ -22,6 +22,8 @@ FileCombiner::FileCombiner() : m_dataSetBuilder(new DataSetBuilder())
     CreateAndTrainNetwork("../filteredData", "filteredData");
     //GnuPlotter plotter;
 
+    m_validationAmount = ConfigHandler::Get()->m_numValidationSet;
+
 
     if (ConfigHandler::Get()->m_trainAllNetworks)
     {

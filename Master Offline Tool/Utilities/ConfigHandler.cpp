@@ -16,6 +16,8 @@ ConfigHandler::ConfigHandler()
     m_entriesToMerge = 5;
 
     m_trainAllNetworks = false;
+
+    m_numValidationSet = 1;
 }
 
 
