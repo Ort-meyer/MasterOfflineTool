@@ -34,6 +34,8 @@
             this.OutFolder = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
+            this.TextureWidth = new System.Windows.Forms.TextBox();
+            this.TextureHeight = new System.Windows.Forms.TextBox();
             ((System.ComponentModel.ISupportInitialize)(this.Preview)).BeginInit();
             this.SuspendLayout();
             // 
@@ -52,7 +54,7 @@
             this.Preview.Location = new System.Drawing.Point(366, 12);
             this.Preview.Name = "Preview";
             this.Preview.Size = new System.Drawing.Size(374, 261);
-            this.Preview.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.Preview.SizeMode = System.Windows.Forms.PictureBoxSizeMode.AutoSize;
             this.Preview.TabIndex = 1;
             this.Preview.TabStop = false;
             // 
@@ -91,11 +93,29 @@
             this.label2.TabIndex = 7;
             this.label2.Text = "Folder to save heatmaps";
             // 
+            // TextureWidth
+            // 
+            this.TextureWidth.Location = new System.Drawing.Point(197, 68);
+            this.TextureWidth.Name = "TextureWidth";
+            this.TextureWidth.Size = new System.Drawing.Size(163, 22);
+            this.TextureWidth.TabIndex = 8;
+            this.TextureWidth.Text = "4000";
+            // 
+            // TextureHeight
+            // 
+            this.TextureHeight.Location = new System.Drawing.Point(197, 96);
+            this.TextureHeight.Name = "TextureHeight";
+            this.TextureHeight.Size = new System.Drawing.Size(163, 22);
+            this.TextureHeight.TabIndex = 9;
+            this.TextureHeight.Text = "4000";
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(752, 535);
+            this.Controls.Add(this.TextureHeight);
+            this.Controls.Add(this.TextureWidth);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.OutFolder);
@@ -118,6 +138,8 @@
         private System.Windows.Forms.TextBox OutFolder;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.TextBox TextureWidth;
+        private System.Windows.Forms.TextBox TextureHeight;
     }
 }
 
