@@ -59,6 +59,7 @@ namespace Questionnaire
                 bool interesting = false;
                 foreach (var line in lines)
                 {
+                    interesting = false;
                     // Find the box that contains the answers
                     GroupBox interestedBox = new GroupBox();
                     foreach (var box in this.Controls.OfType<GroupBox>())
@@ -73,11 +74,17 @@ namespace Questionnaire
                     // Find if the checkbox for the answer given is checked as wanted
                     foreach (var checkbox in interestedBox.Controls.OfType<CheckBox>())
                     {
-                        if (line.Contains(checkbox.Text))
+                        if (checkbox.Checked && line.Contains(checkbox.Text))
                         {
                             interesting = true;
                             break;
                         }
+                    }
+                    if (!interesting)
+                    {
+                        // If we get here and interesting has not been set to true we have 
+                        // found a missmatch in the answers and the things we are interested in
+                        break;
                     }
                 }
 
@@ -107,7 +114,10 @@ namespace Questionnaire
             foreach (var file in files)
             {
                 string copyToLocation = "RawDataOfAnswer" + "/" + file.Substring(file.LastIndexOf("\\") + 1);
-                File.Copy(file, copyToLocation);
+                if (!File.Exists(copyToLocation))
+                {
+                    File.Copy(file, copyToLocation);
+                }             
             }
         }
     }
