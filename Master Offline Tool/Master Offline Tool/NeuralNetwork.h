@@ -2,12 +2,16 @@
 #include <FANN\header\floatfann.h>
 #include <FANN\header\fann_cpp.h>
 #include <string>
-
+#include <vector>
 
 struct BestEpoch
 {
     float bestMSE;
     int bestEpoch;
+	// List of all MSEs as given by reports
+	std::vector<float> mseList;
+	// Difference between first and last value
+	float difference;
 };
 
 // Should probably have a constructor, or at least default values
@@ -92,6 +96,10 @@ namespace NetworkSorting
     {
         return i.correctPercentile > j.correctPercentile;
     }
+	static bool SortNetwroKSettingsByMSEDiff(const NetworkSettings& i, const NetworkSettings& j)
+	{
+		return i.bestEpoch.difference > j.bestEpoch.difference;
+	}
 }
 
 class NeuralNetwork

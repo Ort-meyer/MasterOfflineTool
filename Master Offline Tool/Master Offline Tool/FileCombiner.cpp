@@ -55,14 +55,14 @@ void FileCombiner::CreateAndTrainNetwork(const std::string& p_folderName, const 
     NetworkSettings t_netSettings;
     t_netSettings.inputCells = t_setsToTrainOn.at(0).inputs;
     t_netSettings.outputCells = 1;
-    t_netSettings.hiddenLayers = 3;
-    int hiddenlayers[3] = { 10,10,10 };
+    t_netSettings.hiddenLayers = 4;
+    int hiddenlayers[5] = { 100,100,100, 100, 10};
     t_netSettings.hiddenCells = hiddenlayers;
-    t_netSettings.learningRate = 0.2;
-    t_netSettings.steepnessHidden = 0.2;
-    t_netSettings.steepnessOutput = 0.2;
-    t_netSettings.functionHidden = FANN::activation_function_enum::SIGMOID;
-    t_netSettings.functionOutput = FANN::activation_function_enum::SIGMOID;
+    t_netSettings.learningRate = 1;
+    t_netSettings.steepnessHidden = 0.6;
+    t_netSettings.steepnessOutput = 1;
+    t_netSettings.functionHidden = FANN::activation_function_enum::SIGMOID_SYMMETRIC;
+    t_netSettings.functionOutput = FANN::activation_function_enum::SIGMOID_SYMMETRIC;
     t_netSettings.deterministicWeights = true;
     t_netSettings.trainingData = new FANN::training_data(t_trainData);
     t_netSettings.validationData = nullptr;
@@ -81,7 +81,8 @@ void FileCombiner::SaveBestNetToFile(const NeuralNetworkFactory& p_factory, cons
 {
     std::string t_folderFullPath = FileHandler::GetAbsoluteFilePath(p_folder);
     std::vector<NetworkSettings> netSettings = p_factory.GetBestNetworks();
-    std::sort(netSettings.begin(), netSettings.end(), NetworkSorting::SortNetworkSettingsByPercentile);
+    //std::sort(netSettings.begin(), netSettings.end(), NetworkSorting::SortNetworkSettingsByPercentile);
+	std::sort(netSettings.begin(), netSettings.end(), NetworkSorting::SortNetwroKSettingsByMSEDiff);
     std::vector<std::string> t_lines;
     size_t length = netSettings.size();
     for (size_t net = 0; net < length; net++)
@@ -116,6 +117,12 @@ void FileCombiner::SaveBestNetToFile(const NeuralNetworkFactory& p_factory, cons
         newEntry << " Deterministic weights: ";
         newEntry << netSettings.at(net).deterministicWeights;
         newEntry << std::endl;
+		newEntry << "MSE values: ";
+		for (size_t i = 0; i < netSettings.at(i).bestEpoch.mseList.size(); i++)
+		{
+			newEntry << netSettings.at(i).bestEpoch.mseList.at(i) << " ";
+		}
+		newEntry << std::endl;
         // Add the new entry to all the lines that should be writen
         t_lines.push_back(newEntry.str());
     }
@@ -180,9 +187,9 @@ void FileCombiner::FeedDataToNeuralNetworkFactory()
             //netFac.SetVariables(1, 3, 1, 0.3, 0.3, 0.3, 1);
             FANN::training_data trainingData = CreateTrainingDataFromListOfDataSet(oneCombosTrainingData);
             FANN::training_data validationData = CreateTrainingDataFromListOfDataSet(oneCombosValidationData);
-            t_factory.SetNumBestNetworks(5);
-            t_factory.CreateSpecificNeuralNetwork(&trainingData, 5, ints, FANN::activation_function_enum::SIGMOID, FANN::activation_function_enum::SIGMOID,
-                0.7f, 1.0f, 1.0f, true, 10000, 1000, 0.0001f, &validationData, m_dataSetBuilder->GetComboNameFromIndex(combo));
+            t_factory.SetNumBestNetworks(10000);
+            //t_factory.CreateSpecificNeuralNetwork(&trainingData, 5, ints, FANN::activation_function_enum::SIGMOID, FANN::activation_function_enum::SIGMOID,
+                //0.7f, 1.0f, 1.0f, true, 10000, 1000, 0.0001f, &validationData, m_dataSetBuilder->GetComboNameFromIndex(combo));
             //netFac.CreateNewNeuralNetworkCombinationsFromData(&data);
             //t_factory.CreateNewNeuralNetworkCombinationsFromData(&trainingData);
 

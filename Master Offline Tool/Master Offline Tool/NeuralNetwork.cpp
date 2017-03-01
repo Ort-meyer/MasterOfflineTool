@@ -10,6 +10,12 @@ int training_callback(FANN::neural_net &net, FANN::training_data &train,
     float desired_error, unsigned int epochs, void *user_data)
 {
     BestEpoch* bestEpoch = static_cast<BestEpoch*>(user_data);
+	// Add mse into total list
+	bestEpoch->mseList.push_back(net.get_MSE());
+	//Update difference to always be first 
+	bestEpoch->difference = bestEpoch->mseList.at(0) - bestEpoch->mseList.at(bestEpoch->mseList.size() - 1);
+
+	
     if (bestEpoch->bestMSE > net.get_MSE())
     {
         bestEpoch->bestMSE = net.get_MSE();
@@ -115,6 +121,7 @@ void NeuralNetwork::TrainAndValidateNetwork(const int& p_epochs, const int& p_re
         m_networkSettings.retrainingWasGood = false;
     }
     m_networkSettings.bestEpoch = m_bestEpoch;
+
 }
 
 void NeuralNetwork::SaveNetworkToFile(const std::string & p_fileName)

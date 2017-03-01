@@ -115,31 +115,31 @@ void DataStillManager::ProcessFilesAndSaveToFile(std::vector<std::string> p_file
             // It's a keypresses file, perform special thingies here!
             keyMaskInterpeter.ReinterpretRawKeyData(fileContent);
             // TODO doesn't this introduce a memory leak, since we change the pointer of fileContent to a new one but doesn't remove the old one
-            fileContent = still.FilterAdd2(*fileContent, 60);
+            fileContent = still.FilterAdd2(*fileContent, 30);
         }
         ////////////////// POSITIONS //////////////////////
         else if (p_files[currentFile].find(m_positionRawDataBegining) != std::string::npos)
         {
             // It's a positions file, perform special thingies here!
             fileContent = still.FilterDisplacement(*fileContent);
-            fileContent = still.FilterAvrage2(*fileContent, 60);
+            fileContent = still.FilterAvrage2(*fileContent, 30);
         }
         ////////////////// ROTATIONS //////////////////////
         else if (p_files[currentFile].find(m_rotationRawDataBegining) != std::string::npos)
         {
             // It's a rotations file, perform special thingies here!
             fileContent = still.FilterRotations(*fileContent);
-            fileContent = still.FilterAvrage2(*fileContent, 60);
+            fileContent = still.FilterAvrage2(*fileContent, 30);
         }
         ////////////////// TimeOfDay //////////////////////
         else if (p_files[currentFile].find(m_timeofdayRawDataBegining) != std::string::npos)
         {
             // It's a rotations file, perform special thingies here!
-            fileContent = still.FilterAvrage2(*fileContent, 60);
+            fileContent = still.FilterAvrage2(*fileContent, 30);
             normalize = false;
         }
         // Perform general things, same for each file
-        fileContent = still.MergeDataOntoSameLine2(*fileContent, 5);
+        fileContent = still.MergeDataOntoSameLine2(*fileContent, 40);
 
         // Finally we save the data in the new pointer to the container
         t_allFileContent->at(currentFile) = *fileContent;
