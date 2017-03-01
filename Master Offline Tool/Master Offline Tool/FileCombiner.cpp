@@ -68,7 +68,7 @@ void FileCombiner::CreateAndTrainNetwork(const std::string& p_folderName, const 
     t_netSettings.validationData = nullptr;
     t_ourNet.SetSettings(t_netSettings);
     t_ourNet.SetupNetwork();
-    t_ourNet.TrainOnData(10000, 1000, 0.00001f);
+    t_ourNet.TrainOnData(100000, 1000, 0.00001f);
 
     t_ourNet.SaveNetworkToFile("../SavedNetworks/test.ann");
 
@@ -192,7 +192,8 @@ void FileCombiner::FeedDataToNeuralNetworkFactory()
                 //0.7f, 1.0f, 1.0f, true, 10000, 1000, 0.0001f, &validationData, m_dataSetBuilder->GetComboNameFromIndex(combo));
             //netFac.CreateNewNeuralNetworkCombinationsFromData(&data);
             //t_factory.CreateNewNeuralNetworkCombinationsFromData(&trainingData);
-
+            t_factory.CreateNewNeuralNetworkActivationFunctionCombinationFromData(&trainingData,
+                3, ints, 0.7f, 0.7f, 0.7f, true, 10000, 1000, 0.0001f, nullptr, m_dataSetBuilder->GetComboNameFromIndex(combo));
         }
         // When we get here we have completed one combination of inputs with all combinations of validation and training data between persons
         // Here we save the best net setting to file

@@ -13,6 +13,41 @@ NeuralNetworkFactory::~NeuralNetworkFactory()
     JoinNetworkThreads();
 }
 
+void NeuralNetworkFactory::CreateNewNeuralNetworkActivationFunctionCombinationFromData(FANN::training_data * p_trainingData, const int & p_numberOfHiddenLayers,
+    int * p_hiddenLayerCells, const float & p_learningRateSteepness,
+    const float & p_steepnessOutput, const float & p_steepnessHidden, const bool & p_deteministicWeights,
+    const int& p_numberOfEpochsToTrain, const int& p_reportRate, const float& p_accaptableError, FANN::training_data* p_validationData,
+    const std::string& p_netIdString)
+{
+    NetworkSettings newNetSettings;
+    // Set the constant variables
+    newNetSettings.inputCells = p_trainingData->num_input_train_data();
+    newNetSettings.outputCells = p_trainingData->num_output_train_data();
+    newNetSettings.trainingData = p_trainingData;
+    newNetSettings.hiddenCells = p_hiddenLayerCells;
+    newNetSettings.hiddenLayers = p_numberOfHiddenLayers;
+    newNetSettings.learningRate = p_learningRateSteepness;
+    newNetSettings.steepnessHidden = p_steepnessHidden;
+    newNetSettings.steepnessOutput = p_steepnessOutput;
+    newNetSettings.deterministicWeights = p_deteministicWeights;
+    newNetSettings.idString = p_netIdString;
+    m_epocsToTrain = p_numberOfEpochsToTrain;
+    m_reportRate = p_reportRate;
+    m_errorAcceptance = p_accaptableError;
+    
+    // Se if we have any validation data
+    if (p_validationData == nullptr)
+    {
+        // If m_validationdata is nullptr no validation will take place
+        newNetSettings.validationData = m_validationData;
+    }
+    else
+    {
+        newNetSettings.validationData = p_validationData;
+    }
+    CreateFANNFunctionOutputSpecificCombinations(&newNetSettings);
+}
+
 void NeuralNetworkFactory::CreateNewNeuralNetworkCombinationsFromData(FANN::training_data* p_trainingData, FANN::training_data* p_validationData)
 {
     m_networksTrainedWithCurrentData = 0;
@@ -186,7 +221,7 @@ void NeuralNetworkFactory::CreateFANNFunctionHiddenSpecificCombinations(NetworkS
 void NeuralNetworkFactory::CreateTheNetwork(NetworkSettings * p_netWorkSettings)
 {
     // We create a new net and save it after passing the accuiered setting
-    LaunchNewNet(p_netWorkSettings, 10000, 0, 0.0001);
+    LaunchNewNet(p_netWorkSettings, m_epocsToTrain, m_reportRate, m_errorAcceptance);
 }
 
 void NeuralNetworkFactory::LaunchNewNet(NetworkSettings * p_netWorkSettings, const int & p_epochs, const int & p_reportRate, const float & p_acceptedError)

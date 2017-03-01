@@ -129,5 +129,10 @@ namespace Heatmap_builder
             return returnPoint;
         }
 
+        private void ColorPixels(PixelFormat pixel, out Bitmap map)
+        {
+
+        }
+
     }
 }

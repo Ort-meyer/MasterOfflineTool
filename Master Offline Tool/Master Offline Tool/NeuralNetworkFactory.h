@@ -19,6 +19,7 @@ public:
     NeuralNetworkFactory();
     ~NeuralNetworkFactory();
 
+
     /**
     Sets up different settings the factory needs to know how many different combinations to try
     */
@@ -43,6 +44,11 @@ public:
         m_totalNrOfnetworks *= 14 * 14; // For different activation functions. Maybe reduce?
 
     }
+    /**
+    Creates all the combinations of activation functions for the other given settings
+    */
+    void CreateNewNeuralNetworkActivationFunctionCombinationFromData(FANN::training_data * p_trainingData, const int & p_numberOfHiddenLayers, int * p_hiddenLayerCells, const float & p_learningRateSteepness, const float & p_steepnessOutput, const float & p_steepnessHidden, const bool & p_deteministicWeights, const int & p_numberOfEpochsToTrain, const int & p_reportRate, const float & p_accaptableError, FANN::training_data * p_validationData, const std::string & p_netIdString);
+    
     /**
     Uses the data to form a lot of neural networks with different settings, train them and validate them.
     Validation along with other info about the network is printed to file
@@ -137,6 +143,12 @@ private:
     // How many networks we want to consider "best"
     int m_numBestNetworks;
 
+    // How many epochs we want to train
+    int m_epocsToTrain;
+    // The reposrt rate
+    int m_reportRate;
+    // The error acceptance
+    int m_errorAcceptance;
     // Will be used as validation data
     FANN::training_data* m_validationData;
 
