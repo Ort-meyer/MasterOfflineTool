@@ -14,7 +14,7 @@ int training_callback(FANN::neural_net &net, FANN::training_data &train,
 	bestEpoch->mseList.push_back(net.get_MSE());
 	//Update difference to always be first 
 	bestEpoch->difference = bestEpoch->mseList.at(0) - bestEpoch->mseList.at(bestEpoch->mseList.size() - 1);
-
+    net.get_activation_function(1, 0);
 	
     if (bestEpoch->bestMSE > net.get_MSE())
     {
@@ -22,7 +22,9 @@ int training_callback(FANN::neural_net &net, FANN::training_data &train,
         bestEpoch->bestEpoch = epochs;
     }
     cout << "Epochs     " << epochs << ". "
-        << "Current Error: " << net.get_MSE() << endl;
+        << "Current Error: " << net.get_MSE() <<
+        " Hidden Activation function: " << net.get_activation_function(1, 0)
+        << " Output Activation function: " << net.get_activation_function( net.get_num_layers() - 1, 0) << endl;
     return 0;
 }
 
@@ -93,6 +95,13 @@ void NeuralNetwork::ValidateNetwork()
 
 void NeuralNetwork::TrainAndValidateNetwork(const int& p_epochs, const int& p_reportRate, const float& p_errorAcceptance)
 {
+    // We try one train to ensure that we dont get NAN on the MSE
+    m_net.train_epoch(*m_networkSettings.trainingData);
+    // If we get NAN it means something is probably wrong with the net settings
+    if (isnan( m_net.get_MSE()))
+    {
+        return; // No need to do more, things are fucked up...
+    }
     m_networkSettings.didRetrain = false;
     m_firstTrainError = 1000;
     // Start by training with one amount of epochs

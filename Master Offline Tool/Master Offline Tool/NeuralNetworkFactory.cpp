@@ -23,7 +23,8 @@ void NeuralNetworkFactory::CreateNewNeuralNetworkActivationFunctionCombinationFr
     // Set the constant variables
     newNetSettings.inputCells = p_trainingData->num_input_train_data();
     newNetSettings.outputCells = p_trainingData->num_output_train_data();
-    newNetSettings.trainingData = p_trainingData;
+    // This will be a leak...
+    newNetSettings.trainingData = new FANN::training_data(*p_trainingData);
     newNetSettings.hiddenCells = p_hiddenLayerCells;
     newNetSettings.hiddenLayers = p_numberOfHiddenLayers;
     newNetSettings.learningRate = p_learningRateSteepness;
@@ -39,11 +40,11 @@ void NeuralNetworkFactory::CreateNewNeuralNetworkActivationFunctionCombinationFr
     if (p_validationData == nullptr)
     {
         // If m_validationdata is nullptr no validation will take place
-        newNetSettings.validationData = m_validationData;
+        newNetSettings.validationData = new FANN::training_data(*m_validationData);
     }
     else
     {
-        newNetSettings.validationData = p_validationData;
+        newNetSettings.validationData = new FANN::training_data(*p_validationData);
     }
     CreateFANNFunctionOutputSpecificCombinations(&newNetSettings);
 }

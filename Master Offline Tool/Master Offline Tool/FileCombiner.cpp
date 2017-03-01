@@ -16,8 +16,8 @@ FileCombiner::FileCombiner() : m_dataSetBuilder(new DataSetBuilder())
     std::string t_stampLayout = "YYYY-MM-DD - hh-mm-ss";
     m_stampSize = t_stampLayout.length();
     m_validationAmount = 1;
-    CreateAndTrainNetwork("../filteredData", "filteredData");
-    GnuPlotter plotter;
+    //CreateAndTrainNetwork("../filteredData", "filteredData");
+    //GnuPlotter plotter;
     CombineFilesInFolder("../filteredData", "filteredData");
 
     FeedDataToNeuralNetworkFactory();
@@ -141,7 +141,7 @@ void FileCombiner::CombineFilesInFolder(const std::string& p_folderName, const s
         std::vector<std::string> t_filesInCombination = GetAllFilesWithStampAndShrinkList(t_stamp, t_rawDataFileNames);
         // Sort to make sure the files are always sent in in the same order
         std::sort(t_filesInCombination.begin(), t_filesInCombination.end());
-        m_allCombosOfData.push_back(m_dataSetBuilder->BuildDataSetFromFiles(t_filesInCombination));
+        m_allCombosOfData.push_back(m_dataSetBuilder->BuildDataSetFromFiles(t_filesInCombination, "KeyPosRot"));
     }
     m_dataSetCombinationsPerPerson = m_allCombosOfData[0]->size();
 }
@@ -193,7 +193,7 @@ void FileCombiner::FeedDataToNeuralNetworkFactory()
             //netFac.CreateNewNeuralNetworkCombinationsFromData(&data);
             //t_factory.CreateNewNeuralNetworkCombinationsFromData(&trainingData);
             t_factory.CreateNewNeuralNetworkActivationFunctionCombinationFromData(&trainingData,
-                3, ints, 0.7f, 0.7f, 0.7f, true, 10000, 1000, 0.0001f, nullptr, m_dataSetBuilder->GetComboNameFromIndex(combo));
+                3, ints, 0.7f, 0.7f, 0.7f, true, 10000, 5, 0.0001f, &validationData, m_dataSetBuilder->GetComboNameFromIndex(combo));
         }
         // When we get here we have completed one combination of inputs with all combinations of validation and training data between persons
         // Here we save the best net setting to file
@@ -247,7 +247,7 @@ FANN::training_data FileCombiner::CreateTrainingDataFromListOfDataSet(std::vecto
     }
 
 
-    FANN::training_data data;
+    FANN::training_data data;// = new FANN::training_data();
     data.set_train_data(dataSetSize, p_allCombosOfData.at(0).inputs, inputs, 1, outputs);
 
     return data;
