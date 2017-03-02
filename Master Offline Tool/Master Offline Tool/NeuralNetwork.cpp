@@ -12,9 +12,14 @@ int training_callback(FANN::neural_net &net, FANN::training_data &train,
     BestEpoch* bestEpoch = static_cast<BestEpoch*>(user_data);
 	// Add mse into total list
 	bestEpoch->mseList.push_back(net.get_MSE());
+	// Check for new top and bottom and update as necessary
+	if (net.get_MSE() > bestEpoch->top)
+		bestEpoch->top = net.get_MSE();
+	if (net.get_MSE() < bestEpoch->bottom)
+		bestEpoch->bottom = net.get_MSE();
 	//Update difference to always be first 
-	bestEpoch->difference = bestEpoch->mseList.at(0) - bestEpoch->mseList.at(bestEpoch->mseList.size() - 1);
-    net.get_activation_function(1, 0);
+	//bestEpoch->difference = bestEpoch->mseList.at(0) - bestEpoch->mseList.at(bestEpoch->mseList.size() - 1);
+	bestEpoch->difference = bestEpoch->top - bestEpoch->bottom;
 	
     if (bestEpoch->bestMSE > net.get_MSE())
     {
@@ -32,6 +37,8 @@ NeuralNetwork::NeuralNetwork()
 {
     m_bestEpoch.bestMSE = 1000;
     m_bestEpoch.bestEpoch = -1;
+	m_bestEpoch.top = -10000;
+	m_bestEpoch.bottom = 10000;
     m_MSEExcaptableDifference = 0.001f;
 }
 

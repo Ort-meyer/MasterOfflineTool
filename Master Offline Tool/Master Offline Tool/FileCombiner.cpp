@@ -62,7 +62,7 @@ void FileCombiner::CreateAndTrainNetwork(const std::string& p_folderName, const 
     t_netSettings.steepnessHidden = 0.6;
     t_netSettings.steepnessOutput = 1;
     t_netSettings.functionHidden = FANN::activation_function_enum::SIGMOID_SYMMETRIC;
-    t_netSettings.functionOutput = FANN::activation_function_enum::SIGMOID;
+    t_netSettings.functionOutput = FANN::activation_function_enum::SIGMOID_SYMMETRIC;
     t_netSettings.deterministicWeights = true;
     t_netSettings.trainingData = new FANN::training_data(t_trainData);
     //t_netSettings.validationData = new FANN::training_data(t_trainData); // NOT THE RIGHT WAY
@@ -118,10 +118,13 @@ void FileCombiner::SaveBestNetToFile(const NeuralNetworkFactory& p_factory, cons
         newEntry << " Deterministic weights: ";
         newEntry << netSettings.at(net).deterministicWeights;
         newEntry << std::endl;
+		newEntry << "Biggest difference : ";
+		newEntry << netSettings.at(net).bestEpoch.difference;
+		newEntry << std::endl;
 		newEntry << "MSE values: ";
-		for (size_t i = 0; i < netSettings.at(i).bestEpoch.mseList.size(); i++)
+		for (size_t i = 0; i < netSettings.at(net).bestEpoch.mseList.size(); i++)
 		{
-			newEntry << netSettings.at(i).bestEpoch.mseList.at(i) << " ";
+			newEntry << netSettings.at(net).bestEpoch.mseList.at(i) << " ";
 		}
 		newEntry << std::endl;
         // Add the new entry to all the lines that should be writen

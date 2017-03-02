@@ -12,6 +12,9 @@ struct BestEpoch
 	std::vector<float> mseList;
 	// Difference between first and last value
 	float difference;
+
+	float top;
+	float bottom;
 };
 
 // Should probably have a constructor, or at least default values
