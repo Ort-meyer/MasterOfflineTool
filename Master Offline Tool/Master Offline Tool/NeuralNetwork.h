@@ -113,7 +113,8 @@ public:
     void SetSettings(const NetworkSettings& p_settings) { 
         m_networkSettings = p_settings; 
         m_networkSettings.trainingData = new FANN::training_data(*p_settings.trainingData);
-        m_networkSettings.validationData = new FANN::training_data(*p_settings.validationData);
+		if (m_networkSettings.validationData != nullptr)
+			m_networkSettings.validationData = new FANN::training_data(*p_settings.validationData);
     };
     /**
     Sets up the neural network with appropriate parameters

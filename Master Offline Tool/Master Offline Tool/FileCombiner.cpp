@@ -16,7 +16,7 @@ FileCombiner::FileCombiner() : m_dataSetBuilder(new DataSetBuilder())
     std::string t_stampLayout = "YYYY-MM-DD - hh-mm-ss";
     m_stampSize = t_stampLayout.length();
     m_validationAmount = 1;
-    //CreateAndTrainNetwork("../filteredData", "filteredData");
+    CreateAndTrainNetwork("../filteredData", "filteredData");
     //GnuPlotter plotter;
     CombineFilesInFolder("../filteredData", "filteredData");
 
@@ -62,13 +62,14 @@ void FileCombiner::CreateAndTrainNetwork(const std::string& p_folderName, const 
     t_netSettings.steepnessHidden = 0.6;
     t_netSettings.steepnessOutput = 1;
     t_netSettings.functionHidden = FANN::activation_function_enum::SIGMOID_SYMMETRIC;
-    t_netSettings.functionOutput = FANN::activation_function_enum::SIGMOID_SYMMETRIC;
+    t_netSettings.functionOutput = FANN::activation_function_enum::SIGMOID;
     t_netSettings.deterministicWeights = true;
     t_netSettings.trainingData = new FANN::training_data(t_trainData);
-    t_netSettings.validationData = nullptr;
+    //t_netSettings.validationData = new FANN::training_data(t_trainData); // NOT THE RIGHT WAY
+	t_netSettings.validationData = nullptr; // NOT THE RIGHT WAY
     t_ourNet.SetSettings(t_netSettings);
     t_ourNet.SetupNetwork();
-    t_ourNet.TrainOnData(100000, 1000, 0.00001f);
+    t_ourNet.TrainOnData(10000000, 5000, 0.00001f);
 
     t_ourNet.SaveNetworkToFile("../SavedNetworks/test.ann");
 

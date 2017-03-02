@@ -5,6 +5,9 @@
 #include <FileHandler.h>
 #include <algorithm>
 #include <iostream>
+#include <sstream>
+#include <iterator>
+#include <fstream>
 #include <thread>
 using namespace std;
 DataStillManager::DataStillManager()
@@ -82,6 +85,24 @@ void merp()
     std::thread thread(derp, 1, 2);
 }
 
+void CheckThatAllEntiresHaveSameNrOfWords(std::vector<std::string>& p_lines)
+{
+	string line = p_lines.at(1);
+	istringstream in(line);
+	int inputs = std::distance(istream_iterator<string>(istringstream(line) >> ws), istream_iterator<string>());
+	for (size_t i = 1; i < p_lines.size()-1; i+=3)
+	{
+		line = p_lines.at(i);
+		istringstream in(line);
+		int theseInputs = std::distance(istream_iterator<string>(istringstream(line) >> ws), istream_iterator<string>());
+		if (theseInputs != inputs)
+		{
+			int derp = 2;
+		}
+	}
+}
+
+
 void DataStillManager::ProcessFilesAndSaveToFile(std::vector<std::string> p_files, const std::string& p_writeDirectoryPath
     , const std::string& p_readFileEnding, const std::string& p_writeFileEnding)
 {
@@ -116,6 +137,7 @@ void DataStillManager::ProcessFilesAndSaveToFile(std::vector<std::string> p_file
             keyMaskInterpeter.ReinterpretRawKeyData(fileContent);
             // TODO doesn't this introduce a memory leak, since we change the pointer of fileContent to a new one but doesn't remove the old one
             fileContent = still.FilterAdd2(*fileContent, 30);
+			CheckThatAllEntiresHaveSameNrOfWords(*fileContent);
         }
         ////////////////// POSITIONS //////////////////////
         else if (p_files[currentFile].find(m_positionRawDataBegining) != std::string::npos)
@@ -123,6 +145,7 @@ void DataStillManager::ProcessFilesAndSaveToFile(std::vector<std::string> p_file
             // It's a positions file, perform special thingies here!
             fileContent = still.FilterDisplacement(*fileContent);
             fileContent = still.FilterAvrage2(*fileContent, 30);
+			CheckThatAllEntiresHaveSameNrOfWords(*fileContent);
         }
         ////////////////// ROTATIONS //////////////////////
         else if (p_files[currentFile].find(m_rotationRawDataBegining) != std::string::npos)
@@ -130,16 +153,24 @@ void DataStillManager::ProcessFilesAndSaveToFile(std::vector<std::string> p_file
             // It's a rotations file, perform special thingies here!
             fileContent = still.FilterRotations(*fileContent);
             fileContent = still.FilterAvrage2(*fileContent, 30);
+			CheckThatAllEntiresHaveSameNrOfWords(*fileContent);
         }
         ////////////////// TimeOfDay //////////////////////
         else if (p_files[currentFile].find(m_timeofdayRawDataBegining) != std::string::npos)
         {
             // It's a rotations file, perform special thingies here!
             fileContent = still.FilterAvrage2(*fileContent, 30);
+			CheckThatAllEntiresHaveSameNrOfWords(*fileContent);
             normalize = false;
         }
+		if (currentFile == 2)
+		{
+			int derp = 2;
+		}
         // Perform general things, same for each file
+		//CheckThatAllEntiresHaveSameNrOfWords(*fileContent);
         fileContent = still.MergeDataOntoSameLine2(*fileContent, 40);
+		CheckThatAllEntiresHaveSameNrOfWords(*fileContent);
 
         // Finally we save the data in the new pointer to the container
         t_allFileContent->at(currentFile) = *fileContent;

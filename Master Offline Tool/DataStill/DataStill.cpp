@@ -19,6 +19,8 @@ DataStill::~DataStill()
 {
 }
 
+
+
 //////// SPECIFIC MEHODS//////
 
 vector<string>* DataStill::FilterDisplacement(const std::vector<std::string>& p_lines)
@@ -209,6 +211,23 @@ std::vector<std::string>* DataStill::MergeDataOntoSameLine(const std::vector<std
     return r_lines;
 }
 
+void CheckThatAllEntiresHaveSameNrOfWords2(std::vector<std::string>& p_lines)
+{
+	string line = p_lines.at(1);
+	istringstream in(line);
+	int inputs = std::distance(istream_iterator<string>(istringstream(line) >> ws), istream_iterator<string>());
+	for (size_t i = 1; i < p_lines.size() - 1; i += 3)
+	{
+		line = p_lines.at(i);
+		istringstream in(line);
+		int theseInputs = std::distance(istream_iterator<string>(istringstream(line) >> ws), istream_iterator<string>());
+		if (theseInputs != inputs)
+		{
+			int derp = 2;
+		}
+	}
+}
+
 std::vector<std::string>* DataStill::MergeDataOntoSameLine2(const std::vector<std::string>& p_lines, int p_numToMerge)
 {
     vector<string>* r_lines = new vector<string>();
@@ -219,9 +238,13 @@ std::vector<std::string>* DataStill::MergeDataOntoSameLine2(const std::vector<st
     // Start looping over all data entries
     string t_targetIndex;
     string t_targetOutput;
-    string t_thisMerge;
+	string t_thisMerge;
     for (size_t dataEntryStart = 0; dataEntryStart < p_lines.size(); dataEntryStart += 3)
     {
+		if (dataEntryStart > 715-40)
+		{
+			int derp = 2;
+		}
         // Check if we're looking for new values
         if (!t_searching)
         {
@@ -245,6 +268,8 @@ std::vector<std::string>* DataStill::MergeDataOntoSameLine2(const std::vector<st
                 r_lines->push_back(t_targetIndex);
                 r_lines->push_back(t_thisMerge);
                 r_lines->push_back(t_targetOutput);
+				CheckThatAllEntiresHaveSameNrOfWords2(*r_lines);
+
 
                 // Cleanup for next round
                 t_thisMerge.clear();
@@ -255,6 +280,7 @@ std::vector<std::string>* DataStill::MergeDataOntoSameLine2(const std::vector<st
         else
         {
             t_thisMerge.clear();
+			t_numToMergeCount = 0;
             t_searching = false;
         }
     }
