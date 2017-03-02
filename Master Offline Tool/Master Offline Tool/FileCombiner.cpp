@@ -15,7 +15,7 @@ FileCombiner::FileCombiner() : m_dataSetBuilder(new DataSetBuilder())
 {
     std::string t_stampLayout = "YYYY-MM-DD - hh-mm-ss";
     m_stampSize = t_stampLayout.length();
-    m_validationAmount = 1;
+    m_validationAmount = 0;
     //CreateAndTrainNetwork("../filteredData", "filteredData");
     //GnuPlotter plotter;
     CombineFilesInFolder("../filteredData", "filteredData");
@@ -153,7 +153,7 @@ void FileCombiner::CombineFilesInFolder(const std::string& p_folderName, const s
 void FileCombiner::FeedDataToNeuralNetworkFactory()
 {
     NeuralNetworkFactory t_factory;
-    t_factory.SetMaxNetworksInMemory(1);
+    t_factory.SetMaxNetworksInMemory(4);
     int numberOfPersons = m_allCombosOfData.size();
     // The trainingdata attached to one combo
     std::vector<FANN::training_data> t_allTrainingData;
@@ -191,13 +191,30 @@ void FileCombiner::FeedDataToNeuralNetworkFactory()
             //netFac.SetVariables(1, 3, 1, 0.3, 0.3, 0.3, 1);
             FANN::training_data trainingData = CreateTrainingDataFromListOfDataSet(oneCombosTrainingData);
             FANN::training_data validationData = CreateTrainingDataFromListOfDataSet(oneCombosValidationData);
+            
             t_factory.SetNumBestNetworks(10000);
-            //t_factory.CreateSpecificNeuralNetwork(&trainingData, 5, ints, FANN::activation_function_enum::SIGMOID, FANN::activation_function_enum::SIGMOID,
+
+            // A bit of a ugly hax to make no validation data work...
+            if (m_validationAmount != 0)
+            {
+                //t_factory.CreateSpecificNeuralNetwork(&trainingData, 5, ints, FANN::activation_function_enum::SIGMOID, FANN::activation_function_enum::SIGMOID,
                 //0.7f, 1.0f, 1.0f, true, 10000, 1000, 0.0001f, &validationData, m_dataSetBuilder->GetComboNameFromIndex(combo));
-            //netFac.CreateNewNeuralNetworkCombinationsFromData(&data);
-            //t_factory.CreateNewNeuralNetworkCombinationsFromData(&trainingData);
-            t_factory.CreateNewNeuralNetworkActivationFunctionCombinationFromData(&trainingData,
-                3, ints, 0.7f, 0.7f, 0.7f, true, 10000, 1000, 0.0001f, &validationData, m_dataSetBuilder->GetComboNameFromIndex(combo));
+                //netFac.CreateNewNeuralNetworkCombinationsFromData(&data);
+                //t_factory.CreateNewNeuralNetworkCombinationsFromData(&trainingData);
+                t_factory.CreateNewNeuralNetworkActivationFunctionCombinationFromData(&trainingData,
+                    3, ints, 0.7f, 0.7f, 0.7f, true, 10000, 1000, 0.0001f, &validationData, m_dataSetBuilder->GetComboNameFromIndex(combo));
+            }
+            else
+            {
+                t_factory.CreateNewNeuralNetworkActivationFunctionCombinationFromData(&trainingData,
+                    3, ints, 0.7f, 0.7f, 0.7f, true, 10000, 1000, 0.0001f, nullptr, m_dataSetBuilder->GetComboNameFromIndex(combo));
+            }
+
+            // A bit of a ugly hax to make it work with no validation
+            if (m_validationAmount == 0)
+            {
+                break;
+            }
         }
         // When we get here we have completed one combination of inputs with all combinations of validation and training data between persons
         // Here we save the best net setting to file
@@ -232,7 +249,11 @@ std::vector<std::string> FileCombiner::GetAllFilesWithStampAndShrinkList(const s
 FANN::training_data FileCombiner::CreateTrainingDataFromListOfDataSet(std::vector<DataSet>& p_allCombosOfData)
 {
     int dataSetSize = p_allCombosOfData.size();
-
+    if (dataSetSize == 0)
+    {
+        FANN::training_data dummyReturn;
+        return dummyReturn;
+    }
     // Build mergedData into something useful
     float** inputs;
     inputs = (float**)malloc(sizeof(float*) * dataSetSize);

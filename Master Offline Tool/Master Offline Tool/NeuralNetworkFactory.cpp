@@ -40,7 +40,12 @@ void NeuralNetworkFactory::CreateNewNeuralNetworkActivationFunctionCombinationFr
     if (p_validationData == nullptr)
     {
         // If m_validationdata is nullptr no validation will take place
-        newNetSettings.validationData = new FANN::training_data(*m_validationData);
+        if (m_validationData == nullptr)
+        {
+            newNetSettings.validationData = nullptr;
+        }
+        else
+            newNetSettings.validationData = new FANN::training_data(*m_validationData);
     }
     else
     {
