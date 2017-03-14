@@ -211,6 +211,23 @@ void FileCombiner::PerformCrossValidationOnNetSetting(NetworkSettings & p_netSet
         {
             break;
         }
+
+        // Print progress
+        if (ConfigHandler::Get()->m_logLevel >= LogLevel::Progress)
+        {
+            float percentage = (float)(validationSet + 1) / (float)p_totalNumberOfPersons;
+            std::cout << "Cross validation progress: " << percentage;
+        }
+        // Delete the pointers created to avoid memory leak
+        // TODO make sure we dont have any old code in one of the factory functions that does this
+        if (p_netSetting.trainingData != nullptr)
+        {
+            delete p_netSetting.trainingData;
+        }
+        if (p_netSetting.validationData != nullptr)
+        {
+            delete p_netSetting.validationData;
+        }
     }
 }
 

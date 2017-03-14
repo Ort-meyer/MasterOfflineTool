@@ -25,10 +25,12 @@ ConfigHandler::ConfigHandler()
     m_fileEndingNeuralNet = "ann";
 
     m_numberOfEpochs = 100;
-    m_reportRate = 0;
+    m_reportRate = 10;
     m_errorAcceptance = 0.0001f;
 
     m_creationType = NetworkCreationType::BuildFromBaseline;
+
+    m_logLevel = LogLevel::Progress;
 }
 
 

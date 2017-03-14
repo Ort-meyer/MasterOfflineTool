@@ -2,6 +2,7 @@
 #include <iostream>
 #include <vector>
 #include <FileHandler.h>
+#include <ConfigHandler.h>
 using namespace std;
 
 
@@ -26,10 +27,13 @@ int training_callback(FANN::neural_net &net, FANN::training_data &train,
         bestEpoch->bestMSE = net.get_MSE();
         bestEpoch->bestEpoch = epochs;
     }
-    cout << "Epochs     " << epochs << ". "
-        << "Current Error: " << net.get_MSE() <<
-        " Hidden Activation function: " << net.get_activation_function(1, 0)
-        << " Output Activation function: " << net.get_activation_function( net.get_num_layers() - 1, 0) << endl;
+    if (ConfigHandler::Get()->m_logLevel == LogLevel::Verbose)
+    {
+        cout << "Epochs     " << epochs << ". "
+            << "Current Error: " << net.get_MSE() <<
+            " Hidden Activation function: " << net.get_activation_function(1, 0)
+            << " Output Activation function: " << net.get_activation_function(net.get_num_layers() - 1, 0) << endl;
+    }
     return 0;
 }
 
@@ -47,6 +51,7 @@ NeuralNetwork::~NeuralNetwork()
 {
     delete m_networkSettings.trainingData;
     delete m_networkSettings.validationData;
+    // TODO we need to delete hidden cells somewhere...
 }
 
 void NeuralNetwork::ValidateOnFile()
@@ -73,7 +78,10 @@ void NeuralNetwork::ValidateNetwork()
     if (m_networkSettings.validationData != nullptr)
     {
         m_net.test_data(*m_networkSettings.validationData);
-        std::cout << "Mean Square Error according to FANN: " << m_net.get_MSE() << endl;
+        if (ConfigHandler::Get()->m_logLevel == LogLevel::Verbose)
+        {
+            std::cout << "Mean Square Error according to FANN: " << m_net.get_MSE() << endl;
+        }
         m_networkSettings.mse = m_net.get_MSE();
         float fullError = 0;
         float* input = *m_networkSettings.validationData->get_input();
@@ -91,10 +99,12 @@ void NeuralNetwork::ValidateNetwork()
             //std::cout << "Net: " << *netOutput << " Acctual: " << output[i] << endl;
             fullError += abs(abs(*netOutput) - abs(output[i]));
         }
-        cout << "number of successful: " << successful << " Out of a total of: " << length << endl;
-        cout << "Successrate: " << ((float)successful / (float)length) * 100 << "%" << endl;
-        std::cout << "mean error: " << fullError / static_cast<float>(length) << endl;
-
+        if (ConfigHandler::Get()->m_logLevel == LogLevel::Verbose)
+        {
+            cout << "number of successful: " << successful << " Out of a total of: " << length << endl;
+            cout << "Successrate: " << ((float)successful / (float)length) * 100 << "%" << endl;
+            std::cout << "mean error: " << fullError / static_cast<float>(length) << endl;
+        }
         m_networkSettings.correctPercentile = ((float)successful / (float)length) * 100;
         m_networkSettings.meanError = fullError / static_cast<float>(length);
     }
@@ -110,7 +120,7 @@ void NeuralNetwork::TrainAndValidateNetwork(const int& p_epochs, const int& p_re
         return; // No need to do more, things are fucked up...
     }
     m_networkSettings.didRetrain = false;
-    m_firstTrainError = 1000;
+    m_firstTrainError = MAXINT;
     // Start by training with one amount of epochs
     TrainOnData(p_epochs, p_reportRate, p_errorAcceptance);
     // If we, after training, find out that the best MSE according to FANN is that much lower than the one we got we retrain

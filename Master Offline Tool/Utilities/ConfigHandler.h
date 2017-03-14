@@ -7,6 +7,14 @@ enum class NetworkCreationType
     CreateOneSpecific
 };
 
+enum class LogLevel
+{
+    // Make sure it goes from low log level to high log level so we can do > checks
+    Silent,
+    Progress,
+    Verbose
+};
+
 class ConfigHandler
 {
 public:
@@ -46,6 +54,9 @@ public:
 
     // How we want to train
     NetworkCreationType m_creationType;
+
+    // How much info we want to print out
+    LogLevel m_logLevel;
 
 private:
     ConfigHandler();

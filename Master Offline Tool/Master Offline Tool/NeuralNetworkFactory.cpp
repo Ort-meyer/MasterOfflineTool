@@ -159,7 +159,7 @@ void NeuralNetworkFactory::CreateAndRunNetworksFromBaseline(NetworkSettings p_ba
         }
         SetupAndTrainNetworkAndAddResultsToList(&t_networks, t_currentSettings);
     }
-    FileHandler::WriteToFile(t_networks, "../GraphNetworks/HiddenCells.settings");
+    FileHandler::AppendToFile(t_networks, "../GraphNetworks/HiddenCells.settings");
     t_networks.clear();
 
     // Hidden layers
@@ -182,7 +182,7 @@ void NeuralNetworkFactory::CreateAndRunNetworksFromBaseline(NetworkSettings p_ba
         }
         SetupAndTrainNetworkAndAddResultsToList(&t_networks, t_currentSettings);
     }
-    FileHandler::WriteToFile(t_networks, "../GraphNetworks/HiddenLayers.settings");    
+    FileHandler::AppendToFile(t_networks, "../GraphNetworks/HiddenLayers.settings");
     t_networks.clear();
 
     // Learning rate
@@ -193,7 +193,7 @@ void NeuralNetworkFactory::CreateAndRunNetworksFromBaseline(NetworkSettings p_ba
         t_currentSettings.learningRate = i;
         SetupAndTrainNetworkAndAddResultsToList(&t_networks, t_currentSettings);
     }
-    FileHandler::WriteToFile(t_networks, "../GraphNetworks/LearningRate.settings");
+    FileHandler::AppendToFile(t_networks, "../GraphNetworks/LearningRate.settings");
     t_networks.clear();
 
     // Steepness hidden
@@ -204,7 +204,7 @@ void NeuralNetworkFactory::CreateAndRunNetworksFromBaseline(NetworkSettings p_ba
         t_currentSettings.steepnessHidden = i;
         SetupAndTrainNetworkAndAddResultsToList(&t_networks, t_currentSettings);
     }
-    FileHandler::WriteToFile(t_networks, "../GraphNetworks/SteepnessHidden.settings");
+    FileHandler::AppendToFile(t_networks, "../GraphNetworks/SteepnessHidden.settings");
     t_networks.clear();
 
     // Steepness output
@@ -215,7 +215,7 @@ void NeuralNetworkFactory::CreateAndRunNetworksFromBaseline(NetworkSettings p_ba
         t_currentSettings.steepnessOutput = i;
         SetupAndTrainNetworkAndAddResultsToList(&t_networks, t_currentSettings);
     }
-    FileHandler::WriteToFile(t_networks, "../GraphNetworks/SteepnessOutput.settings");
+    FileHandler::AppendToFile(t_networks, "../GraphNetworks/SteepnessOutput.settings");
     t_networks.clear();
 }
 
