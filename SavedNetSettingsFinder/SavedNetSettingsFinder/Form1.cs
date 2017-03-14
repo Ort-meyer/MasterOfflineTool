@@ -34,8 +34,12 @@ namespace SavedNetSettingsFinder
         private void button1_Click(object sender, EventArgs e)
         {
             allValidLines.AddRange(File.ReadAllLines(fileToUse.Text));
-            
+            // This is defenetly not the best way to do it but we do it like this anyway cuz speed is not a problem
             NonValidatedMSEFilter();
+            ValidatedMSEFilter();
+            MSEDifferenceFilter();
+            Directory.CreateDirectory("FilteredNetSettings");
+            File.WriteAllLines("FilteredNetSettings/" + saveFileName.Text + ".txt", allValidLines);
         }
 
         private void button2_Click(object sender, EventArgs e)
@@ -67,7 +71,7 @@ namespace SavedNetSettingsFinder
             {
                 return;
             }
-            float min = -1;
+            float min = float.MinValue;
             float max = float.MaxValue;
             if (minNonValidatedMSE.Text.Length != 0)
             {
@@ -100,6 +104,7 @@ namespace SavedNetSettingsFinder
                     {
                         // Throw Away
                         RemoveNetworkFromList(i);
+                        i--;
                     }
                 }
             }
@@ -107,18 +112,76 @@ namespace SavedNetSettingsFinder
 
         private void ValidatedMSEFilter()
         {
+            // Check if the range have been given.
+            if (minValidatedMSE.Text.Length == 0 && maxValidatedMSE.Text.Length == 0)
+            {
+                return;
+            }
+            float min = float.MinValue;
+            float max = float.MaxValue;
+            if (minValidatedMSE.Text.Length != 0)
+            {
+                min = float.Parse(minValidatedMSE.Text, nf);
+            }
+            if (maxValidatedMSE.Text.Length != 0)
+            {
+                max = float.Parse(maxValidatedMSE.Text, nf);
+            }
 
+            for (int i = 0; i < allValidLines.Count; i++)
+            {
+                if (allValidLines[i].Contains("MSE:"))
+                {
+                    string line = allValidLines[i];
+                    line = line.Substring(line.LastIndexOf("MSE:", StringComparison.InvariantCulture));
+                    string[] parts = line.Split(' ');
+                    float MSE = float.Parse(parts[1], nf);
+                    if (MSE < min || MSE > max)
+                    {
+                        RemoveNetworkFromList(i);
+                        i--;
+                    }
+                }
+            }
         }
 
         private void MSEDifferenceFilter()
         {
-
+            // Check if the range have been given.
+            if (minMSEChange.Text.Length == 0 && maxMSEChange.Text.Length == 0)
+            {
+                return;
+            }
+            float min = float.MinValue;
+            float max = float.MaxValue;
+            if (minMSEChange.Text.Length != 0)
+            {
+                min = float.Parse(minMSEChange.Text, nf);
+            }
+            if (maxMSEChange.Text.Length != 0)
+            {
+                max = float.Parse(maxMSEChange.Text, nf);
+            }
+            for (int i = 0; i < allValidLines.Count; i++)
+            {
+                if (allValidLines[i].Contains("Biggest difference :"))
+                {
+                    string line = allValidLines[i];
+                    line = line.Substring(line.LastIndexOf(":") + 2);
+                    float difference = float.Parse(line,nf);
+                    if (difference < min || difference > max)
+                    {
+                        RemoveNetworkFromList(i);
+                        i--;
+                    }
+                }
+            }
         }
 
         // Helper func
         private void RemoveNetworkFromList(int indexInsideNetwork)
         {
-            int firstLineInNet = 0;
+            int firstLineInNet = -1;
             int lastLineInNet = allValidLines.Count -1;
             for (int i = indexInsideNetwork; i < allValidLines.Count; i++)
             {
@@ -137,7 +200,12 @@ namespace SavedNetSettingsFinder
                 }
             }
 
-            allValidLines.RemoveRange(firstLineInNet, lastLineInNet+1);
+            allValidLines.RemoveRange(firstLineInNet + 1, lastLineInNet-firstLineInNet);
+        }
+
+        private void label7_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }
