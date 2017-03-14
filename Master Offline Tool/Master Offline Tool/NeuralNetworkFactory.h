@@ -68,9 +68,21 @@ public:
         const float& p_learningRateSteepness, const float& p_steepnessOutput, const float& p_steepnessHidden, const bool& p_deteministicWeights,
         const int& p_numberOfEpochsToTrain, const int& p_reportRate, const float& p_accaptableError, FANN::training_data* p_validationData = nullptr, const std::string& p_netIdString = "");
 
+
+
     void SetValidationData(FANN::training_data* p_validationData) { m_validationData = p_validationData; };
 
     void SetNumBestNetworks(const int& p_numBestNetworks) { m_numBestNetworks = p_numBestNetworks; };
+
+
+    /**
+    Runs a set of networks based off of the provided baseline. One parameter is altered at a time and one network per
+    increment of that parameter is created. Results are written to the folder of its type*/
+    void CreateAndRunNetworksFromBaseline(NetworkSettings p_baseline);
+
+    /**
+    Help method for baseline method*/
+    void SetupAndTrainNetworkAndAddResultsToList(std::vector<std::string>* p_netResults, const NetworkSettings & p_netSettings);
 
     /**
     Sets the number of best networks we want to store. This is 5 by default*/

@@ -1,5 +1,7 @@
 #include "NeuralNetworkFactory.h"
 #include "NeuralNetwork.h"
+#include <FileHandler.h>
+#include <sstream>
 
 #include <iostream>
 using namespace std;
@@ -141,6 +143,90 @@ void NeuralNetworkFactory::CreateSpecificNeuralNetwork(FANN::training_data * p_t
     //UpdateBestNetworks(newNet->GetNetworkSettings());
 }
 
+
+void NeuralNetworkFactory::CreateAndRunNetworksFromBaseline(NetworkSettings p_baseline)
+{
+    NetworkSettings t_currentSettings = p_baseline;
+    // Hidden cells
+    int t_maxHiddenCells = 100;
+    int t_hiddenCellsIncrement = 10;
+    vector<string> t_networks;
+    for (size_t i = t_hiddenCellsIncrement; i <= t_maxHiddenCells; i+= t_hiddenCellsIncrement)
+    {
+        for (size_t j = 0; j < t_currentSettings.hiddenLayers; j++)
+        {
+            t_currentSettings.hiddenCells[j] = i;
+        }
+        SetupAndTrainNetworkAndAddResultsToList(&t_networks, t_currentSettings);
+    }
+    FileHandler::WriteToFile(t_networks, "../GraphNetworks/HiddenCells.settings");
+    t_networks.clear();
+
+    // Hidden layers
+    // Potential memory leak?
+    t_currentSettings = p_baseline;
+    int t_maxLayers = 5;
+    for (size_t i = 0; i < t_maxLayers; i++)
+    {
+        t_currentSettings.hiddenLayers = i;
+        for (size_t j = 0; j < t_currentSettings.hiddenLayers; j++)
+        {
+            if (p_baseline.hiddenLayers > 0)
+            {
+                t_currentSettings.hiddenCells[j] = p_baseline.hiddenCells[0];
+            }
+            else
+            {
+                t_currentSettings.hiddenCells[j] = 10; // This shouldn't happen though. Ever
+            }
+        }
+        SetupAndTrainNetworkAndAddResultsToList(&t_networks, t_currentSettings);
+    }
+    FileHandler::WriteToFile(t_networks, "../GraphNetworks/HiddenLayers.settings");    
+    t_networks.clear();
+
+    // Learning rate
+    t_currentSettings = p_baseline;
+    float t_learningRateIncrement = 0.1;
+    for (float i = 0; i <= 1; i+= t_learningRateIncrement)
+    {
+        t_currentSettings.learningRate = i;
+        SetupAndTrainNetworkAndAddResultsToList(&t_networks, t_currentSettings);
+    }
+    FileHandler::WriteToFile(t_networks, "../GraphNetworks/LearningRate.settings");
+    t_networks.clear();
+
+    // Steepness hidden
+    t_currentSettings = p_baseline;
+    float t_steepnessHiddenIncrement = 0.1;
+    for (float i = 0; i <= 1; i += t_steepnessHiddenIncrement)
+    {
+        t_currentSettings.steepnessHidden = i;
+        SetupAndTrainNetworkAndAddResultsToList(&t_networks, t_currentSettings);
+    }
+    FileHandler::WriteToFile(t_networks, "../GraphNetworks/SteepnessHidden.settings");
+    t_networks.clear();
+
+    // Steepness output
+    t_currentSettings = p_baseline;
+    float t_steepnessOutputIncrement = 0.1;
+    for (float i = 0; i <= 1; i += t_steepnessOutputIncrement)
+    {
+        t_currentSettings.steepnessOutput = i;
+        SetupAndTrainNetworkAndAddResultsToList(&t_networks, t_currentSettings);
+    }
+    FileHandler::WriteToFile(t_networks, "../GraphNetworks/SteepnessOutput.settings");
+    t_networks.clear();
+}
+
+void NeuralNetworkFactory::SetupAndTrainNetworkAndAddResultsToList(std::vector<std::string>* p_netResults, const NetworkSettings& p_netSettings)
+{
+    NeuralNetwork t_net;
+    t_net.SetSettings(p_netSettings);
+    t_net.SetupNetwork();
+    t_net.TrainAndValidateNetwork(m_epocsToTrain, m_reportRate, m_errorAcceptance);
+    p_netResults->push_back(FileHandler::SaveNetworkToString(t_net.GetNetworkSettings()));
+}
 
 void NeuralNetworkFactory::CreateHiddenLayerCombinations(NetworkSettings * p_netWorkSettings, int* p_hiddenCells, const int& p_numberOfLayers, const int& p_depth)
 {

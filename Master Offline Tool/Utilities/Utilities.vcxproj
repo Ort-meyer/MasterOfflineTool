@@ -40,6 +40,8 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <OutDir>lib</OutDir>
+    <IncludePath>../../3rd Party;$(IncludePath)</IncludePath>
+    <LibraryPath>../../3rd Party/FANN/lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>

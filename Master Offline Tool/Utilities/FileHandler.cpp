@@ -94,3 +94,48 @@ void FileHandler::AppendToFile(const std::vector<std::string>& p_lines, const st
   }
   outfile.close();
 }
+
+string FileHandler::SaveNetworkToString(const NetworkSettings & p_network)
+{
+    std::ostringstream newEntry;
+    // Add all the important network info
+    newEntry << "ID: " << p_network.idString;
+    newEntry << " MSE: " << p_network.mse;
+    newEntry << " Percentile correct: " << p_network.correctPercentile;
+    newEntry << " Mean error: " << p_network.meanError;
+    newEntry << " Did retraining: " << (p_network.didRetrain ? "true" : "false");
+    if (p_network.didRetrain)
+    {
+        newEntry << " Retraining was good: " << (p_network.retrainingWasGood ? "true" : "false");
+        newEntry << " Number of Epochs trainined: " << p_network.bestEpoch.bestEpoch;
+    }
+    newEntry << std::endl << "---Network settings---" << std::endl;
+    for (size_t i = 0; i < p_network.hiddenLayers; i++)
+    {
+        newEntry << " hidden layers no: " << i + 1 << " cells: " << p_network.hiddenCells[i] << std::endl;
+    }
+    newEntry << " Function hidden: ";
+    newEntry << p_network.functionHidden;
+    newEntry << " Function output: ";
+    newEntry << p_network.functionOutput;
+    newEntry << " Learning rate: ";
+    newEntry << p_network.learningRate;
+    newEntry << " Steepness hidden: ";
+    newEntry << p_network.steepnessHidden;
+    newEntry << " Steepness output: ";
+    newEntry << p_network.steepnessOutput;
+    newEntry << " Deterministic weights: ";
+    newEntry << p_network.deterministicWeights;
+    newEntry << std::endl;
+    newEntry << "Biggest difference : ";
+    newEntry << p_network.bestEpoch.difference;
+    newEntry << std::endl;
+    newEntry << "MSE values: ";
+    for (size_t i = 0; i < p_network.bestEpoch.mseList.size(); i++)
+    {
+        newEntry << p_network.bestEpoch.mseList.at(i) << " ";
+    }
+    newEntry << std::endl;
+    // Add the new entry to all the lines that should be writen
+    return newEntry.str();
+}

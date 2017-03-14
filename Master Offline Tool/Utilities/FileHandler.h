@@ -1,6 +1,8 @@
 #pragma once
 #include <string>
 #include <vector>
+#include "../Master Offline Tool/NeuralNetwork.h"
+
 namespace FileHandler
 {
     /**
@@ -27,5 +29,10 @@ namespace FileHandler
     Interprets p_lines as a list of lines to be appended to the end of a file.
     Will write into p_fileName*/
     void AppendToFile(const std::vector<std::string>& p_lines, const std::string & p_fullFilePath);
+
+    /**
+    Takes network settings and turns into a string which can then be saved to a
+    file if one wants to.*/
+    std::string SaveNetworkToString(const NetworkSettings& p_network);
 };
 
