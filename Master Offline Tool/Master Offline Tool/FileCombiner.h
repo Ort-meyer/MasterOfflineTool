@@ -8,12 +8,7 @@ namespace FANN
     class training_data;
 }
 
-enum class NetworkCreationType
-{
-    CreateAllCombinations,
-    BuildFromBaseline,
-    CreateOneSpecific
-};
+enum class NetworkCreationType;
 
 struct DataSet;
 struct NetworkSettings;

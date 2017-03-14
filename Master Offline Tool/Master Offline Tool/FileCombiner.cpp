@@ -15,10 +15,15 @@ FileCombiner::FileCombiner() : m_dataSetBuilder(new DataSetBuilder())
 {
     std::string t_stampLayout = "YYYY-MM-DD - hh-mm-ss";
     m_stampSize = t_stampLayout.length();
-    m_creationType = NetworkCreationType::BuildFromBaseline;
-    m_factory.SetTrainingVariables(10000, 1000, 0.0001f);
 
-    m_validationAmount = 0;
+    ConfigHandler* config = ConfigHandler::Get();
+
+    // This is the last thing we check before we send the setting to the network factory
+    m_creationType = config->m_creationType;
+
+    m_factory.SetTrainingVariables(config->m_numberOfEpochs, config->m_reportRate, config->m_errorAcceptance);
+
+    m_validationAmount = config->m_numValidationSet;
     CombineFilesInFolder("../filteredData", "filteredData");
     FeedDataToNeuralNetworkFactory();
     
@@ -99,6 +104,7 @@ void FileCombiner::CombineFilesInFolder(const std::string& p_folderName, const s
         std::vector<std::string> t_filesInCombination = GetAllFilesWithStampAndShrinkList(t_stamp, t_rawDataFileNames);
         // Sort to make sure the files are always sent in in the same order
         std::sort(t_filesInCombination.begin(), t_filesInCombination.end());
+        // If we specify a combination sequence the second vectors size will be 1
         m_allCombosOfData.push_back(m_dataSetBuilder->BuildDataSetFromFiles(t_filesInCombination, "PosRot"));
     }
     m_dataSetCombinationsPerPerson = m_allCombosOfData[0]->size();
@@ -168,7 +174,7 @@ void FileCombiner::PerformCrossValidationOnNetSetting(NetworkSettings & p_netSet
                 oneCombosTrainingData.insert(oneCombosTrainingData.end(), m_allCombosOfData[person]->at(p_combo).begin(), m_allCombosOfData[person]->at(p_combo).end());
             }
         }
-
+        // Now we create the training data from the accumulated training data
         FANN::training_data trainingData = CreateTrainingDataFromListOfDataSet(oneCombosTrainingData);
         FANN::training_data validationData = CreateTrainingDataFromListOfDataSet(oneCombosValidationData);
         

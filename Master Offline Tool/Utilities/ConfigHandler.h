@@ -1,5 +1,12 @@
 #pragma once
 #include <string>
+enum class NetworkCreationType
+{
+    CreateAllCombinations,
+    BuildFromBaseline,
+    CreateOneSpecific
+};
+
 class ConfigHandler
 {
 public:
@@ -31,6 +38,14 @@ public:
 
     // Our actual saved neural network
     std::string m_fileEndingNeuralNet;
+
+    // Training amount info
+    int m_numberOfEpochs;
+    int m_reportRate;
+    float m_errorAcceptance;
+
+    // How we want to train
+    NetworkCreationType m_creationType;
 
 private:
     ConfigHandler();
