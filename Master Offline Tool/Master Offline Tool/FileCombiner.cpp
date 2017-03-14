@@ -21,23 +21,6 @@ FileCombiner::FileCombiner() : m_dataSetBuilder(new DataSetBuilder())
     m_validationAmount = 0;
     CombineFilesInFolder("../filteredData", "filteredData");
     FeedDataToNeuralNetworkFactory();
-
-    //CreateAndTrainNetwork("../filteredData", "filteredData");
-    ////GnuPlotter plotter;
-
-    //m_validationAmount = ConfigHandler::Get()->m_numValidationSet;
-
-
-    //if (ConfigHandler::Get()->m_trainAllNetworks)
-    //{
-    //    CombineFilesInFolder("../filteredData", ConfigHandler::Get()->m_fileEndingFiltered);
-    //    FeedDataToNeuralNetworkFactory();
-    //}
-    //else
-    //{
-    //    CreateAndTrainNetwork("../filteredData", ConfigHandler::Get()->m_fileEndingFiltered);
-    //    GnuPlotter plotter;
-    //}
     
     int a;
     std::cin >> a;
@@ -47,65 +30,6 @@ FileCombiner::FileCombiner() : m_dataSetBuilder(new DataSetBuilder())
 FileCombiner::~FileCombiner()
 {
     delete m_dataSetBuilder;
-}
-
-void FileCombiner::CreateAndTrainNetwork(const std::string& p_folderName, const std::string& p_fileEnding)
-{
-    // Get all file names of folder
-    std::vector<std::string> t_rawDataFileNames = FileHandler::GetAllFileNames(p_folderName, p_fileEnding);
-    std::vector<DataSet> t_setsToTrainOn;
-
-    // Combine data sets to eachother with respect to stamp/name
-    for (size_t i = 0; i < t_rawDataFileNames.size(); )
-    {
-        int t_stampBegins = t_rawDataFileNames[i].length() - p_fileEnding.length() - 1 - m_stampSize;
-        std::string t_stamp = t_rawDataFileNames[i].substr(t_stampBegins, m_stampSize);
-        std::vector<std::string> t_filesInCombination = GetAllFilesWithStampAndShrinkList(t_stamp, t_rawDataFileNames);
-        // Sort to make sure the files are always sent in in the same order
-        std::sort(t_filesInCombination.begin(), t_filesInCombination.end());
-        std::vector<DataSet> t_theseSets = m_dataSetBuilder->BuildDataSetFromFiles(t_filesInCombination, "PosRot")->at(0); // Copy here necessary?
-        t_setsToTrainOn.insert(t_setsToTrainOn.end(), t_theseSets.begin(), t_theseSets.end());
-    }
-
-    // We have our data sets. Convert to training data
-    FANN::training_data t_trainData = CreateTrainingDataFromListOfDataSet(t_setsToTrainOn);
-    NeuralNetwork t_ourNet;
-    NetworkSettings t_netSettings;
-    t_netSettings.inputCells = t_setsToTrainOn.at(0).inputs;
-    t_netSettings.outputCells = 1;
-    t_netSettings.hiddenLayers = 4;
-    int hiddenlayers[5] = { 100,100,100, 100, 10};
-    t_netSettings.hiddenCells = hiddenlayers;
-    t_netSettings.learningRate = 1;
-    t_netSettings.steepnessHidden = 0.6;
-    t_netSettings.steepnessOutput = 0.6;
-    t_netSettings.functionHidden = FANN::activation_function_enum::SIGMOID_SYMMETRIC;
-    t_netSettings.functionOutput = FANN::activation_function_enum::SIGMOID_SYMMETRIC;
-    t_netSettings.deterministicWeights = true;
-    t_netSettings.trainingData = new FANN::training_data(t_trainData);
-
-    t_netSettings.validationData = nullptr; // YEAH ABOUT THIS!
-	//t_netSettings.validationData = nullptr; // NOT THE RIGHT WAY
-    // NeuralNetworkFactory t_netFac;
-    m_factory.CreateAndRunNetworksFromBaseline(t_netSettings);
-    //t_ourNet.SetSettings(t_netSettings);
-    //t_ourNet.SetupNetwork();
-    //t_ourNet.TrainOnData(10000000, 5000, 0.00001f);
-    //t_ourNet.SaveNetworkToFile("../SavedNetworks/test.ann");
-
-    //t_netSettings.validationData = nullptr;
-    //t_ourNet.SetSettings(t_netSettings);
-    //t_ourNet.SetupNetwork();
-    //t_ourNet.TrainOnData(10000, 1000, 0.00001f);
-
-    //std::string t_netname = "test";
-
-    //t_ourNet.SaveNetworkToFile("../SavedNetworks/" + t_netname + "." + ConfigHandler::Get()->m_fileEndingNeuralNet);
-
-
-
-
-
 }
 
 void FileCombiner::SaveBestNetToFile(const NeuralNetworkFactory& p_factory, const std::string & p_fileName, const std::string & p_folder)
