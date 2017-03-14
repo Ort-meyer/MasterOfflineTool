@@ -1,6 +1,5 @@
 #include "FileCombiner.h"
 #include "DataSetBuilder.h"
-#include "NeuralNetworkFactory.h"
 #include "NeuralNetwork.h"
 #include <FANN\header\floatfann.h>
 #include <FANN\header\fann_cpp.h>
@@ -16,25 +15,29 @@ FileCombiner::FileCombiner() : m_dataSetBuilder(new DataSetBuilder())
 {
     std::string t_stampLayout = "YYYY-MM-DD - hh-mm-ss";
     m_stampSize = t_stampLayout.length();
+    m_creationType = NetworkCreationType::BuildFromBaseline;
+    m_factory.SetTrainingVariables(10000, 1000, 0.0001f);
 
     m_validationAmount = 0;
     CombineFilesInFolder("../filteredData", "filteredData");
-    CreateAndTrainNetwork("../filteredData", "filteredData");
-    //GnuPlotter plotter;
+    FeedDataToNeuralNetworkFactory();
 
-    m_validationAmount = ConfigHandler::Get()->m_numValidationSet;
+    //CreateAndTrainNetwork("../filteredData", "filteredData");
+    ////GnuPlotter plotter;
+
+    //m_validationAmount = ConfigHandler::Get()->m_numValidationSet;
 
 
-    if (ConfigHandler::Get()->m_trainAllNetworks)
-    {
-        CombineFilesInFolder("../filteredData", ConfigHandler::Get()->m_fileEndingFiltered);
-        FeedDataToNeuralNetworkFactory();
-    }
-    else
-    {
-        CreateAndTrainNetwork("../filteredData", ConfigHandler::Get()->m_fileEndingFiltered);
-        GnuPlotter plotter;
-    }
+    //if (ConfigHandler::Get()->m_trainAllNetworks)
+    //{
+    //    CombineFilesInFolder("../filteredData", ConfigHandler::Get()->m_fileEndingFiltered);
+    //    FeedDataToNeuralNetworkFactory();
+    //}
+    //else
+    //{
+    //    CreateAndTrainNetwork("../filteredData", ConfigHandler::Get()->m_fileEndingFiltered);
+    //    GnuPlotter plotter;
+    //}
     
     int a;
     std::cin >> a;
@@ -81,10 +84,10 @@ void FileCombiner::CreateAndTrainNetwork(const std::string& p_folderName, const 
     t_netSettings.deterministicWeights = true;
     t_netSettings.trainingData = new FANN::training_data(t_trainData);
 
-    t_netSettings.validationData = new FANN::training_data(t_trainData); // YEAH ABOUT THIS!
+    t_netSettings.validationData = nullptr; // YEAH ABOUT THIS!
 	//t_netSettings.validationData = nullptr; // NOT THE RIGHT WAY
-    NeuralNetworkFactory t_netFac;
-    t_netFac.CreateAndRunNetworksFromBaseline(t_netSettings);
+    // NeuralNetworkFactory t_netFac;
+    m_factory.CreateAndRunNetworksFromBaseline(t_netSettings);
     //t_ourNet.SetSettings(t_netSettings);
     //t_ourNet.SetupNetwork();
     //t_ourNet.TrainOnData(10000000, 5000, 0.00001f);
@@ -172,15 +175,13 @@ void FileCombiner::CombineFilesInFolder(const std::string& p_folderName, const s
         std::vector<std::string> t_filesInCombination = GetAllFilesWithStampAndShrinkList(t_stamp, t_rawDataFileNames);
         // Sort to make sure the files are always sent in in the same order
         std::sort(t_filesInCombination.begin(), t_filesInCombination.end());
-        m_allCombosOfData.push_back(m_dataSetBuilder->BuildDataSetFromFiles(t_filesInCombination, "Pos"));
+        m_allCombosOfData.push_back(m_dataSetBuilder->BuildDataSetFromFiles(t_filesInCombination, "PosRot"));
     }
     m_dataSetCombinationsPerPerson = m_allCombosOfData[0]->size();
 }
 
 void FileCombiner::FeedDataToNeuralNetworkFactory()
 {
-    NeuralNetworkFactory t_factory;
-    t_factory.SetMaxNetworksInMemory(4);
     int numberOfPersons = m_allCombosOfData.size();
     // The trainingdata attached to one combo
     std::vector<FANN::training_data> t_allTrainingData;
@@ -190,71 +191,96 @@ void FileCombiner::FeedDataToNeuralNetworkFactory()
     for (size_t combo = 0; combo < numberOfCombos; combo++)
     {
         std::cout << m_dataSetBuilder->GetComboNameFromIndex(combo) << std::endl;
-        // This loop is for cross validation
-        for (size_t validationSet = 0; validationSet < numberOfPersons; validationSet++)
-        {
-            // This is used to make the validationset wrap around the vector
-            int low = numberOfPersons - validationSet - m_validationAmount;
-            int validationSetAmountOverSize = min(low, 0);
-            validationSetAmountOverSize = abs(validationSetAmountOverSize);
-            std::vector<DataSet> oneCombosTrainingData;
-            std::vector<DataSet> oneCombosValidationData;
-            // This loop is to add all persons (excpet the validaiton set) to the training data that will be created later
-            for (size_t person = 0; person < numberOfPersons; person++)
-            {
-                // If the current preson is inside the validation range
-                if (person >= validationSet && person < validationSet + m_validationAmount || person < validationSetAmountOverSize)
-                {
-                    oneCombosValidationData.insert(oneCombosValidationData.end(), m_allCombosOfData[person]->at(combo).begin(), m_allCombosOfData[person]->at(combo).end());
-                }
-                else
-                {
-                    // This make it so oneCombo contains all persons data that is combined in a specific way
-                    oneCombosTrainingData.insert(oneCombosTrainingData.end(), m_allCombosOfData[person]->at(combo).begin(), m_allCombosOfData[person]->at(combo).end());
-                }
-            }
-            //netFac.CreateSpecificNeuralNetwork(&data, )
-            int ints[5] = { 100, 100, 100, 100, 100 };
-            //netFac.SetVariables(1, 3, 1, 0.3, 0.3, 0.3, 1);
-            FANN::training_data trainingData = CreateTrainingDataFromListOfDataSet(oneCombosTrainingData);
-            FANN::training_data validationData = CreateTrainingDataFromListOfDataSet(oneCombosValidationData);
-            
-            t_factory.SetNumBestNetworks(10000);
+        // Set the net settings from config, if m_creationtype does not need a certain setting it will later be ignored
+        NetworkSettings t_netSetting;
 
+        t_netSetting.outputCells = 1;
+        t_netSetting.hiddenLayers = 4;
+        int hiddenlayers[5] = { 100,100,100, 100, 10 };
+        t_netSetting.hiddenCells = hiddenlayers;
+        t_netSetting.learningRate = 1;
+        t_netSetting.steepnessHidden = 0.6;
+        t_netSetting.steepnessOutput = 0.6;
+        t_netSetting.functionHidden = FANN::activation_function_enum::SIGMOID_SYMMETRIC;
+        t_netSetting.functionOutput = FANN::activation_function_enum::SIGMOID_SYMMETRIC;
+        t_netSetting.deterministicWeights = true;
 
-            // A bit of a ugly hax to make no validation data work...
-            if (m_validationAmount != 0)
-            {
-                //t_factory.CreateSpecificNeuralNetwork(&trainingData, 5, ints, FANN::activation_function_enum::SIGMOID, FANN::activation_function_enum::SIGMOID,
-                //0.7f, 1.0f, 1.0f, true, 10000, 1000, 0.0001f, &validationData, m_dataSetBuilder->GetComboNameFromIndex(combo));
-                //netFac.CreateNewNeuralNetworkCombinationsFromData(&data);
-                //t_factory.CreateNewNeuralNetworkCombinationsFromData(&trainingData);
-                t_factory.CreateNewNeuralNetworkActivationFunctionCombinationFromData(&trainingData,
-                    3, ints, 0.7f, 0.7f, 0.7f, true, 10000, 1000, 0.0001f, &validationData, m_dataSetBuilder->GetComboNameFromIndex(combo));
-            }
-            else
-            {
-                t_factory.CreateNewNeuralNetworkActivationFunctionCombinationFromData(&trainingData,
-                    3, ints, 0.7f, 0.7f, 0.7f, true, 10000, 1000, 0.0001f, nullptr, m_dataSetBuilder->GetComboNameFromIndex(combo));
-            }
-
-            // A bit of a ugly hax to make it work with no validation
-            if (m_validationAmount == 0)
-            {
-                break;
-            }
-        }
+        PerformCrossValidationOnNetSetting(t_netSetting, numberOfPersons, combo);
         // When we get here we have completed one combination of inputs with all combinations of validation and training data between persons
         // Here we save the best net setting to file
         // Make sure all the nets are done
-        t_factory.JoinNetworkThreads();
+        m_factory.JoinNetworkThreads();
 
         // SaveBestNetToFile(t_factory, "bestFunctions.netSetting");
 
-        SaveBestNetToFile(t_factory, m_dataSetBuilder->GetComboNameFromIndex(combo) + "." + ConfigHandler::Get()->m_fileEndingNetSettings);
+        SaveBestNetToFile(m_factory, m_dataSetBuilder->GetComboNameFromIndex(combo) + "." + ConfigHandler::Get()->m_fileEndingNetSettings);
 
         // Then we clear the best vector before we start the next combo
-        t_factory.ClearBestVectors();
+        m_factory.ClearBestVectors();
+    }
+}
+
+void FileCombiner::PerformCrossValidationOnNetSetting(NetworkSettings & p_netSetting, const int& p_totalNumberOfPersons, const int& p_combo)
+{
+    for (size_t validationSet = 0; validationSet < p_totalNumberOfPersons; validationSet++)
+    {
+        // This is used to make the validationset wrap around the vector
+        int low = p_totalNumberOfPersons - validationSet - m_validationAmount;
+        int validationSetAmountOverSize = min(low, 0);
+        validationSetAmountOverSize = abs(validationSetAmountOverSize);
+        std::vector<DataSet> oneCombosTrainingData;
+        std::vector<DataSet> oneCombosValidationData;
+        // This loop is to add all persons (excpet the validaiton set) to the training data that will be created later
+        for (size_t person = 0; person < p_totalNumberOfPersons; person++)
+        {
+            // If the current preson is inside the validation range
+            if (person >= validationSet && person < validationSet + m_validationAmount || person < validationSetAmountOverSize)
+            {
+                oneCombosValidationData.insert(oneCombosValidationData.end(), m_allCombosOfData[person]->at(p_combo).begin(), m_allCombosOfData[person]->at(p_combo).end());
+            }
+            else
+            {
+                // This make it so oneCombo contains all persons data that is combined in a specific way
+                oneCombosTrainingData.insert(oneCombosTrainingData.end(), m_allCombosOfData[person]->at(p_combo).begin(), m_allCombosOfData[person]->at(p_combo).end());
+            }
+        }
+
+        FANN::training_data trainingData = CreateTrainingDataFromListOfDataSet(oneCombosTrainingData);
+        FANN::training_data validationData = CreateTrainingDataFromListOfDataSet(oneCombosValidationData);
+        
+        m_factory.SetNumBestNetworks(10000);
+
+        p_netSetting.trainingData = new FANN::training_data(trainingData);
+        // A bit of a ugly hax to make no validation data work...
+        if (m_validationAmount != 0)
+        {
+            p_netSetting.validationData = new FANN::training_data(validationData);
+        }
+        else
+        {
+            p_netSetting.validationData = nullptr;
+        }
+        p_netSetting.inputCells = m_allCombosOfData[0]->at(p_combo).at(0).inputs;
+
+        // Find out what we want to run and run it. Its here we can have special things, like saving down a run net for gnuplotter
+        switch (m_creationType)
+        {
+        case NetworkCreationType::CreateAllCombinations:
+            break;
+        case NetworkCreationType::BuildFromBaseline:
+            m_factory.CreateAndRunNetworksFromBaseline(p_netSetting);
+            break;
+        case NetworkCreationType::CreateOneSpecific:
+            break;
+        default:
+            break;
+        }
+
+        // A bit of a ugly hax to make it work with no validation
+        if (m_validationAmount == 0)
+        {
+            break;
+        }
     }
 }
 

@@ -45,6 +45,15 @@ public:
 
     }
     /**
+    Sets up training info
+    */
+    void SetTrainingVariables(const int& p_numberOfEpochs, const int& p_reportRate, const float& p_errorAcceptance)
+    {
+        m_epocsToTrain = p_numberOfEpochs;
+        m_reportRate = p_reportRate;
+        m_errorAcceptance = p_errorAcceptance;
+    }
+    /**
     Creates all the combinations of activation functions for the other given settings
     */
     void CreateNewNeuralNetworkActivationFunctionCombinationFromData(FANN::training_data * p_trainingData, const int & p_numberOfHiddenLayers, int * p_hiddenLayerCells, const float & p_learningRateSteepness, const float & p_steepnessOutput, const float & p_steepnessHidden, const bool & p_deteministicWeights, const int & p_numberOfEpochsToTrain, const int & p_reportRate, const float & p_accaptableError, FANN::training_data * p_validationData, const std::string & p_netIdString);

@@ -1,13 +1,22 @@
 #pragma once
 #include <vector>
 #include <string>
+#include "NeuralNetworkFactory.h"
 class DataSetBuilder;
-class NeuralNetworkFactory;
 namespace FANN
 {
     class training_data;
 }
+
+enum class NetworkCreationType
+{
+    CreateAllCombinations,
+    BuildFromBaseline,
+    CreateOneSpecific
+};
+
 struct DataSet;
+struct NetworkSettings;
 class FileCombiner
 {
 public:
@@ -18,6 +27,8 @@ private:
     void SaveBestNetToFile(const NeuralNetworkFactory& p_factory, const std::string& p_fileName, const std::string& p_folder = "../SavedNetSettings/");
     void CombineFilesInFolder(const std::string& p_folderName, const std::string& p_fileEnding);
     void FeedDataToNeuralNetworkFactory();
+    // This function takes the net settings and creates cross validation sets from them.
+    void PerformCrossValidationOnNetSetting(NetworkSettings & p_netSetting, const int& p_totalNumberOfPersons, const int& p_combo);
     // This function also reduces the size of the given vector to remove files already drawn out
     std::vector<std::string> GetAllFilesWithStampAndShrinkList(const std::string& p_stamp, std::vector<std::string>& o_files);
     // This function gives back all training data that a number of combos creates
@@ -26,6 +37,9 @@ private:
     int m_validationAmount; // Sets how many of the file combos that should be used as validation set
     int m_stampSize;
     int m_dataSetCombinationsPerPerson;
+
+    NetworkCreationType m_creationType;
+    NeuralNetworkFactory m_factory;
 
     // Read explanation in DataSetBuilder::BuildDataSetFromFiles. Outer vector here is for all different people
     std::vector<std::vector<std::vector<DataSet>>*> m_allCombosOfData;
