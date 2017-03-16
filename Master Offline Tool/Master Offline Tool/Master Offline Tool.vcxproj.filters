@@ -10,11 +10,11 @@
     <ClCompile Include="NeuralNetwork.cpp">
       <Filter>Source</Filter>
     </ClCompile>
+    <ClCompile Include="FileCombiner.cpp" />
+    <ClCompile Include="GnuPlotter.cpp" />
     <ClCompile Include="NeuralNetworkFactory.cpp">
       <Filter>Source</Filter>
     </ClCompile>
-    <ClCompile Include="FileCombiner.cpp" />
-    <ClCompile Include="GnuPlotter.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DataSetBuilder.h">

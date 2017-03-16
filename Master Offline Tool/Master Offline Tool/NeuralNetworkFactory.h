@@ -71,6 +71,9 @@ public:
     If no hidden layers will be used the activation funciton for hidden layers is ignored
     The created networks will be validated by the specified p_validationdata. If this is not set validation will either use
     the validation data set by the call to function SetValidationData or skipp validation if validationdata is nullptr.
+
+    To later get access to the network created the SetDeleteCompletedNetworks(bool) needs to be set to false. If this is done
+    the networks can all be found by calling GetNetworksInMemory().
     */
     void CreateSpecificNeuralNetwork(FANN::training_data* p_trainingData, const int& p_numberOfHiddenLayers, int* p_hiddenLayerCells,
         const FANN::activation_function_enum& p_outputActivationFunction, const FANN::activation_function_enum& p_hiddenActivationFunction,
@@ -103,7 +106,7 @@ public:
 
     /**
     Clears the list of best vectors*/
-    void ClearBestVectors() { m_bestNetworks.clear(); };
+    void ClearBestVectors();
 
     /**
     Sets how many networks can be in memory at the same time before a thread joining is performed
@@ -113,6 +116,8 @@ public:
     // Joins the networks and makes sure they are done
     void JoinNetworkThreads();
 
+    // Sets the delete networks variable. If called with true, all previously saved nets will be deleted
+    void SetDeleteCompletedNetworks(bool p_delete);
 private:
     // First in a series of creating all different combinations of neural nets
     void CreateHiddenLayerCombinations(NetworkSettings * p_netWorkSettings, int* p_hiddenCells, const int& p_numberOfLayers, const int& p_depth);
@@ -138,7 +143,10 @@ private:
     the new network is simply added to the list*/
     void UpdateBestNetworks(NetworkSettings p_settings);
 
+    void SaveBestNetworksToString(std::vector<std::string>& o_savedNetVector);
+
     std::vector<ThreadedNetwork*> m_networks;
+    std::vector<NeuralNetwork*> m_savedNetworks;
     int m_maxNumberOfHiddenLayers;
     int m_maxNumberOfHiddenCellsPerLayer;
     // States how much the hidden cell per layer will increase per loop run
@@ -172,6 +180,8 @@ private:
     int m_errorAcceptance;
     // Will be used as validation data
     FANN::training_data* m_validationData;
+    // States if completed networks will be removed or not (this does not have an impact to best networks)
+    bool m_deleteCompletedNetworks;
 
     std::vector<NetworkSettings> m_bestNetworks;
 };

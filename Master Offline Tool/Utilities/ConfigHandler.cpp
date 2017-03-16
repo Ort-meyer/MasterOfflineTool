@@ -31,6 +31,8 @@ ConfigHandler::ConfigHandler()
     m_creationType = NetworkCreationType::BuildFromBaseline;
 
     m_logLevel = LogLevel::Progress;
+
+    m_maxNetworkThreads = 15;
 }
 
 

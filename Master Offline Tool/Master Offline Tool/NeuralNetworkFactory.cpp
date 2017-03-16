@@ -5,7 +5,7 @@
 
 #include <iostream>
 using namespace std;
-NeuralNetworkFactory::NeuralNetworkFactory() : m_validationData(nullptr)
+NeuralNetworkFactory::NeuralNetworkFactory() : m_validationData(nullptr), m_deleteCompletedNetworks(true)
 {
 }
 
@@ -157,10 +157,14 @@ void NeuralNetworkFactory::CreateAndRunNetworksFromBaseline(NetworkSettings p_ba
         {
             t_currentSettings.hiddenCells[j] = i;
         }
-        SetupAndTrainNetworkAndAddResultsToList(&t_networks, t_currentSettings);
+        LaunchNewNet(&t_currentSettings, m_epocsToTrain, m_reportRate, m_errorAcceptance);
+        //SetupAndTrainNetworkAndAddResultsToList(&t_networks, t_currentSettings);
     }
+    JoinNetworkThreads();
+    SaveBestNetworksToString(t_networks);
     FileHandler::AppendToFile(t_networks, "../GraphNetworks/HiddenCells.settings");
     t_networks.clear();
+    ClearBestVectors();
 
     // Hidden layers
     // Potential memory leak?
@@ -180,10 +184,14 @@ void NeuralNetworkFactory::CreateAndRunNetworksFromBaseline(NetworkSettings p_ba
                 t_currentSettings.hiddenCells[j] = 10; // This shouldn't happen though. Ever
             }
         }
-        SetupAndTrainNetworkAndAddResultsToList(&t_networks, t_currentSettings);
+        LaunchNewNet(&t_currentSettings, m_epocsToTrain, m_reportRate, m_errorAcceptance);
+        //SetupAndTrainNetworkAndAddResultsToList(&t_networks, t_currentSettings);
     }
+    JoinNetworkThreads();
+    SaveBestNetworksToString(t_networks);
     FileHandler::AppendToFile(t_networks, "../GraphNetworks/HiddenLayers.settings");
     t_networks.clear();
+    ClearBestVectors();
 
     // Learning rate
     t_currentSettings = p_baseline;
@@ -191,10 +199,14 @@ void NeuralNetworkFactory::CreateAndRunNetworksFromBaseline(NetworkSettings p_ba
     for (float i = 0; i <= 1; i+= t_learningRateIncrement)
     {
         t_currentSettings.learningRate = i;
-        SetupAndTrainNetworkAndAddResultsToList(&t_networks, t_currentSettings);
+        LaunchNewNet(&t_currentSettings, m_epocsToTrain, m_reportRate, m_errorAcceptance);
+        // SetupAndTrainNetworkAndAddResultsToList(&t_networks, t_currentSettings);
     }
+    JoinNetworkThreads();
+    SaveBestNetworksToString(t_networks);
     FileHandler::AppendToFile(t_networks, "../GraphNetworks/LearningRate.settings");
     t_networks.clear();
+    ClearBestVectors();
 
     // Steepness hidden
     t_currentSettings = p_baseline;
@@ -202,10 +214,14 @@ void NeuralNetworkFactory::CreateAndRunNetworksFromBaseline(NetworkSettings p_ba
     for (float i = 0; i <= 1; i += t_steepnessHiddenIncrement)
     {
         t_currentSettings.steepnessHidden = i;
-        SetupAndTrainNetworkAndAddResultsToList(&t_networks, t_currentSettings);
+        LaunchNewNet(&t_currentSettings, m_epocsToTrain, m_reportRate, m_errorAcceptance);
+        //SetupAndTrainNetworkAndAddResultsToList(&t_networks, t_currentSettings);
     }
+    JoinNetworkThreads();
+    SaveBestNetworksToString(t_networks);
     FileHandler::AppendToFile(t_networks, "../GraphNetworks/SteepnessHidden.settings");
     t_networks.clear();
+    ClearBestVectors();
 
     // Steepness output
     t_currentSettings = p_baseline;
@@ -213,10 +229,14 @@ void NeuralNetworkFactory::CreateAndRunNetworksFromBaseline(NetworkSettings p_ba
     for (float i = 0; i <= 1; i += t_steepnessOutputIncrement)
     {
         t_currentSettings.steepnessOutput = i;
-        SetupAndTrainNetworkAndAddResultsToList(&t_networks, t_currentSettings);
+        LaunchNewNet(&t_currentSettings, m_epocsToTrain, m_reportRate, m_errorAcceptance);
+        // SetupAndTrainNetworkAndAddResultsToList(&t_networks, t_currentSettings);
     }
+    JoinNetworkThreads();
+    SaveBestNetworksToString(t_networks);
     FileHandler::AppendToFile(t_networks, "../GraphNetworks/SteepnessOutput.settings");
     t_networks.clear();
+    ClearBestVectors();
 }
 
 void NeuralNetworkFactory::SetupAndTrainNetworkAndAddResultsToList(std::vector<std::string>* p_netResults, const NetworkSettings& p_netSettings)
@@ -332,16 +352,48 @@ void NeuralNetworkFactory::LaunchNewNet(NetworkSettings * p_netWorkSettings, con
     m_networks.push_back(newThreadedNetwork);
 }
 
+void NeuralNetworkFactory::ClearBestVectors()
+{
+    size_t length = m_bestNetworks.size();
+    for (size_t i = 0; i < length; i++)
+    {
+        free(m_bestNetworks.at(i).hiddenCells);
+    }
+    m_bestNetworks.clear();
+}
+
 void NeuralNetworkFactory::JoinNetworkThreads()
 {
     for (size_t i = 0; i < m_networks.size(); i++)
     {
         m_networks[i]->thread.join();
         UpdateBestNetworks(m_networks[i]->net->GetNetworkSettings());
-        delete m_networks[i]->net;
-        delete m_networks[i];
+        if (m_deleteCompletedNetworks)
+        {
+            delete m_networks[i]->net;
+        }
+        else
+        {
+            m_savedNetworks.push_back(m_networks[i]->net);
+        }
+        delete m_networks[i]; // This should not delete the thing that ->net is pointing to
     }
-    m_networks.clear();
+
+    m_networks.clear();   
+}
+
+void NeuralNetworkFactory::SetDeleteCompletedNetworks(bool p_delete)
+{
+    m_deleteCompletedNetworks = p_delete;
+    if (p_delete)
+    {
+        size_t length = m_savedNetworks.size();
+        for (size_t i = 0; i < length; i++)
+        {
+            delete m_savedNetworks[i];
+        }
+        m_savedNetworks.clear();
+    }
 }
 
 void NeuralNetworkFactory::UpdateBestNetworks(NetworkSettings p_settings)
@@ -365,5 +417,13 @@ void NeuralNetworkFactory::UpdateBestNetworks(NetworkSettings p_settings)
         // Check if new network is better than worst
         if (p_settings.mse < t_worst)
             m_bestNetworks.at(t_index) = p_settings;
+    }
+}
+
+void NeuralNetworkFactory::SaveBestNetworksToString(std::vector<std::string>& o_savedNetVector)
+{
+    for (size_t i = 0; i < m_bestNetworks.size(); i++)
+    {
+        o_savedNetVector.push_back(FileHandler::SaveNetworkToString(m_bestNetworks[i]));
     }
 }

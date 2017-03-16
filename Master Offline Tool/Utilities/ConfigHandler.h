@@ -58,6 +58,9 @@ public:
     // How much info we want to print out
     LogLevel m_logLevel;
 
+    // How many threads we will run at once
+    int m_maxNetworkThreads;
+
 private:
     ConfigHandler();
     ~ConfigHandler();

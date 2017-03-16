@@ -113,12 +113,7 @@ public:
     /**
     Sets the neural network settings
     */
-    void SetSettings(const NetworkSettings& p_settings) { 
-        m_networkSettings = p_settings; 
-        m_networkSettings.trainingData = new FANN::training_data(*p_settings.trainingData);
-		if (m_networkSettings.validationData != nullptr)
-			m_networkSettings.validationData = new FANN::training_data(*p_settings.validationData);
-    };
+    void SetSettings(const NetworkSettings& p_settings);
     /**
     Sets up the neural network with appropriate parameters
     defined by the network settings. These settings will

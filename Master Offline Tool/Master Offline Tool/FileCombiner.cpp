@@ -22,6 +22,7 @@ FileCombiner::FileCombiner() : m_dataSetBuilder(new DataSetBuilder())
     m_creationType = config->m_creationType;
 
     m_factory.SetTrainingVariables(config->m_numberOfEpochs, config->m_reportRate, config->m_errorAcceptance);
+    m_factory.SetMaxNetworksInMemory(config->m_maxNetworkThreads);
 
     m_validationAmount = config->m_numValidationSet;
     CombineFilesInFolder("../filteredData", "filteredData");
@@ -126,11 +127,11 @@ void FileCombiner::FeedDataToNeuralNetworkFactory()
 
         t_netSetting.outputCells = 1;
         t_netSetting.hiddenLayers = 4;
-        int hiddenlayers[5] = { 100,100,100, 100, 10 };
+        int hiddenlayers[5] = { 100,100,100, 100, 100 };
         t_netSetting.hiddenCells = hiddenlayers;
-        t_netSetting.learningRate = 1;
-        t_netSetting.steepnessHidden = 0.6;
-        t_netSetting.steepnessOutput = 0.6;
+        t_netSetting.learningRate = 0.7;
+        t_netSetting.steepnessHidden = 0.7;
+        t_netSetting.steepnessOutput = 0.7;
         t_netSetting.functionHidden = FANN::activation_function_enum::SIGMOID_SYMMETRIC;
         t_netSetting.functionOutput = FANN::activation_function_enum::SIGMOID_SYMMETRIC;
         t_netSetting.deterministicWeights = true;
@@ -201,7 +202,10 @@ void FileCombiner::PerformCrossValidationOnNetSetting(NetworkSettings & p_netSet
             m_factory.CreateAndRunNetworksFromBaseline(p_netSetting);
             break;
         case NetworkCreationType::CreateOneSpecific:
+        {
+            m_factory.SetDeleteCompletedNetworks(false);
             break;
+        }
         default:
             break;
         }

@@ -3,6 +3,8 @@
 #include <vector>
 #include <FileHandler.h>
 #include <ConfigHandler.h>
+
+#include <memory>
 using namespace std;
 
 
@@ -52,6 +54,19 @@ NeuralNetwork::~NeuralNetwork()
     delete m_networkSettings.trainingData;
     delete m_networkSettings.validationData;
     // TODO we need to delete hidden cells somewhere...
+}
+
+void NeuralNetwork::SetSettings(const NetworkSettings & p_settings)
+{
+    m_networkSettings = p_settings;
+    // We need to make a deep copy since it is a pointer, 
+    // we dont want something to change it before we get a chance to save it to file
+    // This will be deleted when the list of best networks is cleared from networkfactory
+    m_networkSettings.hiddenCells = (int*)malloc(sizeof(int) * p_settings.hiddenLayers);
+    memcpy(m_networkSettings.hiddenCells, p_settings.hiddenCells, sizeof(int) * p_settings.hiddenLayers);
+    m_networkSettings.trainingData = new FANN::training_data(*p_settings.trainingData);
+    if (m_networkSettings.validationData != nullptr)
+        m_networkSettings.validationData = new FANN::training_data(*p_settings.validationData);
 }
 
 void NeuralNetwork::ValidateOnFile()

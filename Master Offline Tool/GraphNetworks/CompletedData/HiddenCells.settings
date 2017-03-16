@@ -1,0 +1,100 @@
+ID:  MSE: 0.0187889 Percentile correct: 17.5 Mean error: 0.226526 Did retraining: false
+---Network settings---
+ hidden layers no: 1 cells: 10
+ hidden layers no: 2 cells: 10
+ hidden layers no: 3 cells: 10
+ hidden layers no: 4 cells: 10
+ Function hidden: 5 Function output: 5 Learning rate: 0.7 Steepness hidden: 0.7 Steepness output: 0.7 Deterministic weights: 1
+Biggest difference : 0.0668375
+MSE values: 0.104616 0.0381244 0.0390113 0.0384979 0.041583 0.0414744 0.0404542 0.0384649 0.038123 0.0379057 0.0377783 
+
+ID:  MSE: 0.0146613 Percentile correct: 3.75 Mean error: 0.233942 Did retraining: true Retraining was good: true Number of Epochs trainined: 1000
+---Network settings---
+ hidden layers no: 1 cells: 20
+ hidden layers no: 2 cells: 20
+ hidden layers no: 3 cells: 20
+ hidden layers no: 4 cells: 20
+ Function hidden: 5 Function output: 5 Learning rate: 0.7 Steepness hidden: 0.7 Steepness output: 0.7 Deterministic weights: 1
+Biggest difference : 0.386879
+MSE values: 0.422061 0.0351825 0.0426077 0.0439893 0.0400357 0.0362555 0.0446136 0.0404529 0.0427076 0.0426764 0.0430817 
+
+ID:  MSE: 0.0287002 Percentile correct: 13.125 Mean error: 0.284394 Did retraining: true Retraining was good: false Number of Epochs trainined: 6000
+---Network settings---
+ hidden layers no: 1 cells: 30
+ hidden layers no: 2 cells: 30
+ hidden layers no: 3 cells: 30
+ hidden layers no: 4 cells: 30
+ Function hidden: 5 Function output: 5 Learning rate: 0.7 Steepness hidden: 0.7 Steepness output: 0.7 Deterministic weights: 1
+Biggest difference : 0.164513
+MSE values: 0.189137 0.0300547 0.0266259 0.0251636 0.0252396 0.0254298 0.0246236 0.0254394 0.0266649 0.0255355 0.0267761 
+
+ID:  MSE: 0.031918 Percentile correct: 22.5 Mean error: 0.268127 Did retraining: false
+---Network settings---
+ hidden layers no: 1 cells: 40
+ hidden layers no: 2 cells: 40
+ hidden layers no: 3 cells: 40
+ hidden layers no: 4 cells: 40
+ Function hidden: 5 Function output: 5 Learning rate: 0.7 Steepness hidden: 0.7 Steepness output: 0.7 Deterministic weights: 1
+Biggest difference : 0.169014
+MSE values: 0.190745 0.0283635 0.0263573 0.0251227 0.0238781 0.0231601 0.0226507 0.022449 0.0223311 0.0217308 0.0217896 
+
+ID:  MSE: 0.0478763 Percentile correct: 20.625 Mean error: 0.319105 Did retraining: false
+---Network settings---
+ hidden layers no: 1 cells: 50
+ hidden layers no: 2 cells: 50
+ hidden layers no: 3 cells: 50
+ hidden layers no: 4 cells: 50
+ Function hidden: 5 Function output: 5 Learning rate: 0.7 Steepness hidden: 0.7 Steepness output: 0.7 Deterministic weights: 1
+Biggest difference : 0.169425
+MSE values: 0.19075 0.0248441 0.0236817 0.0226537 0.0222811 0.0218464 0.0216608 0.0216759 0.0217512 0.0213792 0.0213247 
+
+ID:  MSE: 0.0556095 Percentile correct: 36.25 Mean error: 0.323915 Did retraining: false
+---Network settings---
+ hidden layers no: 1 cells: 60
+ hidden layers no: 2 cells: 60
+ hidden layers no: 3 cells: 60
+ hidden layers no: 4 cells: 60
+ Function hidden: 5 Function output: 5 Learning rate: 0.7 Steepness hidden: 0.7 Steepness output: 0.7 Deterministic weights: 1
+Biggest difference : 0.416287
+MSE values: 0.427479 0.022993 0.0194648 0.0188033 0.0140384 0.0127961 0.0123476 0.0128277 0.0119339 0.0116018 0.011192 
+
+ID:  MSE: 0.0215481 Percentile correct: 20.625 Mean error: 0.245402 Did retraining: true Retraining was good: false Number of Epochs trainined: 1000
+---Network settings---
+ hidden layers no: 1 cells: 70
+ hidden layers no: 2 cells: 70
+ hidden layers no: 3 cells: 70
+ hidden layers no: 4 cells: 70
+ Function hidden: 5 Function output: 5 Learning rate: 0.7 Steepness hidden: 0.7 Steepness output: 0.7 Deterministic weights: 1
+Biggest difference : 0.4032
+MSE values: 0.427717 0.0245167 0.0246556 0.0246837 0.0435938 0.0431714 0.0444987 0.0428023 0.0424953 0.0433629 0.0447045 
+
+ID:  MSE: 0.0565748 Percentile correct: 22.5 Mean error: 0.359925 Did retraining: false
+---Network settings---
+ hidden layers no: 1 cells: 80
+ hidden layers no: 2 cells: 80
+ hidden layers no: 3 cells: 80
+ hidden layers no: 4 cells: 80
+ Function hidden: 5 Function output: 5 Learning rate: 0.7 Steepness hidden: 0.7 Steepness output: 0.7 Deterministic weights: 1
+Biggest difference : 0.178958
+MSE values: 0.190757 0.0205529 0.017735 0.0165551 0.0198374 0.0151272 0.0145905 0.013696 0.0117994 0.0130762 0.0123353 
+
+ID:  MSE: 0.0576693 Percentile correct: 46.875 Mean error: 0.312462 Did retraining: false
+---Network settings---
+ hidden layers no: 1 cells: 90
+ hidden layers no: 2 cells: 90
+ hidden layers no: 3 cells: 90
+ hidden layers no: 4 cells: 90
+ Function hidden: 5 Function output: 5 Learning rate: 0.7 Steepness hidden: 0.7 Steepness output: 0.7 Deterministic weights: 1
+Biggest difference : 0.418525
+MSE values: 0.427728 0.0346768 0.021572 0.0166521 0.0178684 0.0251361 0.0259908 0.0118248 0.0101054 0.0098066 0.00920288 
+
+ID:  MSE: 0.0420308 Percentile correct: 18.125 Mean error: 0.333584 Did retraining: true Retraining was good: false Number of Epochs trainined: 1000
+---Network settings---
+ hidden layers no: 1 cells: 100
+ hidden layers no: 2 cells: 100
+ hidden layers no: 3 cells: 100
+ hidden layers no: 4 cells: 100
+ Function hidden: 5 Function output: 5 Learning rate: 0.7 Steepness hidden: 0.7 Steepness output: 0.7 Deterministic weights: 1
+Biggest difference : 0.176075
+MSE values: 0.190757 0.0146829 0.0308623 0.0356126 0.0378803 0.0438888 0.0442842 0.0403259 0.045095 0.0438689 0.0427654 
+
