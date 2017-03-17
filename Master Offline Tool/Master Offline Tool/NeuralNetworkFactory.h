@@ -75,10 +75,7 @@ public:
     To later get access to the network created the SetDeleteCompletedNetworks(bool) needs to be set to false. If this is done
     the networks can all be found by calling GetNetworksInMemory().
     */
-    void CreateSpecificNeuralNetwork(FANN::training_data* p_trainingData, const int& p_numberOfHiddenLayers, int* p_hiddenLayerCells,
-        const FANN::activation_function_enum& p_outputActivationFunction, const FANN::activation_function_enum& p_hiddenActivationFunction,
-        const float& p_learningRateSteepness, const float& p_steepnessOutput, const float& p_steepnessHidden, const bool& p_deteministicWeights,
-        const int& p_numberOfEpochsToTrain, const int& p_reportRate, const float& p_accaptableError, FANN::training_data* p_validationData = nullptr, const std::string& p_netIdString = "");
+    void CreateSpecificNeuralNetwork(const NetworkSettings& p_setting);
 
 
 

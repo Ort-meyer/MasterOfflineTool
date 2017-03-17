@@ -108,39 +108,12 @@ void NeuralNetworkFactory::CreateNewNeuralNetworkCombinationsFromData(FANN::trai
     }
 }
 
-void NeuralNetworkFactory::CreateSpecificNeuralNetwork(FANN::training_data * p_trainingData, const int & p_numberOfHiddenLayers,
-    int * p_hiddenLayerCells, const FANN::activation_function_enum & p_outputActivationFunction,
-    const FANN::activation_function_enum & p_hiddenActivationFunction, const float & p_learningRateSteepness,
-    const float & p_steepnessOutput, const float & p_steepnessHidden, const bool & p_deteministicWeights,
-    const int& p_numberOfEpochsToTrain, const int& p_reportRate, const float& p_accaptableError, FANN::training_data* p_validationData,
-    const std::string& p_netIdString)
+void NeuralNetworkFactory::CreateSpecificNeuralNetwork(const NetworkSettings& p_setting)
 {
     NetworkSettings newNetSettings;
-    // Set the constant variables
-    newNetSettings.inputCells = p_trainingData->num_input_train_data();
-    newNetSettings.outputCells = p_trainingData->num_output_train_data();
-    newNetSettings.trainingData = new FANN::training_data(*p_trainingData);
-
-    // Se if we have any validation data
-    if (p_validationData == nullptr)
-    {
-        // If m_validationdata is nullptr no validation will take place
-        newNetSettings.validationData = new FANN::training_data(*m_validationData);
-    }
-    else
-    {
-        newNetSettings.validationData = new FANN::training_data(*p_validationData);;
-    }
-
-    newNetSettings.SetVaryingVariables(p_numberOfHiddenLayers, p_hiddenLayerCells, p_learningRateSteepness, p_steepnessOutput,
-        p_steepnessHidden, p_hiddenActivationFunction, p_outputActivationFunction, p_deteministicWeights, p_netIdString);
-    LaunchNewNet(&newNetSettings, p_numberOfEpochsToTrain, p_reportRate, p_accaptableError);
+    newNetSettings = p_setting;
+    LaunchNewNet(&newNetSettings, m_epocsToTrain, m_reportRate, m_errorAcceptance);
     return;
-    //NeuralNetwork* newNet = new NeuralNetwork();
-    //newNet->SetSettings(newNetSettings);
-    //newNet->SetupNetwork();
-    //newNet->TrainAndValidateNetwork(p_numberOfEpochsToTrain, p_reportRate, p_accaptableError);
-    //UpdateBestNetworks(newNet->GetNetworkSettings());
 }
 
 

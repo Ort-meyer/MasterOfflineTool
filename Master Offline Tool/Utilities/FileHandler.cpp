@@ -103,6 +103,7 @@ string FileHandler::SaveNetworkToString(const NetworkSettings & p_network)
     newEntry << " MSE: " << p_network.mse;
     newEntry << " Percentile correct: " << p_network.correctPercentile;
     newEntry << " Mean error: " << p_network.meanError;
+    newEntry << " Guessed lost when found: " << p_network.lostWrongGuesses;
     newEntry << " Did retraining: " << (p_network.didRetrain ? "true" : "false");
     if (p_network.didRetrain)
     {

@@ -48,47 +48,7 @@ void FileCombiner::SaveBestNetToFile(const NeuralNetworkFactory& p_factory, cons
     size_t length = netSettings.size();
     for (size_t net = 0; net < length; net++)
     {
-        std::ostringstream newEntry;
-        // Add all the important network info
-        newEntry << "ID: " << netSettings.at(net).idString;
-        newEntry << " MSE: " << netSettings.at(net).mse;
-        newEntry << " Percentile correct: " << netSettings.at(net).correctPercentile;
-        newEntry << " Mean error: " << netSettings.at(net).meanError;
-        newEntry << " Did retraining: " << (netSettings.at(net).didRetrain ? "true" : "false");
-        if (netSettings.at(net).didRetrain)
-        {
-            newEntry << " Retraining was good: " << (netSettings.at(net).retrainingWasGood ? "true" : "false");
-            newEntry << " Number of Epochs trainined: " << netSettings.at(net).bestEpoch.bestEpoch;
-        }
-        newEntry << std::endl << "---Network settings---" <<std::endl;
-        for (size_t i = 0; i < netSettings.at(net).hiddenLayers; i++)
-        {
-            newEntry << " hidden layers no: " << i+1 << " cells: " << netSettings.at(net).hiddenCells[i] << std::endl;
-        }
-        newEntry << " Function hidden: ";
-        newEntry << netSettings.at(net).functionHidden;
-        newEntry << " Function output: ";
-        newEntry << netSettings.at(net).functionOutput;
-        newEntry << " Learning rate: ";
-        newEntry << netSettings.at(net).learningRate;
-        newEntry << " Steepness hidden: ";
-        newEntry << netSettings.at(net).steepnessHidden;
-        newEntry << " Steepness output: ";
-        newEntry << netSettings.at(net).steepnessOutput;
-        newEntry << " Deterministic weights: ";
-        newEntry << netSettings.at(net).deterministicWeights;
-        newEntry << std::endl;
-		newEntry << "Biggest difference : ";
-		newEntry << netSettings.at(net).bestEpoch.difference;
-		newEntry << std::endl;
-		newEntry << "MSE values: ";
-		for (size_t i = 0; i < netSettings.at(net).bestEpoch.mseList.size(); i++)
-		{
-			newEntry << netSettings.at(net).bestEpoch.mseList.at(i) << " ";
-		}
-		newEntry << std::endl;
-        // Add the new entry to all the lines that should be writen
-        t_lines.push_back(newEntry.str());
+        t_lines.push_back(FileHandler::SaveNetworkToString(netSettings[net]));        
     }
     FileHandler::WriteToFile(t_lines, t_folderFullPath + p_fileName);
 }
@@ -204,6 +164,7 @@ void FileCombiner::PerformCrossValidationOnNetSetting(NetworkSettings & p_netSet
         case NetworkCreationType::CreateOneSpecific:
         {
             m_factory.SetDeleteCompletedNetworks(false);
+            m_factory.CreateSpecificNeuralNetwork(p_netSetting);
             break;
         }
         default:
@@ -220,7 +181,7 @@ void FileCombiner::PerformCrossValidationOnNetSetting(NetworkSettings & p_netSet
         if (ConfigHandler::Get()->m_logLevel >= LogLevel::Progress)
         {
             float percentage = (float)(validationSet + 1) / (float)p_totalNumberOfPersons;
-            std::cout << "Cross validation progress: " << percentage;
+            std::cout << "Cross validation progress: " << percentage * 100.0f << "%" << std::endl;
         }
         // Delete the pointers created to avoid memory leak
         // TODO make sure we dont have any old code in one of the factory functions that does this

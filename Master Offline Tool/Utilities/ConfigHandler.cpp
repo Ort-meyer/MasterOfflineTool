@@ -24,15 +24,17 @@ ConfigHandler::ConfigHandler()
     m_fileEndingNetSettings = "netSettings";
     m_fileEndingNeuralNet = "ann";
 
-    m_numberOfEpochs = 100;
-    m_reportRate = 10;
+    m_numberOfEpochs = 1000;
+    m_reportRate = 100;
     m_errorAcceptance = 0.0001f;
 
-    m_creationType = NetworkCreationType::BuildFromBaseline;
+    m_creationType = NetworkCreationType::CreateOneSpecific;
 
-    m_logLevel = LogLevel::Progress;
+    m_logLevel = LogLevel::Verbose;
 
-    m_maxNetworkThreads = 15;
+    m_maxNetworkThreads = 1;
+
+    m_networkPredictionTolerance = 0.2f;
 }
 
 

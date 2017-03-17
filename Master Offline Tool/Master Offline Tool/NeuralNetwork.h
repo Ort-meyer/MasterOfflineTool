@@ -91,6 +91,13 @@ struct NetworkSettings
     If the reatraining gave beter validation results
     */
     bool retrainingWasGood;
+
+    /**
+    How many time the network guessed lost when it was found, as a %
+    If this is low it might be fine with a low guessing accuracy since we never guess "wrong", 
+    we only guess with to much uncertainty
+    */
+    float lostWrongGuesses;
 };
 
 namespace NetworkSorting

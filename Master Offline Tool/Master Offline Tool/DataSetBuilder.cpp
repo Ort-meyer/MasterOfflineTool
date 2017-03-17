@@ -101,8 +101,8 @@ void DataSetBuilder::BuildDataSetFromFolder(string p_directory)
         //netFac.CreateSpecificNeuralNetwork(&data, )
         int* myInt = new int(20);
         //netFac.SetVariables(1, 3, 1, 0.3, 0.3, 0.3, 1);
-        netFac.CreateSpecificNeuralNetwork(&data, 1, myInt, FANN::activation_function_enum::SIGMOID_SYMMETRIC, FANN::activation_function_enum::SIGMOID_SYMMETRIC,
-            0.7f, 1.0f, 1.0f, true, 10000, 1000, 0.0001f, &data);
+        //netFac.CreateSpecificNeuralNetwork(&data, 1, myInt, FANN::activation_function_enum::SIGMOID_SYMMETRIC, FANN::activation_function_enum::SIGMOID_SYMMETRIC,
+        //    0.7f, 1.0f, 1.0f, true, 10000, 1000, 0.0001f, &data);
         //netFac.CreateNewNeuralNetworkCombinationsFromData(&data);
         delete myInt;
     }

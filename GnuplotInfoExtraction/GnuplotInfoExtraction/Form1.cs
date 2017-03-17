@@ -27,6 +27,7 @@ namespace GnuplotInfoExtraction
             public float MSE;
             public float PercentileCorrect;
             public float MeanError;
+            public float GuessedLostWhenFound;
             public bool DidRetraining;
             public List<int> HiddenCells;
             public int FunctionHidden;
@@ -86,6 +87,14 @@ namespace GnuplotInfoExtraction
             {
                 SteepnessOutputExtraction();
             }
+            else if (checkedButton == radio_EpochsTrained)
+            {
+                EpochsTrainedExtraction();
+            }
+            else if (checkedButton == radio_MultipleNetworks)
+            {
+                MultipleNetworksExtraction();
+            }
             DecideExtractionName();
             File.WriteAllLines(extractedDataFileName, infoToSave);
         }
@@ -97,7 +106,11 @@ namespace GnuplotInfoExtraction
             string dataFile = extractedDataFileName;                  // one data file
             string tempScriptFile = "tempPlotScript.plt";    // gnuplot script
             string pngFile = extractedDataFileName + ".png";             // output png file
-            string gnuplotScriptShellFile = "PlotScript.plt";
+            string gnuplotScriptShellFile = "PlotScriptLineChart.plt";
+            if (radio_MultipleNetworks.Checked)
+            {
+                gnuplotScriptShellFile = "PlotScriptBarChart.plt";
+            }
 
             // you can download it from file
             string[] gnuplot_script = File.ReadAllLines(gnuplotScriptShellFile);
@@ -164,8 +177,8 @@ namespace GnuplotInfoExtraction
                 newNetSetting.MSE = float.Parse(infoInLine[3],nf);
                 newNetSetting.PercentileCorrect = float.Parse(infoInLine[6], nf);
                 newNetSetting.MeanError = float.Parse(infoInLine[9], nf);
-  
-                newNetSetting.DidRetraining = bool.Parse(infoInLine[12]);
+                newNetSetting.GuessedLostWhenFound = float.Parse(infoInLine[14], nf);
+                newNetSetting.DidRetraining = bool.Parse(infoInLine[17]);
                 i++; // first line done
 
                 i++; // skip ---Network settings--- line
@@ -200,7 +213,7 @@ namespace GnuplotInfoExtraction
                 {
                     try
                     {
-                        newNetSetting.MSEValues.Add(float.Parse(infoInLine[i], nf));
+                        newNetSetting.MSEValues.Add(float.Parse(infoInLine[mseValue], nf));
                     }
                     catch (Exception)
                     {                        
@@ -297,6 +310,41 @@ namespace GnuplotInfoExtraction
             SaveInfoInDictionary(sameTypeSetting);
         }
 
+        private void EpochsTrainedExtraction()
+        {
+            int totalEpochs = int.Parse(NumberOfEpochsTrained.Text);
+
+            Dictionary<int, List<float>> sameTypeSetting = new Dictionary<int, List<float>>();
+
+            foreach (var setting in allSettings)
+            {
+                for (int i = 0; i <= totalEpochs; i+= totalEpochs / (setting.MSEValues.Count - 1))
+                {
+                    if (!sameTypeSetting.ContainsKey(i))
+                    {
+                        sameTypeSetting.Add(i, new List<float>());
+                    }
+
+                    sameTypeSetting[i].Add(setting.MSEValues[i / (setting.MSEValues.Count - 1)]);
+                }
+            }
+            SaveInfoInDictionary(sameTypeSetting);
+        }
+
+        private void MultipleNetworksExtraction()
+        {
+            // This whole thing is a special case
+            float meanValue = 0;
+            for (int i = 0; i < allSettings.Count; i++)
+            {
+                float value = GetIntrestingSuccessValue(allSettings[i]);
+                infoToSave.Add((i+1) + " " + value);
+                meanValue += value;
+            }
+            meanValue /= allSettings.Count;
+            infoToSave.Insert(0 ,"0 " + meanValue);
+        }
+
         private void SaveInfoInDictionary<TKey>(Dictionary<TKey, List<float>> dictionary)
         {
             foreach (var pair in dictionary)
@@ -340,6 +388,14 @@ namespace GnuplotInfoExtraction
             {
                 extractedDataFileName = "steepness output.gnuplott";
             }
+            else if (checkedButton == radio_EpochsTrained)
+            {
+                extractedDataFileName = "epochs trained.gnuplott";
+            }
+            else if (checkedButton == radio_MultipleNetworks)
+            {
+                extractedDataFileName = "multiple networks.gnuplott";
+            }
         }
 
         private void DecideInterestingValueName()
@@ -360,6 +416,10 @@ namespace GnuplotInfoExtraction
             else if (checkedButton == YAxisLowestMSE)
             {
                 interestingValueName = "Lowest MSE";
+            }
+            else if (checkedButton == YAxisMSEValues)
+            {
+                interestingValueName = "MSE value";
             }
         }
 

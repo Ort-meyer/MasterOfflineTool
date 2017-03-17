@@ -99,6 +99,7 @@ void NeuralNetwork::ValidateNetwork()
         }
         m_networkSettings.mse = m_net.get_MSE();
         float fullError = 0;
+        int amountOfLostWrongGuesses = 0;
         float* input = *m_networkSettings.validationData->get_input();
         float* output = *m_networkSettings.validationData->get_output();
         int length = m_networkSettings.validationData->length_train_data();
@@ -108,9 +109,19 @@ void NeuralNetwork::ValidateNetwork()
             // Needs to make this work for several output cells too, Or do WE?
             float* netOutput = m_net.run(&input[i * m_networkSettings.inputCells]);
             float diff = abs(*netOutput - output[i]);
-            float tolerance = 0.1;
+            float tolerance = ConfigHandler::Get()->m_networkPredictionTolerance;
             if (diff < tolerance)
                 successful++;
+            else
+            {
+                // Figure out if we guessed lost when it was found
+                diff = abs(*netOutput - 1);
+                // Diff here describes how far off from 1 we was. && is to make sure the real output was found, should not be needed
+                if (diff < tolerance && output[i] <=0.1f)
+                {
+                    amountOfLostWrongGuesses++;
+                }
+            }
             //std::cout << "Net: " << *netOutput << " Acctual: " << output[i] << endl;
             fullError += abs(abs(*netOutput) - abs(output[i]));
         }
@@ -122,6 +133,7 @@ void NeuralNetwork::ValidateNetwork()
         }
         m_networkSettings.correctPercentile = ((float)successful / (float)length) * 100;
         m_networkSettings.meanError = fullError / static_cast<float>(length);
+        m_networkSettings.lostWrongGuesses = ((float)amountOfLostWrongGuesses / (float)length) * 100;
     }
 }
 

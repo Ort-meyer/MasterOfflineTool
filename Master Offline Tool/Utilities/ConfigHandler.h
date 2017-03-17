@@ -61,6 +61,9 @@ public:
     // How many threads we will run at once
     int m_maxNetworkThreads;
 
+    // How much off the network can be and we still count it as success
+    float m_networkPredictionTolerance;
+
 private:
     ConfigHandler();
     ~ConfigHandler();
