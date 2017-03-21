@@ -35,6 +35,8 @@ ConfigHandler::ConfigHandler()
     m_maxNetworkThreads = 1;
 
     m_networkPredictionTolerance = 0.2f;
+
+    m_maxDisplacement = 40.0f; // TODO Change this to the acctual value...
 }
 
 

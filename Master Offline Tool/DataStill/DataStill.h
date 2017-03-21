@@ -40,11 +40,17 @@ public:
     void FlagDataOutput(std::vector<std::string>& p_lines, int p_backtrack, int p_outputToFlagTo);
 
     /**
+    Should not be used with NormalizeValuesWithHighestFound.
+    This is the new one that normalizes the values by using the highest acheivable, not the highest achieved by our test players
+    */
+    std::vector<std::string>* NormalizeValuesUsingNumber(const std::vector<std::string>& p_lines, const float & p_number);
+
+    /**
     Reads through all files specified and normalizes values within and outputs
     results into respective p_filtereFileNames name. Make sure the two parameters
     are mapped. All values will be between -1 and 1
     WARNING! This assume that there is only one data row per file. CBA with scalability.*/
-    std::vector<std::vector<std::string>>* NormalizeValues(const std::vector<std::vector<std::string>>& p_filesInLines);
+    std::vector<std::vector<std::string>>* NormalizeValuesWithHighestFound(const std::vector<std::vector<std::string>>& p_filesInLines);
 
     /**
     Takes p_numToMerge data sets and put them onto the same line.
@@ -100,6 +106,18 @@ public:
     TODO Fix so that only data adjacent to eachother in time is added together.
     */
     std::vector<std::string>* FilterAdd2(const std::vector<std::string>& p_lines, const int& p_numToAdd);
+   
+    /**
+    Takes in all positions of a person and all other files of that person that needs filtering.
+    Returns all the files modified, in the same order they appares in the inparam
+    */
+    std::vector<std::vector<std::string>>* RemoveDeadData(const std::vector<std::string>& p_positionData, const std::vector<std::vector<std::string>>& p_allFilesOfOnePerson, const float& p_displacementRemoveThreshold);
+
+    /**
+    Needed on things that does not use displacement or rotation.
+    This is to remove data that have a non sequential index, to make it fit, for example, position
+    */
+    void DataStill::RemoveNonSequentialIndex(std::vector<std::string>* p_lines);
 
 private:
     /////////////////////HELP METHODS/////////////////
@@ -136,6 +154,7 @@ private:
     Takes all vectors of strings from input parameter and puts together into the
     same vector of strings and returns*/
     std::vector<std::string>* MergeSetsOfLinesIntoSameSet(std::vector<std::vector<std::string>*> p_setsOfLines);
+
 
     // Stores full path to directory in which we find raw data
     std::string m_rawDataFilePath;

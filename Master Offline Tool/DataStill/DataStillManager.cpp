@@ -14,6 +14,9 @@
 using namespace std;
 DataStillManager::DataStillManager()
 {
+    std::string t_stampLayout = "YYYY-MM-DD - hh-mm-ss";
+    m_stampSize = t_stampLayout.length();
+
     m_keyPressesRawDataBegining = "Keypresses";
     m_positionRawDataBegining = "Positions";
     m_rotationRawDataBegining = "Rotations";
@@ -38,53 +41,30 @@ void DataStillManager::FiltrateAllFilesInDirectory(const std::string& p_readDire
     std::sort(filesInDirectory.begin(), filesInDirectory.end());
 
     vector<thread> t_threads;
+    int i = 0;
     while (filesInDirectory.size() > 0)
     {
-        // Contains files of the same type, like all position files for example
-        std::vector<std::string> t_allFilesOfType;
-        std::string t_firstFileType;
-        // Loop through all the file types to find which typ this is
-        for (size_t i = 0; i < m_fileTypes.size(); i++)
-        {
-            if (filesInDirectory[0].find(m_fileTypes[i]) != std::string::npos)
-            {
-                t_firstFileType = m_fileTypes[i];
-                break;
-            }
-        }
+        // Get all files of one person
+        std::vector<std::string> t_allFilesFromPerson;
 
-        for (size_t currentFile = 0; currentFile < filesInDirectory.size(); currentFile++)
-        {
-            // This means that this file is of the same typ as the once we are trying to find
-            if (filesInDirectory[currentFile].find(t_firstFileType) != std::string::npos)
-            {
-                t_allFilesOfType.push_back(filesInDirectory[currentFile]);
-                // Remove the file from the unchecked once, we dont want to add it again...
-                filesInDirectory.erase(filesInDirectory.begin() + currentFile);
-                currentFile--;
-            }
-        }
+        int t_stampBegins = filesInDirectory[0].length() - p_readFileEnding.length() - 1 - m_stampSize;
+        std::string t_stamp = filesInDirectory[0].substr(t_stampBegins, m_stampSize);
+        t_allFilesFromPerson = GetAllFilesWithStampAndShrinkList(t_stamp, filesInDirectory);
+        // Sort to make sure the files are always sent in in the same order
+        std::sort(t_allFilesFromPerson.begin(), t_allFilesFromPerson.end());
+      
         // When we get here all files of the same type should be in t_allfilesoftype. Send it of to processing
 #ifdef MULTITHREAD
-        t_threads.push_back(thread(&DataStillManager::ProcessFilesAndSaveToFile, this, t_allFilesOfType, p_writeDirectoryPath, p_readFileEnding, p_writeFileEnding));
+        t_threads.push_back(thread(&DataStillManager::ProcessFilesAndSaveToFile, this, t_allFilesFromPerson, p_writeDirectoryPath, p_readFileEnding, p_writeFileEnding));
 #else 
-        ProcessFilesAndSaveToFile(t_allFilesOfType, p_writeDirectoryPath, p_readFileEnding, p_writeFileEnding);
+        ProcessFilesAndSaveToFile(t_allFilesFromPerson, p_writeDirectoryPath, p_readFileEnding, p_writeFileEnding);
 #endif // MULTITHREAD
+        i++;
     }
     for (size_t i = 0; i < t_threads.size(); i++)
     {
         t_threads.at(i).join();
     }
-}
-
-void derp(int t, int f)
-{
-    int q = t + f;
-}
-
-void merp()
-{
-    std::thread thread(derp, 1, 2);
 }
 
 void CheckThatAllEntiresHaveSameNrOfWords(std::vector<std::string>& p_lines)
@@ -108,6 +88,12 @@ void CheckThatAllEntiresHaveSameNrOfWords(std::vector<std::string>& p_lines)
 void DataStillManager::ProcessFilesAndSaveToFile(std::vector<std::string> p_files, const std::string& p_writeDirectoryPath
     , const std::string& p_readFileEnding, const std::string& p_writeFileEnding)
 {
+    if (p_files[1].find("Position") == std::string::npos)
+    {
+        // We should really not get here!!
+        std::cout << "WRONG SORT ON LIST!!!";
+        return;
+    }
     cout << "starting process" << endl;
     DataStill still;
     KeyMaskInterpreter keyMaskInterpeter;
@@ -115,14 +101,19 @@ void DataStillManager::ProcessFilesAndSaveToFile(std::vector<std::string> p_file
 
     size_t length = p_files.size();
 
-    // We need to read all files first, to apply normalize filter
+    // We need to read all files first, to apply remove dead filter
     std::vector<std::vector<std::string>>* t_allFileContent = new std::vector<std::vector<std::string>>();
     for (size_t currentFile = 0; currentFile < length; currentFile++)
     {
         t_allFileContent->push_back(*FileHandler::ReadFileIntoLines(p_files.at(currentFile)));
     }
 
-    bool normalize = true;
+    std::vector<std::vector<std::string>>* toRemove = t_allFileContent;
+    // add 0.5f to threshold to avoid float errors...
+    t_allFileContent = still.RemoveDeadData(t_allFileContent->at(1), *t_allFileContent, ConfigHandler::Get()->m_maxDisplacement + 0.5f);
+    delete toRemove;
+
+    bool normalize = false;
 
     for (size_t currentFile = 0; currentFile < length; currentFile++)
     {
@@ -133,14 +124,12 @@ void DataStillManager::ProcessFilesAndSaveToFile(std::vector<std::string> p_file
         ////////////////// KEY PRESSES //////////////////////
         if (p_files[currentFile].find(m_keyPressesRawDataBegining) != std::string::npos)
         {
-            // It's a keypresses file, perform special thingies here!
+            // It's a keypresses file, perform special thingies here! We might need to remove an extra data point to fit with displacements
             keyMaskInterpeter.ReinterpretRawKeyData(fileContent);
             // TODO doesn't this introduce a memory leak, since we change the pointer of fileContent to a new one but doesn't remove the old one
-
             fileContent = still.FilterAdd2(*fileContent, ConfigHandler::Get()->m_entriesToAvrage);
+            fileContent = still.NormalizeValuesUsingNumber(*fileContent, ConfigHandler::Get()->m_entriesToAvrage);
 			CheckThatAllEntiresHaveSameNrOfWords(*fileContent);
-
-
 
         }
         ////////////////// POSITIONS //////////////////////
@@ -149,6 +138,7 @@ void DataStillManager::ProcessFilesAndSaveToFile(std::vector<std::string> p_file
             // It's a positions file, perform special thingies here!
             fileContent = still.FilterDisplacement(*fileContent);
             fileContent = still.FilterAvrage2(*fileContent, ConfigHandler::Get()->m_entriesToAvrage);
+            fileContent = still.NormalizeValuesUsingNumber(*fileContent, ConfigHandler::Get()->m_maxDisplacement);
 			CheckThatAllEntiresHaveSameNrOfWords(*fileContent);        
         }
         ////////////////// ROTATIONS //////////////////////
@@ -157,13 +147,14 @@ void DataStillManager::ProcessFilesAndSaveToFile(std::vector<std::string> p_file
             // It's a rotations file, perform special thingies here!
             fileContent = still.FilterRotations(*fileContent);
             fileContent = still.FilterAvrage2(*fileContent, ConfigHandler::Get()->m_entriesToAvrage);
+            fileContent = still.NormalizeValuesUsingNumber(*fileContent, 3.14f);
 			CheckThatAllEntiresHaveSameNrOfWords(*fileContent);
         }
         ////////////////// TimeOfDay //////////////////////
         else if (p_files[currentFile].find(m_timeofdayRawDataBegining) != std::string::npos)
         {
-            // It's a rotations file, perform special thingies here!
-
+            // It's a time of day file, perform special thingies here!
+            still.RemoveNonSequentialIndex(fileContent);
             fileContent = still.FilterAvrage2(*fileContent, ConfigHandler::Get()->m_entriesToAvrage);
 			CheckThatAllEntiresHaveSameNrOfWords(*fileContent);
             normalize = false;
@@ -181,9 +172,23 @@ void DataStillManager::ProcessFilesAndSaveToFile(std::vector<std::string> p_file
         delete fileContent;
     }
     if (normalize)
-        t_allFileContent = still.NormalizeValues(*t_allFileContent);
+    {
+        // This should not be called since we now take all the files of one player and not all files of one type..
+        toRemove = t_allFileContent;
+        t_allFileContent = still.NormalizeValuesWithHighestFound(*t_allFileContent); 
+        delete toRemove;
+    }
 
-
+    // Debug make sure every entry have the samer amount of rows
+    int rows = t_allFileContent->at(0).size();
+    for (size_t i = 1; i < t_allFileContent->size(); i++)
+    {
+        if (rows != t_allFileContent->at(i).size())
+        {
+            int hej = 1;
+            std::cout << "WRONG!!";
+        }
+    }
 
     // Write to file
     for (size_t i = 0; i < length; i++)
@@ -201,7 +206,22 @@ void DataStillManager::ProcessFilesAndSaveToFile(std::vector<std::string> p_file
     delete t_allFileContent;
 }
 
-void dostuff()
+std::vector<std::string> DataStillManager::GetAllFilesWithStampAndShrinkList(const std::string& p_stamp, std::vector<std::string>& o_files)
 {
-
+    std::vector<std::string> r_indices;
+    size_t length = o_files.size();
+    for (size_t fileToLookAt = 0; fileToLookAt < length; fileToLookAt++)
+    {
+        // This should find if stamp is in file name. Just make sure the same stamp is not present in more than the files that should count
+        if (o_files[fileToLookAt].find(p_stamp) != std::string::npos) {
+            r_indices.push_back(o_files[fileToLookAt]);
+            // We remove that entry from the list
+            o_files.erase(o_files.begin() + fileToLookAt);
+            // Need to get length again
+            length = o_files.size();
+            // This is so that we consider every file entry
+            fileToLookAt--;
+        }
+    }
+    return r_indices;
 }

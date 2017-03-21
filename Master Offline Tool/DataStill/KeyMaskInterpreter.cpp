@@ -14,8 +14,7 @@ KeyMaskInterpreter::~KeyMaskInterpreter()
 
 void KeyMaskInterpreter::ReinterpretRawKeyData(std::vector<std::string>* o_lines)
 {
-    size_t length = o_lines->size();
-    for (size_t lineToRead = 1; lineToRead < length; lineToRead += 3)
+    for (size_t lineToRead = 1; lineToRead < o_lines->size(); lineToRead += 3)
     {
         std::stringstream in(o_lines->at(lineToRead));
         std::string finalStringPart1;
@@ -25,6 +24,20 @@ void KeyMaskInterpreter::ReinterpretRawKeyData(std::vector<std::string>* o_lines
         in >> mask1;
         in >> mask2;
 
+        std::string index = o_lines->at(lineToRead - 1);
+        // Make sure the index is after eachother
+        if (lineToRead + 2 < o_lines->size())
+        {
+            std::string nextIndex = o_lines->at(lineToRead + 2);
+            if (std::stoi(index) + 1 != std::stoi(nextIndex))
+            {
+                // Not sequential, one index have been removed
+                o_lines->erase(o_lines->begin() + lineToRead - 1, o_lines->begin() + lineToRead + 2);
+                lineToRead -= 3;
+                continue;
+            }
+        }    
+        
         // Hax thing so we can skip the enums with bitmasks
         // We loop over the number of changable bits in a int32
         for (size_t power = 0; power < 32; power++)

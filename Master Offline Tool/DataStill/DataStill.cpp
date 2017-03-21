@@ -39,7 +39,6 @@ vector<string>* DataStill::FilterDisplacement(const std::vector<std::string>& p_
     // Iterate over all positions and generate displacements
     for (size_t i = numLinesPerDataEntry; i < p_lines.size() - 2; i += numLinesPerDataEntry)
     {
-
         string index = p_lines.at(i - numLinesPerDataEntry);
         string output = p_lines.at(i + 2 - numLinesPerDataEntry);
 
@@ -50,12 +49,22 @@ vector<string>* DataStill::FilterDisplacement(const std::vector<std::string>& p_
         {
             in >> t_newPos[j];
         }
+
+        // Make sure the index is after eachother
+        string nextIndex = p_lines.at(i);
+        if (std::stoi(index) + 1 != std::stoi(nextIndex))
+        {
+            // Not sequential, one index have been removed.
+            t_currentPos = t_newPos;
+            continue;
+        }
+
         vec3 displacement = t_newPos - t_currentPos;
         t_currentPos = t_newPos;
         // Write displacement to file right away
         r_lines->push_back(index);
         stringstream t_stringStream;
-        t_stringStream << displacement.x << " " << displacement.y << " " << displacement.x << " ";
+        t_stringStream << displacement.x << " " << displacement.y << " " << displacement.z << " ";
         r_lines->push_back(t_stringStream.str());
         r_lines->push_back(output);
     }
@@ -84,6 +93,16 @@ std::vector<std::string>* DataStill::FilterRotations(const std::vector<std::stri
         {
             in >> t_newRot[j];
         }
+
+        // Make sure the index is after eachother
+        string nextIndex = p_lines.at(i);
+        if (std::stoi(index) + 1 != std::stoi(nextIndex))
+        {
+            // Not sequential, one index have been removed
+            t_currentRot = t_newRot;
+            continue;
+        }
+
         // This is the haxy bit. Basically it finds the shortest angle between the two points
         vec2 t_displacement;
         for (size_t j = 0; j < 2; j++)
@@ -130,7 +149,37 @@ void DataStill::FlagDataOutput(std::vector<std::string>& o_lines, int p_backtrac
     }
 }
 
-std::vector<std::vector<std::string>>* DataStill::NormalizeValues(const std::vector<vector<std::string>>& p_filesInLines)
+std::vector<std::string>* DataStill::NormalizeValuesUsingNumber(const std::vector<std::string>& p_lines, const float& p_number)
+{
+    std::vector<std::string>* normalizedValues = new std::vector<std::string>();
+    // Iterate through the list. add +2 to iterator for index and output
+    for (size_t j = 0; j < p_lines.size() - 2; j += 3)
+    {
+        // We're at the start of one data entry
+        string index = p_lines.at(j);
+        string output = p_lines.at(j + 2);
+        // Figure out how many inputs
+        string line = p_lines.at(j + 1);
+        istringstream in(line);
+        int inputs = std::distance(istream_iterator<string>(istringstream(line) >> ws), istream_iterator<string>());
+        // See if there's a bigger number for this kind of value
+        stringstream t_stringstream;
+        for (size_t k = 0; k < inputs; k++)
+        {
+            float thisValue;
+            in >> thisValue;
+            thisValue /= p_number;
+            t_stringstream << thisValue << " ";
+        }
+        // Write values
+        normalizedValues->push_back(index);
+        normalizedValues->push_back(t_stringstream.str());
+        normalizedValues->push_back(output);
+    }
+    return normalizedValues;
+}
+
+std::vector<std::vector<std::string>>* DataStill::NormalizeValuesWithHighestFound(const std::vector<vector<std::string>>& p_filesInLines)
 {
     // Find largest value
     // Needs to be vector in case of multiple data rows per data entry
@@ -748,3 +797,80 @@ std::vector<std::string>* DataStill::MergeSetsOfLinesIntoSameSet(std::vector<std
     return r_lines;
 }
 
+std::vector<std::vector<std::string>>* DataStill::RemoveDeadData(const std::vector<std::string>& p_positionData
+    , const std::vector<std::vector<std::string>>& p_allFilesOfOnePerson, const float& p_displacementRemoveThreshold)
+{
+    // We know this. 
+    int numLinesPerDataEntry = 3;
+    int numInputs = 3;
+
+    std::vector<std::vector<std::string>>* returnVector = new std::vector<std::vector<std::string>>(p_allFilesOfOnePerson);
+    float aliveMaxMoveSpeed = 10.5f;
+    // Get displacements
+    std::vector<std::string>* displacements = FilterDisplacement(p_positionData);
+    
+    std::vector<vec2> positionsToRemove;
+    // Figure out if the displacement is out of order!
+    size_t length = displacements->size();
+    int removeStart = -1;
+    for (size_t i = 1; i < length; i+=numLinesPerDataEntry)
+    {
+
+        // Set start values
+        istringstream in(displacements->at(i));
+        vec3 t_currentPos;
+        for (size_t j = 0; j < numInputs; j++)
+        {
+            in >> t_currentPos[j];
+        }
+        float vectorLength = glm::length(t_currentPos);
+        if (removeStart == -1 && vectorLength > aliveMaxMoveSpeed)
+        {
+            // Flag it for remove
+            removeStart = i - 4; // We want the index to
+        }
+        // We have a remove start, are we at a remove stop?
+        if (removeStart != -1 && vectorLength != 0 && vectorLength < aliveMaxMoveSpeed)
+        {
+            // remove two inputs since it is two inputs that led to that displacement
+            positionsToRemove.push_back(vec2(removeStart, i + 1));
+            
+            // We have put all the indices in the list, time to find the next dead segment, if any
+            removeStart = -1;
+        }
+    }
+
+    // Now we remove all the dead data from all files
+    length = positionsToRemove.size();
+    for (size_t file = 0; file < p_allFilesOfOnePerson.size(); file++)
+    {
+        int amountErrased = 0;
+        for (size_t i = 0; i < length; i++)
+        {
+            returnVector->at(file).erase(returnVector->at(file).begin() + positionsToRemove[i].x - amountErrased, returnVector->at(file).begin() + positionsToRemove[i].y + 1 - amountErrased);
+            amountErrased += (positionsToRemove[i].y - positionsToRemove[i].x + 1);
+        }
+    }
+
+    return returnVector;
+}
+
+void DataStill::RemoveNonSequentialIndex(std::vector<std::string>* p_lines)
+{
+    for (size_t lineToRead = 1; lineToRead < p_lines->size(); lineToRead += 3)
+    {
+        std::string index = p_lines->at(lineToRead - 1);
+        // Make sure the index is after eachother
+        if (lineToRead + 2 < p_lines->size())
+        {
+            std::string nextIndex = p_lines->at(lineToRead + 2);
+            if (std::stoi(index) + 1 != std::stoi(nextIndex))
+            {
+                // Not sequential, one index have been removed
+                p_lines->erase(p_lines->begin() + lineToRead - 1, p_lines->begin() + lineToRead + 2);
+                lineToRead -= 3;
+                continue;
+            }
+        }
+    }
+}

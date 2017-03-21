@@ -64,6 +64,9 @@ public:
     // How much off the network can be and we still count it as success
     float m_networkPredictionTolerance;
 
+    // Could be hardcoded into DataStillManager. Describes the biggest displacement possible with the settings used during playtest
+    float m_maxDisplacement;
+
 private:
     ConfigHandler();
     ~ConfigHandler();
