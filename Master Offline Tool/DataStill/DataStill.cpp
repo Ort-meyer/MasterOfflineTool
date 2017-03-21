@@ -805,7 +805,6 @@ std::vector<std::vector<std::string>>* DataStill::RemoveDeadData(const std::vect
     int numInputs = 3;
 
     std::vector<std::vector<std::string>>* returnVector = new std::vector<std::vector<std::string>>(p_allFilesOfOnePerson);
-    float aliveMaxMoveSpeed = 10.5f;
     // Get displacements
     std::vector<std::string>* displacements = FilterDisplacement(p_positionData);
     
@@ -824,13 +823,13 @@ std::vector<std::vector<std::string>>* DataStill::RemoveDeadData(const std::vect
             in >> t_currentPos[j];
         }
         float vectorLength = glm::length(t_currentPos);
-        if (removeStart == -1 && vectorLength > aliveMaxMoveSpeed)
+        if (removeStart == -1 && vectorLength > p_displacementRemoveThreshold)
         {
             // Flag it for remove
             removeStart = i - 4; // We want the index to
         }
         // We have a remove start, are we at a remove stop?
-        if (removeStart != -1 && vectorLength != 0 && vectorLength < aliveMaxMoveSpeed)
+        if (removeStart != -1 && vectorLength != 0 && vectorLength < p_displacementRemoveThreshold)
         {
             // remove two inputs since it is two inputs that led to that displacement
             positionsToRemove.push_back(vec2(removeStart, i + 1));
