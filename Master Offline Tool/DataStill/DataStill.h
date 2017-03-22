@@ -43,7 +43,7 @@ public:
     Should not be used with NormalizeValuesWithHighestFound.
     This is the new one that normalizes the values by using the highest acheivable, not the highest achieved by our test players
     */
-    std::vector<std::string>* NormalizeValuesUsingNumber(const std::vector<std::string>& p_lines, const float & p_number);
+    std::vector<std::string>* NormalizeValuesUsingNumber(const std::vector<std::string>& p_lines, const float & p_number, const std::string& p_fileName);
 
     /**
     Reads through all files specified and normalizes values within and outputs

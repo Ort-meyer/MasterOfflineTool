@@ -149,7 +149,7 @@ void DataStill::FlagDataOutput(std::vector<std::string>& o_lines, int p_backtrac
     }
 }
 
-std::vector<std::string>* DataStill::NormalizeValuesUsingNumber(const std::vector<std::string>& p_lines, const float& p_number)
+std::vector<std::string>* DataStill::NormalizeValuesUsingNumber(const std::vector<std::string>& p_lines, const float& p_number, const std::string& p_fileName)
 {
     std::vector<std::string>* normalizedValues = new std::vector<std::string>();
     // Iterate through the list. add +2 to iterator for index and output
@@ -169,6 +169,10 @@ std::vector<std::string>* DataStill::NormalizeValuesUsingNumber(const std::vecto
             float thisValue;
             in >> thisValue;
             thisValue /= p_number;
+            if (thisValue > 1.0f)
+            {
+                std::cout << "Wrong normalization: " << thisValue << " in file " << p_fileName << std::endl;
+            }
             t_stringstream << thisValue << " ";
         }
         // Write values
@@ -838,6 +842,11 @@ std::vector<std::vector<std::string>>* DataStill::RemoveDeadData(const std::vect
             removeStart = -1;
         }
     }
+    // If we were dead til the end, happens in one file i think
+    if (removeStart != -1)
+    {
+        positionsToRemove.push_back(vec2(removeStart, length - 1));
+    }
 
     // Now we remove all the dead data from all files
     length = positionsToRemove.size();
@@ -846,11 +855,17 @@ std::vector<std::vector<std::string>>* DataStill::RemoveDeadData(const std::vect
         int amountErrased = 0;
         for (size_t i = 0; i < length; i++)
         {
-            returnVector->at(file).erase(returnVector->at(file).begin() + positionsToRemove[i].x - amountErrased, returnVector->at(file).begin() + positionsToRemove[i].y + 1 - amountErrased);
+            if (i == length-1)
+            {
+                int test = 5;
+            }
+            int first = positionsToRemove[i].x - amountErrased;
+            int last = positionsToRemove[i].y + 1 - amountErrased;
+            returnVector->at(file).erase(returnVector->at(file).begin() + first,
+                returnVector->at(file).begin() + last);
             amountErrased += (positionsToRemove[i].y - positionsToRemove[i].x + 1);
         }
     }
-
     return returnVector;
 }
 

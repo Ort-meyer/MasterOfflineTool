@@ -67,6 +67,8 @@ public:
     // Could be hardcoded into DataStillManager. Describes the biggest displacement possible with the settings used during playtest
     float m_maxDisplacement;
 
+    // The max displacement when dead
+    float m_maxDeadDisplacement;
 private:
     ConfigHandler();
     ~ConfigHandler();

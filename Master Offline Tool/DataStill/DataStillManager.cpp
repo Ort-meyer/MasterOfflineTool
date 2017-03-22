@@ -128,7 +128,7 @@ void DataStillManager::ProcessFilesAndSaveToFile(std::vector<std::string> p_file
             keyMaskInterpeter.ReinterpretRawKeyData(fileContent);
             // TODO doesn't this introduce a memory leak, since we change the pointer of fileContent to a new one but doesn't remove the old one
             fileContent = still.FilterAdd2(*fileContent, ConfigHandler::Get()->m_entriesToAvrage);
-            fileContent = still.NormalizeValuesUsingNumber(*fileContent, ConfigHandler::Get()->m_entriesToAvrage);
+            fileContent = still.NormalizeValuesUsingNumber(*fileContent, ConfigHandler::Get()->m_entriesToAvrage, p_files[currentFile]);
 			CheckThatAllEntiresHaveSameNrOfWords(*fileContent);
 
         }
@@ -138,7 +138,8 @@ void DataStillManager::ProcessFilesAndSaveToFile(std::vector<std::string> p_file
             // It's a positions file, perform special thingies here!
             fileContent = still.FilterDisplacement(*fileContent);
             fileContent = still.FilterAvrage2(*fileContent, ConfigHandler::Get()->m_entriesToAvrage);
-            fileContent = still.NormalizeValuesUsingNumber(*fileContent, ConfigHandler::Get()->m_maxDisplacement);
+            // +0.5 since that is what we used for removing dead thingies
+            fileContent = still.NormalizeValuesUsingNumber(*fileContent, ConfigHandler::Get()->m_maxDisplacement + 0.5f, p_files[currentFile]);
 			CheckThatAllEntiresHaveSameNrOfWords(*fileContent);        
         }
         ////////////////// ROTATIONS //////////////////////
@@ -147,7 +148,7 @@ void DataStillManager::ProcessFilesAndSaveToFile(std::vector<std::string> p_file
             // It's a rotations file, perform special thingies here!
             fileContent = still.FilterRotations(*fileContent);
             fileContent = still.FilterAvrage2(*fileContent, ConfigHandler::Get()->m_entriesToAvrage);
-            fileContent = still.NormalizeValuesUsingNumber(*fileContent, 3.14f);
+            fileContent = still.NormalizeValuesUsingNumber(*fileContent, 3.14f, p_files[currentFile]);
 			CheckThatAllEntiresHaveSameNrOfWords(*fileContent);
         }
         ////////////////// TimeOfDay //////////////////////
@@ -179,7 +180,7 @@ void DataStillManager::ProcessFilesAndSaveToFile(std::vector<std::string> p_file
         delete toRemove;
     }
 
-    // Debug make sure every entry have the samer amount of rows
+    // Debug make sure every entry have the same amount of rows
     int rows = t_allFileContent->at(0).size();
     for (size_t i = 1; i < t_allFileContent->size(); i++)
     {
