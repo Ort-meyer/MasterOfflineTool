@@ -24,11 +24,14 @@ ConfigHandler::ConfigHandler()
     m_fileEndingNetSettings = "netSettings";
     m_fileEndingNeuralNet = "ann";
 
-    m_numberOfEpochs = 1000;
-    m_reportRate = 100;
+    m_numberOfEpochs = 100;
+    m_reportRate = 10;
     m_errorAcceptance = 0.0001f;
 
-    m_creationType = NetworkCreationType::CreateOneSpecific;
+    m_creationType = NetworkCreationType::BuildFromBaseline;
+    int settingToTest = (int)FANNSettingToTest::TestHiddenCells + (int)FANNSettingToTest::TestOutputSteepness
+        + (int)FANNSettingToTest::TestHiddenLayers + (int)FANNSettingToTest::TestHiddenSteepness;
+    m_settingsToTest = (FANNSettingToTest)settingToTest;
 
     m_logLevel = LogLevel::Verbose;
 

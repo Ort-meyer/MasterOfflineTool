@@ -270,12 +270,17 @@ void NeuralNetwork::SetupNetwork()
     }
     // Set learning rate, activation function and steepness
     m_net.set_learning_rate(m_networkSettings.learningRate);
+
     m_net.set_activation_steepness_output(m_networkSettings.steepnessOutput);
     m_net.set_activation_function_output(m_networkSettings.functionOutput);
     // Hidden settings possibly should be inside an if-condition?
     m_net.set_activation_steepness_hidden(m_networkSettings.steepnessHidden);
     m_net.set_activation_function_hidden(m_networkSettings.functionHidden);
+
+    m_net.set_training_algorithm(m_networkSettings.trainingAlgorithm);
+    
     m_net.set_callback(training_callback, &m_bestEpoch);
+
 
     InitializeWeights();
 

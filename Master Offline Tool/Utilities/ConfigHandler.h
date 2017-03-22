@@ -15,6 +15,27 @@ enum class LogLevel
     Verbose
 };
 
+enum class FANNSettingToTest
+{
+    TestHiddenCells = 1,
+    TestHiddenLayers = 2,
+    TestLearningRate = 4,
+    TestHiddenSteepness = 8,
+    TestOutputSteepness = 16,
+    TestTrainingAlgorithm = 32,
+    TestHiddenLayerFunction = 64,
+    TestOutputLayerFunction = 128,
+    TestAll =
+    (int)FANNSettingToTest::TestHiddenCells +
+    (int)FANNSettingToTest::TestHiddenLayers +
+    (int)FANNSettingToTest::TestLearningRate +
+    (int)FANNSettingToTest::TestHiddenSteepness +
+    (int)FANNSettingToTest::TestOutputSteepness +
+    (int)FANNSettingToTest::TestTrainingAlgorithm +
+    (int)FANNSettingToTest::TestHiddenLayerFunction +
+    (int)FANNSettingToTest::TestOutputLayerFunction
+};
+
 class ConfigHandler
 {
 public:
@@ -54,6 +75,7 @@ public:
 
     // How we want to train
     NetworkCreationType m_creationType;
+    FANNSettingToTest m_settingsToTest;
 
     // How much info we want to print out
     LogLevel m_logLevel;

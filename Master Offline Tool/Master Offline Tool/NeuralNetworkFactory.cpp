@@ -1,5 +1,6 @@
 #include "NeuralNetworkFactory.h"
 #include "NeuralNetwork.h"
+#include <ConfigHandler.h>
 #include <FileHandler.h>
 #include <sstream>
 
@@ -117,99 +118,174 @@ void NeuralNetworkFactory::CreateSpecificNeuralNetwork(const NetworkSettings& p_
 }
 
 
-void NeuralNetworkFactory::CreateAndRunNetworksFromBaseline(NetworkSettings p_baseline)
+void NeuralNetworkFactory::CreateAndRunNetworksFromBaseline(NetworkSettings p_baseline, FANNSettingToTest p_whatToTest)
 {
     NetworkSettings t_currentSettings = p_baseline;
-    // Hidden cells
-    int t_maxHiddenCells = 100;
-    int t_hiddenCellsIncrement = 10;
     vector<string> t_networks;
-    for (size_t i = t_hiddenCellsIncrement; i <= t_maxHiddenCells; i+= t_hiddenCellsIncrement)
+
+    if (((int)p_whatToTest & (int)FANNSettingToTest::TestHiddenCells) == (int)FANNSettingToTest::TestHiddenCells)
     {
-        for (size_t j = 0; j < t_currentSettings.hiddenLayers; j++)
+        // Hidden cells
+        int t_maxHiddenCells = 100;
+        int t_hiddenCellsIncrement = 10;
+        for (size_t i = t_hiddenCellsIncrement; i <= t_maxHiddenCells; i += t_hiddenCellsIncrement)
         {
-            t_currentSettings.hiddenCells[j] = i;
+            for (size_t j = 0; j < t_currentSettings.hiddenLayers; j++)
+            {
+                t_currentSettings.hiddenCells[j] = i;
+            }
+            LaunchNewNet(&t_currentSettings, m_epocsToTrain, m_reportRate, m_errorAcceptance);
+            //SetupAndTrainNetworkAndAddResultsToList(&t_networks, t_currentSettings);
         }
-        LaunchNewNet(&t_currentSettings, m_epocsToTrain, m_reportRate, m_errorAcceptance);
-        //SetupAndTrainNetworkAndAddResultsToList(&t_networks, t_currentSettings);
-    }
-    JoinNetworkThreads();
-    SaveBestNetworksToString(t_networks);
-    FileHandler::AppendToFile(t_networks, "../GraphNetworks/HiddenCells.settings");
-    t_networks.clear();
-    ClearBestVectors();
+        JoinNetworkThreads();
+        SaveBestNetworksToString(t_networks);
+        FileHandler::AppendToFile(t_networks, "../GraphNetworks/HiddenCells.settings");
+        t_networks.clear();
+        ClearBestVectors();
+    }  
 
     // Hidden layers
-    // Potential memory leak?
-    t_currentSettings = p_baseline;
-    int t_maxLayers = 5;
-    for (size_t i = 0; i < t_maxLayers; i++)
+    if (((int)p_whatToTest & (int)FANNSettingToTest::TestHiddenLayers) == (int)FANNSettingToTest::TestHiddenLayers)
     {
-        t_currentSettings.hiddenLayers = i;
-        for (size_t j = 0; j < t_currentSettings.hiddenLayers; j++)
+        // Potential memory leak?
+        t_currentSettings = p_baseline;
+        int t_maxLayers = 5;
+        for (size_t i = 0; i < t_maxLayers; i++)
         {
-            if (p_baseline.hiddenLayers > 0)
+            t_currentSettings.hiddenLayers = i;
+            for (size_t j = 0; j < t_currentSettings.hiddenLayers; j++)
             {
-                t_currentSettings.hiddenCells[j] = p_baseline.hiddenCells[0];
+                if (p_baseline.hiddenLayers > 0)
+                {
+                    t_currentSettings.hiddenCells[j] = p_baseline.hiddenCells[0];
+                }
+                else
+                {
+                    t_currentSettings.hiddenCells[j] = 10; // This shouldn't happen though. Ever
+                }
             }
-            else
-            {
-                t_currentSettings.hiddenCells[j] = 10; // This shouldn't happen though. Ever
-            }
+            LaunchNewNet(&t_currentSettings, m_epocsToTrain, m_reportRate, m_errorAcceptance);
+            //SetupAndTrainNetworkAndAddResultsToList(&t_networks, t_currentSettings);
         }
-        LaunchNewNet(&t_currentSettings, m_epocsToTrain, m_reportRate, m_errorAcceptance);
-        //SetupAndTrainNetworkAndAddResultsToList(&t_networks, t_currentSettings);
+        JoinNetworkThreads();
+        SaveBestNetworksToString(t_networks);
+        FileHandler::AppendToFile(t_networks, "../GraphNetworks/HiddenLayers.settings");
+        t_networks.clear();
+        ClearBestVectors();
     }
-    JoinNetworkThreads();
-    SaveBestNetworksToString(t_networks);
-    FileHandler::AppendToFile(t_networks, "../GraphNetworks/HiddenLayers.settings");
-    t_networks.clear();
-    ClearBestVectors();
 
     // Learning rate
-    t_currentSettings = p_baseline;
-    float t_learningRateIncrement = 0.1;
-    for (float i = 0; i <= 1; i+= t_learningRateIncrement)
+    if (((int)p_whatToTest & (int)FANNSettingToTest::TestLearningRate) == (int)FANNSettingToTest::TestLearningRate)
     {
-        t_currentSettings.learningRate = i;
-        LaunchNewNet(&t_currentSettings, m_epocsToTrain, m_reportRate, m_errorAcceptance);
-        // SetupAndTrainNetworkAndAddResultsToList(&t_networks, t_currentSettings);
+        t_currentSettings = p_baseline;
+        float t_learningRateIncrement = 0.1;
+        for (float i = 0; i <= 1; i += t_learningRateIncrement)
+        {
+            t_currentSettings.learningRate = i;
+            LaunchNewNet(&t_currentSettings, m_epocsToTrain, m_reportRate, m_errorAcceptance);
+            // SetupAndTrainNetworkAndAddResultsToList(&t_networks, t_currentSettings);
+        }
+        JoinNetworkThreads();
+        SaveBestNetworksToString(t_networks);
+        FileHandler::AppendToFile(t_networks, "../GraphNetworks/LearningRate.settings");
+        t_networks.clear();
+        ClearBestVectors();
     }
-    JoinNetworkThreads();
-    SaveBestNetworksToString(t_networks);
-    FileHandler::AppendToFile(t_networks, "../GraphNetworks/LearningRate.settings");
-    t_networks.clear();
-    ClearBestVectors();
 
     // Steepness hidden
-    t_currentSettings = p_baseline;
-    float t_steepnessHiddenIncrement = 0.1;
-    for (float i = 0; i <= 1; i += t_steepnessHiddenIncrement)
+    if (((int)p_whatToTest & (int)FANNSettingToTest::TestHiddenSteepness) == (int)FANNSettingToTest::TestHiddenSteepness)
     {
-        t_currentSettings.steepnessHidden = i;
-        LaunchNewNet(&t_currentSettings, m_epocsToTrain, m_reportRate, m_errorAcceptance);
-        //SetupAndTrainNetworkAndAddResultsToList(&t_networks, t_currentSettings);
+        t_currentSettings = p_baseline;
+        float t_steepnessHiddenIncrement = 0.1;
+        for (float i = 0; i <= 1; i += t_steepnessHiddenIncrement)
+        {
+            t_currentSettings.steepnessHidden = i;
+            LaunchNewNet(&t_currentSettings, m_epocsToTrain, m_reportRate, m_errorAcceptance);
+            //SetupAndTrainNetworkAndAddResultsToList(&t_networks, t_currentSettings);
+        }
+        JoinNetworkThreads();
+        SaveBestNetworksToString(t_networks);
+        FileHandler::AppendToFile(t_networks, "../GraphNetworks/SteepnessHidden.settings");
+        t_networks.clear();
+        ClearBestVectors();
     }
-    JoinNetworkThreads();
-    SaveBestNetworksToString(t_networks);
-    FileHandler::AppendToFile(t_networks, "../GraphNetworks/SteepnessHidden.settings");
-    t_networks.clear();
-    ClearBestVectors();
 
     // Steepness output
-    t_currentSettings = p_baseline;
-    float t_steepnessOutputIncrement = 0.1;
-    for (float i = 0; i <= 1; i += t_steepnessOutputIncrement)
+    if (((int)p_whatToTest & (int)FANNSettingToTest::TestOutputSteepness) == (int)FANNSettingToTest::TestOutputSteepness)
     {
-        t_currentSettings.steepnessOutput = i;
-        LaunchNewNet(&t_currentSettings, m_epocsToTrain, m_reportRate, m_errorAcceptance);
-        // SetupAndTrainNetworkAndAddResultsToList(&t_networks, t_currentSettings);
+        t_currentSettings = p_baseline;
+        float t_steepnessOutputIncrement = 0.1;
+        for (float i = 0; i <= 1; i += t_steepnessOutputIncrement)
+        {
+            t_currentSettings.steepnessOutput = i;
+            LaunchNewNet(&t_currentSettings, m_epocsToTrain, m_reportRate, m_errorAcceptance);
+            // SetupAndTrainNetworkAndAddResultsToList(&t_networks, t_currentSettings);
+        }
+        JoinNetworkThreads();
+        SaveBestNetworksToString(t_networks);
+        FileHandler::AppendToFile(t_networks, "../GraphNetworks/SteepnessOutput.settings");
+        t_networks.clear();
+        ClearBestVectors();
     }
-    JoinNetworkThreads();
-    SaveBestNetworksToString(t_networks);
-    FileHandler::AppendToFile(t_networks, "../GraphNetworks/SteepnessOutput.settings");
-    t_networks.clear();
-    ClearBestVectors();
+
+    //  Hidden Function
+    if (((int)p_whatToTest & (int)FANNSettingToTest::TestHiddenLayerFunction) == (int)FANNSettingToTest::TestHiddenLayerFunction)
+    {
+        t_currentSettings = p_baseline;
+        // Loop over all different functions, COS_SYMMETRIC is the last in the enum
+        for (size_t i = 0; i < FANN::activation_function_enum::COS_SYMMETRIC + 1; i++)
+        {
+            if (i == FANN::activation_function_enum::THRESHOLD || i == FANN::activation_function_enum::THRESHOLD_SYMMETRIC)
+            {
+                continue;
+            }
+            t_currentSettings.functionHidden = static_cast<FANN::activation_function_enum>(i);
+            LaunchNewNet(&t_currentSettings, m_epocsToTrain, m_reportRate, m_errorAcceptance);
+        }
+        JoinNetworkThreads();
+        SaveBestNetworksToString(t_networks);
+        FileHandler::AppendToFile(t_networks, "../GraphNetworks/HiddenFunction.settings");
+        t_networks.clear();
+        ClearBestVectors();
+    }
+
+    //  output Function
+    if (((int)p_whatToTest & (int)FANNSettingToTest::TestOutputLayerFunction) == (int)FANNSettingToTest::TestOutputLayerFunction)
+    {
+        t_currentSettings = p_baseline;
+        // Loop over all different functions, COS_SYMMETRIC is the last in the enum
+        for (size_t i = 0; i < FANN::activation_function_enum::COS_SYMMETRIC + 1; i++)
+        {
+            if (i == FANN::activation_function_enum::THRESHOLD || i == FANN::activation_function_enum::THRESHOLD_SYMMETRIC)
+            {
+                continue;
+            }
+            t_currentSettings.functionOutput = static_cast<FANN::activation_function_enum>(i);
+            LaunchNewNet(&t_currentSettings, m_epocsToTrain, m_reportRate, m_errorAcceptance);
+        }
+        JoinNetworkThreads();
+        SaveBestNetworksToString(t_networks);
+        FileHandler::AppendToFile(t_networks, "../GraphNetworks/OutputFunction.settings");
+        t_networks.clear();
+        ClearBestVectors();
+    }
+
+    //  training algorithm
+    if (((int)p_whatToTest & (int)FANNSettingToTest::TestTrainingAlgorithm) == (int)FANNSettingToTest::TestTrainingAlgorithm)
+    {
+        t_currentSettings = p_baseline;
+        // Loop over all different functions, TRAIN_SARPROP is the last in the enum
+        for (size_t i = 0; i < FANN::training_algorithm_enum::TRAIN_SARPROP + 1; i++)
+        {
+            t_currentSettings.trainingAlgorithm = static_cast<FANN::training_algorithm_enum>(i);
+            LaunchNewNet(&t_currentSettings, m_epocsToTrain, m_reportRate, m_errorAcceptance);
+        }
+        JoinNetworkThreads();
+        SaveBestNetworksToString(t_networks);
+        FileHandler::AppendToFile(t_networks, "../GraphNetworks/TrainAlgorithm.settings");
+        t_networks.clear();
+        ClearBestVectors();
+    }
 }
 
 void NeuralNetworkFactory::SetupAndTrainNetworkAndAddResultsToList(std::vector<std::string>* p_netResults, const NetworkSettings& p_netSettings)

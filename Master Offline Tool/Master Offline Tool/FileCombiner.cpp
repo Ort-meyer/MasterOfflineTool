@@ -92,8 +92,9 @@ void FileCombiner::FeedDataToNeuralNetworkFactory()
         t_netSetting.learningRate = 0.7;
         t_netSetting.steepnessHidden = 0.7;
         t_netSetting.steepnessOutput = 0.7;
-        t_netSetting.functionHidden = FANN::activation_function_enum::SIGMOID_SYMMETRIC;
-        t_netSetting.functionOutput = FANN::activation_function_enum::SIGMOID_SYMMETRIC;
+        t_netSetting.functionHidden = FANN::activation_function_enum::ELLIOT_SYMMETRIC;
+        t_netSetting.functionOutput = FANN::activation_function_enum::ELLIOT_SYMMETRIC;
+        t_netSetting.trainingAlgorithm = FANN::training_algorithm_enum::TRAIN_RPROP;
         t_netSetting.deterministicWeights = true;
 
         PerformCrossValidationOnNetSetting(t_netSetting, numberOfPersons, combo);
@@ -138,7 +139,8 @@ void FileCombiner::PerformCrossValidationOnNetSetting(NetworkSettings & p_netSet
         // Now we create the training data from the accumulated training data
         FANN::training_data trainingData = CreateTrainingDataFromListOfDataSet(oneCombosTrainingData);
         FANN::training_data validationData = CreateTrainingDataFromListOfDataSet(oneCombosValidationData);
-        
+        //trainingData.save_train("Stupid.txt");
+        //trainingData.read_train_from_file("Stupid.txt");
         m_factory.SetNumBestNetworks(10000);
 
         p_netSetting.trainingData = new FANN::training_data(trainingData);
@@ -159,7 +161,7 @@ void FileCombiner::PerformCrossValidationOnNetSetting(NetworkSettings & p_netSet
         case NetworkCreationType::CreateAllCombinations:
             break;
         case NetworkCreationType::BuildFromBaseline:
-            m_factory.CreateAndRunNetworksFromBaseline(p_netSetting);
+            m_factory.CreateAndRunNetworksFromBaseline(p_netSetting, ConfigHandler::Get()->m_settingsToTest);
             break;
         case NetworkCreationType::CreateOneSpecific:
         {

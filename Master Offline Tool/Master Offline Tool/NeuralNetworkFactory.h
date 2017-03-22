@@ -13,6 +13,8 @@ struct ThreadedNetwork
     std::thread thread;
 };
 
+enum class FANNSettingToTest;
+
 class NeuralNetworkFactory
 {
 public:
@@ -87,7 +89,7 @@ public:
     /**
     Runs a set of networks based off of the provided baseline. One parameter is altered at a time and one network per
     increment of that parameter is created. Results are written to the folder of its type*/
-    void CreateAndRunNetworksFromBaseline(NetworkSettings p_baseline);
+    void CreateAndRunNetworksFromBaseline(NetworkSettings p_baseline, FANNSettingToTest p_whatToTest);
 
     /**
     Help method for baseline method*/

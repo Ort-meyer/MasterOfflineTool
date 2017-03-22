@@ -31,6 +31,7 @@ struct NetworkSettings
     float steepnessHidden;
     FANN::activation_function_enum functionHidden;
     FANN::activation_function_enum functionOutput;
+    FANN::training_algorithm_enum trainingAlgorithm;
 
     bool deterministicWeights;
 
@@ -42,7 +43,7 @@ struct NetworkSettings
     */
     void SetVaryingVariables(const int& p_hiddenLayers, int* p_hiddenCells, const float& p_learningRate, const float& p_steepnessOutput,
         const float& p_steepnessHidden, const FANN::activation_function_enum& p_functionHidden,
-        const FANN::activation_function_enum& p_functionOutput, const bool& p_deterministicWeights, const std::string p_netID = "noID")
+        const FANN::activation_function_enum& p_functionOutput, const FANN::training_algorithm_enum& p_trainingAlgorithm, const bool& p_deterministicWeights, const std::string p_netID = "noID")
     {
         hiddenLayers = p_hiddenLayers;
         hiddenCells = p_hiddenCells;
@@ -53,6 +54,7 @@ struct NetworkSettings
         functionOutput = p_functionOutput;
         deterministicWeights = p_deterministicWeights;
         idString = p_netID;
+        trainingAlgorithm = p_trainingAlgorithm;
     }
 
     // The following variables is about performans

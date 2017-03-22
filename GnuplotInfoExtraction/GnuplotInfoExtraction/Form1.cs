@@ -32,6 +32,7 @@ namespace GnuplotInfoExtraction
             public List<int> HiddenCells;
             public int FunctionHidden;
             public int FunctionOutput;
+            public int TrainingAlgorithm;
             public float LearningRate;
             public float SteepnessHidden;
             public float SteepnessOutput;
@@ -195,10 +196,11 @@ namespace GnuplotInfoExtraction
                 infoInLine = fileLines[i].Split(' ');
                 newNetSetting.FunctionHidden = int.Parse(infoInLine[3]);
                 newNetSetting.FunctionOutput = int.Parse(infoInLine[6]);
-                newNetSetting.LearningRate = float.Parse(infoInLine[9], nf);
-                newNetSetting.SteepnessHidden = float.Parse(infoInLine[12], nf);
-                newNetSetting.SteepnessOutput = float.Parse(infoInLine[15], nf);
-                newNetSetting.deterministicWeights = int.Parse(infoInLine[18]) == 1;
+                newNetSetting.TrainingAlgorithm = int.Parse(infoInLine[9]);
+                newNetSetting.LearningRate = float.Parse(infoInLine[12], nf);
+                newNetSetting.SteepnessHidden = float.Parse(infoInLine[15], nf);
+                newNetSetting.SteepnessOutput = float.Parse(infoInLine[18], nf);
+                newNetSetting.deterministicWeights = int.Parse(infoInLine[21]) == 1;
                 i++;
 
                 infoInLine = fileLines[i].Split(' ');

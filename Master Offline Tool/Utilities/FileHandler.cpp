@@ -119,6 +119,8 @@ string FileHandler::SaveNetworkToString(const NetworkSettings & p_network)
     newEntry << p_network.functionHidden;
     newEntry << " Function output: ";
     newEntry << p_network.functionOutput;
+    newEntry << " Training algorithm: ";
+    newEntry << p_network.trainingAlgorithm;
     newEntry << " Learning rate: ";
     newEntry << p_network.learningRate;
     newEntry << " Steepness hidden: ";
