@@ -151,7 +151,7 @@ void NeuralNetwork::TrainAndValidateNetwork(const int& p_epochs, const int& p_re
     // Start by training with one amount of epochs
     TrainOnData(p_epochs, p_reportRate, p_errorAcceptance);
     // If we, after training, find out that the best MSE according to FANN is that much lower than the one we got we retrain
-    if (m_bestEpoch.bestMSE < m_net.get_MSE() - m_MSEExcaptableDifference)
+    if (ConfigHandler::Get()->m_performeRetraining && m_bestEpoch.bestMSE < m_net.get_MSE() - m_MSEExcaptableDifference)
     {
         // We still need to validate before we retrain to get the validation error
         ValidateNetwork();

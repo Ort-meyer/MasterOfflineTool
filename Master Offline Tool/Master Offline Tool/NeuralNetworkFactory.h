@@ -6,6 +6,7 @@
 #include "NeuralNetwork.h"
 #include <thread>
 #include <atomic>
+#include <unordered_set>
 
 struct ThreadedNetwork
 {
@@ -20,32 +21,6 @@ class NeuralNetworkFactory
 public:
     NeuralNetworkFactory();
     ~NeuralNetworkFactory();
-
-
-    /**
-    Sets up different settings the factory needs to know how many different combinations to try
-    */
-    void SetVariables(const int& p_maxNumberOfHiddenLayers, const int& p_maxNumberOfHiddenCellsPerLayer, const int& p_numberOfHiddenCellIncrement,
-        const float& p_learningRateIncrement, const float& p_hiddenSteepnessIncrement, const float& p_outputSteepnessIncrement, const int& p_maxNetsInMemoryAtOneTime,
-        const int& p_bestNetworks = 5)
-    {
-        m_maxNumberOfHiddenLayers = p_maxNumberOfHiddenLayers;
-        m_maxNumberOfHiddenCellsPerLayer = p_maxNumberOfHiddenCellsPerLayer;
-        m_numberOfHiddenCellIncrement = p_numberOfHiddenCellIncrement;
-        m_learningRateIncrement = p_learningRateIncrement;
-        m_hiddenSteepnessIncrement = p_hiddenSteepnessIncrement;
-        m_outputSteepnessIncrement = p_outputSteepnessIncrement;
-        m_maxNetsInMemoryAtOneTime = p_maxNetsInMemoryAtOneTime;
-        m_numBestNetworks = p_bestNetworks;
-        m_totalNrOfnetworks = 1;
-        m_totalNrOfnetworks *= m_maxNumberOfHiddenLayers;
-        m_totalNrOfnetworks *= m_maxNumberOfHiddenCellsPerLayer / m_numberOfHiddenCellIncrement;
-        m_totalNrOfnetworks *= 1 / m_learningRateIncrement;
-        m_totalNrOfnetworks *= 1 / m_hiddenSteepnessIncrement;
-        m_totalNrOfnetworks *= 1 / m_outputSteepnessIncrement;
-        m_totalNrOfnetworks *= 14 * 14; // For different activation functions. Maybe reduce?
-
-    }
     /**
     Sets up training info
     */
@@ -117,6 +92,15 @@ public:
 
     // Sets the delete networks variable. If called with true, all previously saved nets will be deleted
     void SetDeleteCompletedNetworks(bool p_delete);
+
+    // States which output activation functions we want to use
+    void UseTheseOutputActivationFunctions(const std::vector<FANN::activation_function_enum>& p_functions);
+
+    // State which hidden activation functions we want to use
+    void UseTheseHiddenActivationFunctions(const std::vector<FANN::activation_function_enum>& p_functions);
+
+    // Cleares the hidden and output activation functions
+    void ClearActivationFunctionsToUse() { m_hiddenActivationFunctionsToUse.clear(); m_outputActivationFunctionsToUse.clear(); }
 private:
     // First in a series of creating all different combinations of neural nets
     void CreateHiddenLayerCombinations(NetworkSettings * p_netWorkSettings, int* p_hiddenCells, const int& p_numberOfLayers, const int& p_depth);
@@ -147,6 +131,7 @@ private:
     std::vector<ThreadedNetwork*> m_networks;
     std::vector<NeuralNetwork*> m_savedNetworks;
     int m_maxNumberOfHiddenLayers;
+    int m_numberOfHiddenLayersStart;
     int m_maxNumberOfHiddenCellsPerLayer;
     // States how much the hidden cell per layer will increase per loop run
     int m_numberOfHiddenCellIncrement;
@@ -176,12 +161,15 @@ private:
     // The reposrt rate
     int m_reportRate;
     // The error acceptance
-    int m_errorAcceptance;
+    float m_errorAcceptance;
     // Will be used as validation data
     FANN::training_data* m_validationData;
     // States if completed networks will be removed or not (this does not have an impact to best networks)
     bool m_deleteCompletedNetworks;
 
     std::vector<NetworkSettings> m_bestNetworks;
+    std::unordered_set<FANN::activation_function_enum> m_hiddenActivationFunctionsToUse;
+    std::unordered_set<FANN::activation_function_enum> m_outputActivationFunctionsToUse;
+    
 };
 

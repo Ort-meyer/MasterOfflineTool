@@ -19,6 +19,7 @@ public:
     ~FileCombiner();
 private:
     void SaveBestNetToFile(const NeuralNetworkFactory& p_factory, const std::string& p_fileName, const std::string& p_folder = "../SavedNetSettings/");
+    void SaveNetsOfSameSettingToFile(const NeuralNetworkFactory & p_factory, const std::string & p_filePrefixName, const std::string & p_folder);
     void CombineFilesInFolder(const std::string& p_folderName, const std::string& p_fileEnding);
     void FeedDataToNeuralNetworkFactory();
     // This function takes the net settings and creates cross validation sets from them.

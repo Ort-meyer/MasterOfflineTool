@@ -23,6 +23,29 @@ FileCombiner::FileCombiner() : m_dataSetBuilder(new DataSetBuilder())
 
     m_factory.SetTrainingVariables(config->m_numberOfEpochs, config->m_reportRate, config->m_errorAcceptance);
     m_factory.SetMaxNetworksInMemory(config->m_maxNetworkThreads);
+    m_factory.SetDeleteCompletedNetworks(true);
+
+    std::vector<FANN::activation_function_enum> functions;
+    functions.push_back(FANN::activation_function_enum::ELLIOT_SYMMETRIC);
+    //functions.push_back(FANN::activation_function_enum::SIGMOID_SYMMETRIC);
+    //functions.push_back(FANN::activation_function_enum::COS_SYMMETRIC);
+    //functions.push_back(FANN::activation_function_enum::SIN_SYMMETRIC);
+    //functions.push_back(FANN::activation_function_enum::GAUSSIAN_SYMMETRIC);
+    //functions.push_back(FANN::activation_function_enum::LINEAR_PIECE_SYMMETRIC);
+    m_factory.UseTheseHiddenActivationFunctions(functions);
+
+    functions.clear();
+    functions.push_back(FANN::activation_function_enum::ELLIOT_SYMMETRIC);
+    // functions.push_back(FANN::activation_function_enum::SIGMOID_SYMMETRIC);
+    // functions.push_back(FANN::activation_function_enum::COS_SYMMETRIC);
+    // functions.push_back(FANN::activation_function_enum::SIN_SYMMETRIC);
+    // functions.push_back(FANN::activation_function_enum::GAUSSIAN_SYMMETRIC);
+    // functions.push_back(FANN::activation_function_enum::LINEAR_PIECE_SYMMETRIC);
+    // functions.push_back(FANN::activation_function_enum::ELLIOT);
+    // functions.push_back(FANN::activation_function_enum::SIGMOID);
+    // functions.push_back(FANN::activation_function_enum::GAUSSIAN);
+    // functions.push_back(FANN::activation_function_enum::LINEAR_PIECE);
+    m_factory.UseTheseOutputActivationFunctions(functions);
 
     m_validationAmount = config->m_numValidationSet;
     CombineFilesInFolder("../filteredData", "filteredData");
@@ -53,6 +76,64 @@ void FileCombiner::SaveBestNetToFile(const NeuralNetworkFactory& p_factory, cons
     FileHandler::WriteToFile(t_lines, t_folderFullPath + p_fileName);
 }
 
+void FileCombiner::SaveNetsOfSameSettingToFile(const NeuralNetworkFactory& p_factory, const std::string& p_filePrefixName, const std::string& p_folder)
+{
+    std::string t_folderFullPath = FileHandler::GetAbsoluteFilePath(p_folder);
+    
+    if (CreateDirectory(t_folderFullPath.c_str(), NULL) || ERROR_ALREADY_EXISTS == GetLastError())
+    {
+        // We are good, lets go!!!
+        std::vector<NetworkSettings> netSettings = p_factory.GetBestNetworks();
+        size_t length = netSettings.size();
+        for (size_t i = 0; i < length; i++)
+        {
+            std::string functionFolder = std::to_string(netSettings[i].functionHidden) + std::to_string(netSettings[i].functionOutput);
+            t_folderFullPath = t_folderFullPath + "/" + functionFolder + "/";
+            if (CreateDirectory(t_folderFullPath.c_str(), NULL) || ERROR_ALREADY_EXISTS == GetLastError())
+            {
+                std::ostringstream fileNameStream;
+                fileNameStream << p_filePrefixName << " ";
+                fileNameStream << netSettings[i].functionHidden << " ";
+                fileNameStream << netSettings[i].functionOutput << " ";
+                fileNameStream << netSettings[i].hiddenLayers << " ";
+                for (size_t j = 0; j < netSettings[i].hiddenLayers; j++)
+                {
+                    fileNameStream << " " << netSettings[i].hiddenCells[j];
+                }
+                fileNameStream << " ";
+                fileNameStream << netSettings[i].functionHidden;
+                fileNameStream << " ";
+                fileNameStream << netSettings[i].functionOutput;
+                fileNameStream << " ";
+                fileNameStream << netSettings[i].trainingAlgorithm;
+                fileNameStream << " ";
+                fileNameStream << netSettings[i].learningRate;
+                fileNameStream << " ";
+                fileNameStream << netSettings[i].steepnessHidden;
+                fileNameStream << " ";
+                fileNameStream << netSettings[i].steepnessOutput;
+                fileNameStream << " ";
+                fileNameStream << netSettings[i].deterministicWeights;
+                std::string fileName = fileNameStream.str();
+                std::vector<std::string> newFileEntry;
+                newFileEntry.push_back(FileHandler::SaveNetworkToString(netSettings[i]));
+                FileHandler::AppendToFile(newFileEntry, t_folderFullPath + fileName);
+            }
+        }
+    }
+    else
+    {
+        DWORD errorcode = GetLastError();
+        LPVOID lpMsgBuf;
+
+        FormatMessage(FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
+            NULL, errorcode, MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), (LPTSTR)&lpMsgBuf, 0, NULL);
+
+        MessageBox(NULL, (LPCTSTR)lpMsgBuf, TEXT("Error"), MB_OK);
+
+    }
+}
+
 void FileCombiner::CombineFilesInFolder(const std::string& p_folderName, const std::string& p_fileEnding)
 {
     std::vector<std::string> t_rawDataFileNames = FileHandler::GetAllFileNames(p_folderName, p_fileEnding);
@@ -78,7 +159,6 @@ void FileCombiner::FeedDataToNeuralNetworkFactory()
     std::vector<FANN::training_data> t_allTrainingData;
 
     size_t numberOfCombos = m_allCombosOfData[0]->size();
-
     for (size_t combo = 0; combo < numberOfCombos; combo++)
     {
         std::cout << m_dataSetBuilder->GetComboNameFromIndex(combo) << std::endl;
@@ -95,7 +175,7 @@ void FileCombiner::FeedDataToNeuralNetworkFactory()
         t_netSetting.functionHidden = FANN::activation_function_enum::ELLIOT_SYMMETRIC;
         t_netSetting.functionOutput = FANN::activation_function_enum::ELLIOT_SYMMETRIC;
         t_netSetting.trainingAlgorithm = FANN::training_algorithm_enum::TRAIN_RPROP;
-        t_netSetting.deterministicWeights = true;
+        t_netSetting.deterministicWeights = ConfigHandler::Get()->m_deterministicWeights;
 
         PerformCrossValidationOnNetSetting(t_netSetting, numberOfPersons, combo);
         // When we get here we have completed one combination of inputs with all combinations of validation and training data between persons
@@ -104,8 +184,8 @@ void FileCombiner::FeedDataToNeuralNetworkFactory()
         m_factory.JoinNetworkThreads();
 
         // SaveBestNetToFile(t_factory, "bestFunctions.netSetting");
-
-        SaveBestNetToFile(m_factory, m_dataSetBuilder->GetComboNameFromIndex(combo) + "." + ConfigHandler::Get()->m_fileEndingNetSettings);
+        SaveNetsOfSameSettingToFile(m_factory, m_dataSetBuilder->GetComboNameFromIndex(combo), "../SavedNetSettings/" + m_dataSetBuilder->GetComboNameFromIndex(combo));
+        // SaveBestNetToFile(m_factory, m_dataSetBuilder->GetComboNameFromIndex(combo) + "." + ConfigHandler::Get()->m_fileEndingNetSettings);
 
         // Then we clear the best vector before we start the next combo
         m_factory.ClearBestVectors();
@@ -141,7 +221,7 @@ void FileCombiner::PerformCrossValidationOnNetSetting(NetworkSettings & p_netSet
         FANN::training_data validationData = CreateTrainingDataFromListOfDataSet(oneCombosValidationData);
         //trainingData.save_train("Stupid.txt");
         //trainingData.read_train_from_file("Stupid.txt");
-        m_factory.SetNumBestNetworks(10000);
+        m_factory.SetNumBestNetworks(100000);
 
         p_netSetting.trainingData = new FANN::training_data(trainingData);
         // A bit of a ugly hax to make no validation data work...
@@ -159,6 +239,8 @@ void FileCombiner::PerformCrossValidationOnNetSetting(NetworkSettings & p_netSet
         switch (m_creationType)
         {
         case NetworkCreationType::CreateAllCombinations:
+            m_factory.CreateNewNeuralNetworkCombinationsFromData(&trainingData, &validationData);
+            m_factory.JoinNetworkThreads();
             break;
         case NetworkCreationType::BuildFromBaseline:
             m_factory.CreateAndRunNetworksFromBaseline(p_netSetting, ConfigHandler::Get()->m_settingsToTest);

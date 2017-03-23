@@ -8,6 +8,21 @@
 using namespace std;
 NeuralNetworkFactory::NeuralNetworkFactory() : m_validationData(nullptr), m_deleteCompletedNetworks(true)
 {
+    ConfigHandler* ch = ConfigHandler::Get();
+    m_maxNumberOfHiddenLayers = ch->m_maxNumberOfHiddenLayers;
+    m_numberOfHiddenLayersStart = ch->m_numberOfHiddenLayersStart;
+    m_maxNumberOfHiddenCellsPerLayer = ch->m_maxNumberOfHiddenCellsPerLayer;
+    m_numberOfHiddenCellIncrement = ch->m_numberOfHiddenCellIncrement;
+    m_learningRateIncrement = ch->m_learningRateIncrement;
+    m_hiddenSteepnessIncrement = ch->m_hiddenSteepnessIncrement;
+    m_outputSteepnessIncrement = ch->m_outputSteepnessIncrement;
+    m_maxNetsInMemoryAtOneTime = ch->m_maxNetworkThreads;
+    m_totalNrOfnetworks = 1;
+    m_totalNrOfnetworks *= m_maxNumberOfHiddenLayers;
+    m_totalNrOfnetworks *= m_maxNumberOfHiddenCellsPerLayer / m_numberOfHiddenCellIncrement;
+    m_totalNrOfnetworks *= 1 / m_learningRateIncrement;
+    m_totalNrOfnetworks *= 1 / m_hiddenSteepnessIncrement;
+    m_totalNrOfnetworks *= 1 / m_outputSteepnessIncrement;
 }
 
 
@@ -64,6 +79,8 @@ void NeuralNetworkFactory::CreateNewNeuralNetworkCombinationsFromData(FANN::trai
     // Set the constant variables
     newNetSettings.inputCells = p_trainingData->num_input_train_data();
     newNetSettings.outputCells = p_trainingData->num_output_train_data();
+    newNetSettings.deterministicWeights = ConfigHandler::Get()->m_deterministicWeights;
+    newNetSettings.trainingAlgorithm = FANN::training_algorithm_enum::TRAIN_RPROP;
     newNetSettings.trainingData = p_trainingData;
     // Se if we have any validation data
     if (p_validationData == nullptr)
@@ -76,11 +93,16 @@ void NeuralNetworkFactory::CreateNewNeuralNetworkCombinationsFromData(FANN::trai
         newNetSettings.validationData = p_validationData;
     }
 
+    int whereToStart = m_numberOfHiddenLayersStart;
     // Unroll the first special case where we have no hidden layers
-    newNetSettings.hiddenLayers = 0;
-    CreateLearningRateSteepnessAndDeterministicSpecificCombinations(&newNetSettings);
+    if (m_numberOfHiddenLayersStart == 0)
+    {
+        newNetSettings.hiddenLayers = 0;
+        CreateLearningRateSteepnessAndDeterministicSpecificCombinations(&newNetSettings);
+        whereToStart = 1;
+    }
     // Now we start looping over the different combinations of things, starting with 
-    for (size_t hiddenLayers = 1; hiddenLayers <= m_maxNumberOfHiddenLayers; hiddenLayers++)
+    for (size_t hiddenLayers = whereToStart; hiddenLayers <= m_maxNumberOfHiddenLayers; hiddenLayers++)
     {
         // Save number of layers to the settingstruct
         newNetSettings.hiddenLayers = hiddenLayers;
@@ -88,7 +110,7 @@ void NeuralNetworkFactory::CreateNewNeuralNetworkCombinationsFromData(FANN::trai
         int* hiddenCells = (int*)malloc(hiddenLayers * sizeof(int));
         for (size_t i = 0; i < hiddenLayers; i++)
         {
-            hiddenCells[i] = 1;
+            hiddenCells[i] = m_numberOfHiddenCellIncrement;
         }
 
         // Here we unroll one of the loops that is in the recursive method
@@ -307,7 +329,7 @@ void NeuralNetworkFactory::CreateHiddenLayerCombinations(NetworkSettings * p_net
         }
         if (p_hiddenCells[p_depth] >= m_maxNumberOfHiddenCellsPerLayer)
         {
-            p_hiddenCells[p_depth] = 1; // Might need to be 1, dont know if FANN accepts 0 as in
+            p_hiddenCells[p_depth] = m_numberOfHiddenCellIncrement; // Start at increment, might want a start at variable
             return;
         }
 
@@ -337,13 +359,13 @@ void NeuralNetworkFactory::CreateLearningRateSteepnessAndDeterministicSpecificCo
             for (float outputSteepness = m_outputSteepnessIncrement; outputSteepness <= 1; outputSteepness += m_outputSteepnessIncrement)
             {
                 p_netWorkSettings->steepnessOutput = outputSteepness;
-                for (size_t i = 0; i < 2; i++)
-                {
-                    // This should give 0/1 = 0 and 1/1 = 1 aka false and true
-                    p_netWorkSettings->deterministicWeights = i / 2;
-                    CreateFANNFunctionOutputSpecificCombinations(p_netWorkSettings);
-                }
+                CreateFANNFunctionOutputSpecificCombinations(p_netWorkSettings);
+
             }
+        }
+        if (p_netWorkSettings->trainingAlgorithm == FANN::training_algorithm_enum::TRAIN_RPROP)
+        {
+            break; // No need to continue, it does not use learning rate...
         }
     }
 
@@ -354,7 +376,8 @@ void NeuralNetworkFactory::CreateFANNFunctionOutputSpecificCombinations(NetworkS
     // Loop over all different functions, COS_SYMMETRIC is the last in the enum
     for (size_t i = 0; i < FANN::activation_function_enum::COS_SYMMETRIC + 1; i++)
     {
-        if (i == FANN::activation_function_enum::THRESHOLD || i == FANN::activation_function_enum::THRESHOLD_SYMMETRIC)
+        if (i == FANN::activation_function_enum::THRESHOLD || i == FANN::activation_function_enum::THRESHOLD_SYMMETRIC
+            || m_outputActivationFunctionsToUse.count((FANN::activation_function_enum)i) == 0)
         {
             continue;
         }
@@ -369,7 +392,8 @@ void NeuralNetworkFactory::CreateFANNFunctionHiddenSpecificCombinations(NetworkS
     // The threshold once cant be used during training so for now we skipp them completely (Should maybe use them during validation?)
     for (size_t i = 0; i < FANN::activation_function_enum::COS_SYMMETRIC + 1; i++)
     {
-        if (i == FANN::activation_function_enum::THRESHOLD || i == FANN::activation_function_enum::THRESHOLD_SYMMETRIC)
+        if (i == FANN::activation_function_enum::THRESHOLD || i == FANN::activation_function_enum::THRESHOLD_SYMMETRIC
+            || m_hiddenActivationFunctionsToUse.count((FANN::activation_function_enum)i) == 0)
         {
             continue;
         }
@@ -443,6 +467,28 @@ void NeuralNetworkFactory::SetDeleteCompletedNetworks(bool p_delete)
         }
         m_savedNetworks.clear();
     }
+}
+
+void NeuralNetworkFactory::UseTheseOutputActivationFunctions(const std::vector<FANN::activation_function_enum>& p_functions)
+{
+    m_totalNrOfnetworks /= max(m_outputActivationFunctionsToUse.size(), 1);
+    size_t length = p_functions.size();
+    for (size_t i = 0; i < length; i++)
+    {
+        m_outputActivationFunctionsToUse.insert(p_functions[i]);
+    }
+    m_totalNrOfnetworks *= max(m_outputActivationFunctionsToUse.size(), 1);
+}
+
+void NeuralNetworkFactory::UseTheseHiddenActivationFunctions(const std::vector<FANN::activation_function_enum>& p_functions)
+{
+    m_totalNrOfnetworks /= max(m_hiddenActivationFunctionsToUse.size(), 1);
+    size_t length = p_functions.size();
+    for (size_t i = 0; i < length; i++)
+    {
+        m_hiddenActivationFunctionsToUse.insert(p_functions[i]);
+    }
+    m_totalNrOfnetworks *= max(m_hiddenActivationFunctionsToUse.size(), 1);
 }
 
 void NeuralNetworkFactory::UpdateBestNetworks(NetworkSettings p_settings)

@@ -91,6 +91,26 @@ public:
 
     // The max displacement when dead
     float m_maxDeadDisplacement;
+
+    bool m_performeRetraining;
+
+    bool m_deterministicWeights;
+    ////// SETTINGS FOR TRAINING MANY NETWORKS ////////
+    int m_maxNumberOfHiddenLayers;
+    int m_numberOfHiddenLayersStart;
+    int m_maxNumberOfHiddenCellsPerLayer;
+    // States how much the hidden cell per layer will increase per loop run
+    int m_numberOfHiddenCellIncrement;
+    // States how fast the learningrate will increment, by how much, each loop. Lower numbers creates more combinations
+    // learningrate goes from 0-1
+    float m_learningRateIncrement;
+    // States how fast the hiddenSteepness will increment, by how much, each loop. Lower numbers creates more combinations
+    // hiddenSteepness goes from 0-1
+    float m_hiddenSteepnessIncrement;
+    // States how fast the outputSteepness will increment, by how much, each loop. Lower numbers creates more combinations
+    // outputSteepness goes from 0-1
+    float m_outputSteepnessIncrement;
+
 private:
     ConfigHandler();
     ~ConfigHandler();
