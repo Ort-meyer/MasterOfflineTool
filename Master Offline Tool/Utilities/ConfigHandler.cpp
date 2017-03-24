@@ -24,8 +24,8 @@ ConfigHandler::ConfigHandler()
     m_fileEndingNetSettings = "netSettings";
     m_fileEndingNeuralNet = "ann";
 
-    m_numberOfEpochs = 10;
-    m_reportRate = 1;
+    m_numberOfEpochs = 1000;
+    m_reportRate = 100;
     m_errorAcceptance = 0.000001f;
 
     m_creationType = NetworkCreationType::CreateAllCombinations;
