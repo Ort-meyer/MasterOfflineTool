@@ -26,8 +26,8 @@ FileCombiner::FileCombiner() : m_dataSetBuilder(new DataSetBuilder())
     m_factory.SetDeleteCompletedNetworks(true);
 
     std::vector<FANN::activation_function_enum> functions;
-    functions.push_back(FANN::activation_function_enum::ELLIOT_SYMMETRIC);
-    //functions.push_back(FANN::activation_function_enum::SIGMOID_SYMMETRIC);
+    //functions.push_back(FANN::activation_function_enum::ELLIOT_SYMMETRIC);
+    functions.push_back(FANN::activation_function_enum::SIGMOID_SYMMETRIC);
     //functions.push_back(FANN::activation_function_enum::COS_SYMMETRIC);
     //functions.push_back(FANN::activation_function_enum::SIN_SYMMETRIC);
     //functions.push_back(FANN::activation_function_enum::GAUSSIAN_SYMMETRIC);
@@ -35,8 +35,8 @@ FileCombiner::FileCombiner() : m_dataSetBuilder(new DataSetBuilder())
     m_factory.UseTheseHiddenActivationFunctions(functions);
 
     functions.clear();
-    functions.push_back(FANN::activation_function_enum::ELLIOT_SYMMETRIC);
-    // functions.push_back(FANN::activation_function_enum::SIGMOID_SYMMETRIC);
+    //functions.push_back(FANN::activation_function_enum::ELLIOT_SYMMETRIC);
+    functions.push_back(FANN::activation_function_enum::SIGMOID_SYMMETRIC);
     // functions.push_back(FANN::activation_function_enum::COS_SYMMETRIC);
     // functions.push_back(FANN::activation_function_enum::SIN_SYMMETRIC);
     // functions.push_back(FANN::activation_function_enum::GAUSSIAN_SYMMETRIC);
