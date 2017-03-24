@@ -680,6 +680,7 @@ namespace FANN
             data->num_data = num_data;
             data->num_input = num_input;
             data->num_output = num_output;
+            data->errno_f = fann_errno_enum::FANN_E_CANT_READ_TD;
         	fann_type *data_input = (fann_type *)calloc(num_input*num_data, sizeof(fann_type));
         	fann_type *data_output = (fann_type *)calloc(num_output*num_data, sizeof(fann_type));
 

@@ -88,8 +88,8 @@ void FileCombiner::SaveNetsOfSameSettingToFile(const NeuralNetworkFactory& p_fac
         for (size_t i = 0; i < length; i++)
         {
             std::string functionFolder = std::to_string(netSettings[i].functionHidden) + std::to_string(netSettings[i].functionOutput);
-            t_folderFullPath = t_folderFullPath + "/" + functionFolder + "/";
-            if (CreateDirectory(t_folderFullPath.c_str(), NULL) || ERROR_ALREADY_EXISTS == GetLastError())
+            std::string folderToUse = t_folderFullPath + "/" + functionFolder + "/";
+            if (CreateDirectory(folderToUse.c_str(), NULL) || ERROR_ALREADY_EXISTS == GetLastError())
             {
                 std::ostringstream fileNameStream;
                 fileNameStream << p_filePrefixName << " ";
@@ -117,7 +117,7 @@ void FileCombiner::SaveNetsOfSameSettingToFile(const NeuralNetworkFactory& p_fac
                 std::string fileName = fileNameStream.str();
                 std::vector<std::string> newFileEntry;
                 newFileEntry.push_back(FileHandler::SaveNetworkToString(netSettings[i]));
-                FileHandler::AppendToFile(newFileEntry, t_folderFullPath + fileName);
+                FileHandler::AppendToFile(newFileEntry, folderToUse + fileName);
             }
         }
     }
@@ -319,16 +319,17 @@ FANN::training_data FileCombiner::CreateTrainingDataFromListOfDataSet(std::vecto
     for (size_t j = 0; j < dataSetSize; j++)
     {
 
-        inputs[j] = (float*)malloc(sizeof(float) * numInputs);
+        //inputs[j] = (float*)malloc(sizeof(float) * numInputs);
         inputs[j] = &p_allCombosOfData.at(j).values[0];
-        outputs[j] = (float*)malloc(sizeof(float));
+        //outputs[j] = (float*)malloc(sizeof(float));
         outputs[j] = &p_allCombosOfData.at(j).output;
     }
 
 
     FANN::training_data data;// = new FANN::training_data();
     data.set_train_data(dataSetSize, p_allCombosOfData.at(0).inputs, inputs, 1, outputs);
-
+    free(inputs);
+    free(outputs);
     return data;
 
 }

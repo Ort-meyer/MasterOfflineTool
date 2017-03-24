@@ -26,7 +26,7 @@ ConfigHandler::ConfigHandler()
 
     m_numberOfEpochs = 10;
     m_reportRate = 1;
-    m_errorAcceptance = 0.0001f;
+    m_errorAcceptance = 0.000001f;
 
     m_creationType = NetworkCreationType::CreateAllCombinations;
 
@@ -34,7 +34,7 @@ ConfigHandler::ConfigHandler()
         + (int)FANNSettingToTest::TestHiddenLayers + (int)FANNSettingToTest::TestHiddenSteepness;
     m_settingsToTest = (FANNSettingToTest)settingToTest;
 
-    m_logLevel = LogLevel::Verbose;
+    m_logLevel = LogLevel::Progress;
 
     m_maxNetworkThreads = 10;
 
@@ -59,10 +59,10 @@ ConfigHandler::ConfigHandler()
 
     ////// SETTINGS FOR TRAINING MANY NETWORKS ////////
     m_maxNumberOfHiddenLayers = 5;
-    m_numberOfHiddenLayersStart = 2;
+    m_numberOfHiddenLayersStart = 5;
     m_maxNumberOfHiddenCellsPerLayer = 100;
     // States how much the hidden cell per layer will increase per loop run
-    m_numberOfHiddenCellIncrement = 25;
+    m_numberOfHiddenCellIncrement = 100;
     // States how fast the learningrate will increment, by how much, each loop. Lower numbers creates more combinations
     // learningrate goes from 0-1
     m_learningRateIncrement = 0.2;

@@ -15,6 +15,11 @@ struct DataSet
     int inputs;
     std::vector<float> values;
     float output;
+    ~DataSet()
+    {
+        values.clear();
+        values.resize(0);
+    }
 };
 
 class DataSetBuilder

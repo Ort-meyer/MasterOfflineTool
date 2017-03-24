@@ -115,11 +115,6 @@ void NeuralNetworkFactory::CreateNewNeuralNetworkCombinationsFromData(FANN::trai
 
         // Here we unroll one of the loops that is in the recursive method
         // This is done because we want to use the hidden cell count without it having been incremented once
-        for (size_t i = 0; i < hiddenLayers; i++)
-        {
-            std::cout << hiddenCells[i];
-        }
-        std::cout << std::endl;
 
         newNetSettings.hiddenLayers = hiddenLayers;
         newNetSettings.hiddenCells = hiddenCells;
@@ -334,11 +329,7 @@ void NeuralNetworkFactory::CreateHiddenLayerCombinations(NetworkSettings * p_net
         }
 
         p_hiddenCells[p_depth] += m_numberOfHiddenCellIncrement;
-        for (size_t i = 0; i < p_numberOfLayers; i++)
-        {
-            std::cout << p_hiddenCells[i];
-        }
-        std::cout << std::endl;
+
         // Now we put in the info just created into the info and pass it to the next chain in the functions 
         // to create more combinations that builds on this combo
         p_netWorkSettings->hiddenLayers = p_numberOfLayers;
@@ -434,7 +425,7 @@ void NeuralNetworkFactory::ClearBestVectors()
     }
     m_bestNetworks.clear();
 }
-
+#include "FileCombiner.h"
 void NeuralNetworkFactory::JoinNetworkThreads()
 {
     for (size_t i = 0; i < m_networks.size(); i++)
@@ -451,8 +442,14 @@ void NeuralNetworkFactory::JoinNetworkThreads()
         }
         delete m_networks[i]; // This should not delete the thing that ->net is pointing to
     }
-
     m_networks.clear();   
+
+    if (ConfigHandler::Get()->m_creationType == NetworkCreationType::CreateAllCombinations)
+    {
+        // If this is true we need to clear our vector from time to time... Otherwise we risk running out of memory
+        FileCombiner::SaveNetsOfSameSettingToFile(*this, "PosRot", "../SavedNetSettings/PosRot");
+        ClearBestVectors();
+    }
 }
 
 void NeuralNetworkFactory::SetDeleteCompletedNetworks(bool p_delete)
