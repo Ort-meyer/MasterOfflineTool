@@ -102,7 +102,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <Link>
-      <AdditionalDependencies>fannfloatd.lib;Utilities.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>fannfloat.lib;Utilities.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <ClCompile>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
