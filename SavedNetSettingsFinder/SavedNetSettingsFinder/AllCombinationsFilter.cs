@@ -53,11 +53,15 @@ namespace SavedNetSettingsFinder
             allSettingsInFile = new List<NetworkSettingInfo>();
             filesThatPassedCriteria = new List<string>();
 
-            string saveFolder;
+            string saveFolder = "";
             DialogResult result = folderBrowserDialog1.ShowDialog(); // Show the dialog.
             if (result == DialogResult.OK) // Test result.
             {
                 saveFolder = folderBrowserDialog1.SelectedPath;
+            }
+            if (saveFolder == "")
+            {
+                saveFolder = button3.Text;
             }
             string filesRootFolder = button1.Text;
             List<string> allFilesInFolderStructure = new List<string>();
@@ -72,6 +76,13 @@ namespace SavedNetSettingsFinder
                     filesThatPassedCriteria.Add(file);
                 }
             }
+
+            // copy files to new directory
+            foreach (var file in filesThatPassedCriteria)
+            {
+                string fileName = file.Substring(file.LastIndexOf('\\'));
+                File.Copy(file, saveFolder + fileName, true);
+            }
         }
 
         private bool PassedCriteria(List<NetworkSettingInfo> p_allSettingsInFile)
@@ -83,56 +94,50 @@ namespace SavedNetSettingsFinder
             float maxMeanValidationPercentError = float.MaxValue;
             float maxValidatedMSE = float.MaxValue;
             float maxUnValidatedMSE = float.MaxValue;
+            float maxMeanFalsePositive = float.MaxValue;
+            float maxMeanFalsePositiveError = float.MaxValue;
+            float maxFalsePositive = float.MaxValue;
 
             // Figure out what we will use
             float.TryParse(lowestValidationPercent.Text, NumberStyles.Any, nf, out minValidationPercent);
             float.TryParse(lowestValidationMeanPercent.Text, NumberStyles.Any, nf, out minMeanValidationPercent);
-            if (float.TryParse(meanValidationPercentError.Text, NumberStyles.Any, nf, out maxMeanValidationPercentError))
+            if (!float.TryParse(meanValidationPercentError.Text, NumberStyles.Any, nf, out maxMeanValidationPercentError))
             {
                 maxMeanValidationPercentError = float.MaxValue;
             }
-            if (float.TryParse(highestValidatedMSE.Text, NumberStyles.Any, nf, out maxValidatedMSE))
+            if (!float.TryParse(highestValidatedMSE.Text, NumberStyles.Any, nf, out maxValidatedMSE))
             {
                 maxValidatedMSE = float.MaxValue;
             }
-            if (float.TryParse(highestUnvalidatedMSE.Text, NumberStyles.Any, nf, out maxUnValidatedMSE))
+            if (!float.TryParse(highestUnvalidatedMSE.Text, NumberStyles.Any, nf, out maxUnValidatedMSE))
             {
                 maxUnValidatedMSE = float.MaxValue;
             }
-
-            float netValidationPercent = 0;
-            float netMeanValidationPercent = 0;
-            float netMeanValidationPercentError = 0;
-            float netValidatedMSE = float.MaxValue;
-            float netUnValidatedMSE = float.MaxValue;
-            // Get the networks different criteria checkpoints
-            // Need to get mean validation percent
-            foreach (var net in allSettingsInFile)
+            if (!float.TryParse(criteriaHighestMeanFalsePositive.Text, NumberStyles.Any, nf, out maxMeanFalsePositive))
             {
-                netMeanValidationPercent += net.PercentileCorrect;
+                maxMeanFalsePositive = float.MaxValue;
             }
-            netMeanValidationPercent /= allSettingsInFile.Count;
-
-            foreach (var net in allSettingsInFile)
+            if (!float.TryParse(criteriaMeanFalsePositiveError.Text, NumberStyles.Any, nf, out maxMeanFalsePositiveError))
             {
-                if (net.PercentileCorrect > netValidationPercent)
-                {
-                    netValidationPercent = net.PercentileCorrect;
-                }
-                if (net.MSE < netValidatedMSE)
-                {
-                    netValidatedMSE = net.MSE;
-                }
-                netMeanValidationPercentError += Math.Abs(net.PercentileCorrect - netMeanValidationPercentError);
-                foreach (var item in net.MSEValues)
-                {
-                    if (item < netUnValidatedMSE)
-                    {
-                        netUnValidatedMSE = item;
-                    }
-                }
+                maxMeanFalsePositiveError = float.MaxValue;
             }
-            netMeanValidationPercentError /= allSettingsInFile.Count;
+            if (!float.TryParse(criteriaHighestFalsePositive.Text, NumberStyles.Any, nf, out maxFalsePositive))
+            {
+                maxFalsePositive = float.MaxValue;
+            }
+
+            float netValidationPercent;
+            float netMeanValidationPercent;
+            float netMeanValidationPercentError;
+            float netValidatedMSE;
+            float netUnValidatedMSE;
+            float netMeanFalsePositive;
+            float netMeanFalsePositivesError;
+            float netHighestFalsePositive;
+
+            GetNetValues(out netValidationPercent, out netMeanValidationPercent, out netMeanValidationPercentError,
+                out netValidatedMSE, out netUnValidatedMSE, out netMeanFalsePositive, out netMeanFalsePositivesError,
+                out netHighestFalsePositive);
 
             // Check criteria
             if (netValidationPercent < minValidationPercent)
@@ -152,6 +157,18 @@ namespace SavedNetSettingsFinder
                 passed = false;
             }
             if (netUnValidatedMSE > maxUnValidatedMSE)
+            {
+                passed = false;
+            }
+            if (netMeanFalsePositive > maxMeanFalsePositive)
+            {
+                passed = false;
+            }
+            if (netMeanFalsePositivesError > maxMeanFalsePositiveError)
+            {
+                passed = false;
+            }
+            if (netHighestFalsePositive > maxFalsePositive)
             {
                 passed = false;
             }
@@ -242,8 +259,136 @@ namespace SavedNetSettingsFinder
                 files.AddRange(GetAllFilesInFolderStructure(directoryPath, p_fileEnding));
             }
             // When we have been to the bottom of the directory structure we look for .json files
-            files.AddRange(Directory.GetFiles(p_rootDirectory, "*" + p_fileEnding));
+            files.AddRange(Directory.GetFiles(p_rootDirectory, "PosRot*"));
             return files;
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            // Reset values
+            allSettingsInFile = new List<NetworkSettingInfo>();
+
+            string filesRootFolder = button1.Text;
+            List<string> allFilesInFolderStructure = new List<string>();
+            allFilesInFolderStructure = GetAllFilesInFolderStructure(filesRootFolder, "netSettings");
+            string bestFile = "";
+
+            float bestNetValidationPercent = 0;
+            float bestNetMeanValidationPercent = 0;
+            float bestNetMeanValidationPercentError = float.MaxValue;
+            float bestNetValidatedMSE = float.MaxValue;
+            float bestNetUnValidatedMSE = float.MaxValue;
+            float bestNetMeanFalsePositives = float.MaxValue;
+            float bestNetMeanFalsePositivesError = float.MaxValue;
+            float bestNetFalsePositives = float.MaxValue;
+
+            foreach (var file in allFilesInFolderStructure)
+            {
+                allSettingsInFile.Clear();
+                LoadFileIntoNetworkSettings(file);
+
+                float netValidationPercent;
+                float netMeanValidationPercent;
+                float netMeanValidationPercentError;
+                float netValidatedMSE;
+                float netUnValidatedMSE;
+                float netMeanFalsePositives;
+                float netMeanFalsePositivesError;
+                float netHighestFalsePositive;
+
+                GetNetValues(out netValidationPercent, out netMeanValidationPercent, out netMeanValidationPercentError, 
+                    out netValidatedMSE, out netUnValidatedMSE, out netMeanFalsePositives, out netMeanFalsePositivesError,
+                    out netHighestFalsePositive);
+
+                if ((findOnMeanValidationPercent.Checked && bestNetMeanValidationPercent < netMeanValidationPercent)
+                    || (findOnValidationPercent.Checked && bestNetValidationPercent < netValidationPercent)
+                    || (findOnValidatedMSE.Checked && bestNetValidatedMSE > netValidatedMSE)
+                    || (findOnUnvalidatedMSE.Checked && bestNetUnValidatedMSE > netUnValidatedMSE)
+                    || (findOnValidationPercentError.Checked && bestNetMeanValidationPercentError > netMeanValidationPercentError)
+                    || (findOnMeanFalsePositive.Checked && bestNetMeanFalsePositives > netMeanFalsePositives)
+                    || (findOnMeanFalsePositiveError.Checked && bestNetMeanFalsePositivesError > netMeanFalsePositivesError)
+                    || (findOnFalsePositive.Checked && bestNetFalsePositives > netHighestFalsePositive))
+                {
+                    bestNetMeanValidationPercent = netMeanValidationPercent;
+                    bestNetMeanValidationPercentError = netMeanValidationPercentError;
+                    bestNetValidationPercent = netValidationPercent;
+                    bestNetUnValidatedMSE = netUnValidatedMSE;
+                    bestNetValidatedMSE = netValidatedMSE;
+                    bestNetMeanFalsePositives = netMeanFalsePositives;
+                    bestNetMeanFalsePositivesError = netMeanFalsePositivesError;
+                    bestNetFalsePositives = netHighestFalsePositive;
+                    bestFile = file;
+                }
+            }
+
+            // Precent the best net
+            button2.Text = bestFile.Substring(bestFile.LastIndexOf('\\'));
+            bestMeanValidationPercent.Text = bestNetMeanValidationPercent.ToString();
+            bestValidationPercent.Text = bestNetValidationPercent.ToString();
+            bestMeanValidationPercentError.Text = bestNetMeanValidationPercentError.ToString();
+            bestUnvalidatedMSE.Text = bestNetUnValidatedMSE.ToString();
+            bestValidatedMSE.Text = bestNetValidatedMSE.ToString();
+            bestMeanFalsePositive.Text = bestNetMeanFalsePositives.ToString();
+            bestMeanFalsePositiveError.Text = bestNetMeanFalsePositivesError.ToString();
+            bestFalsePositive.Text = bestNetFalsePositives.ToString();
+        }
+
+        // HELPER
+        void GetNetValues(out float ValidationPercent,out float MeanValidationPercent,out float MeanValidationPercentError,
+        out float ValidatedMSE,out float UnValidatedMSE, out float MeanFalsePositives, out float MeanFalsePositivesError, out float FalsePositives)
+        {
+            float netValidationPercent = 0;
+            float netMeanValidationPercent = 0;
+            float netMeanValidationPercentError = 0;
+            float netValidatedMSE = float.MaxValue;
+            float netUnValidatedMSE = float.MaxValue;
+            float netMeanFalsePositives = 0;
+            float netMeanFalsePositivesError = 0;
+            float netFalsePositives = 0;
+
+            foreach (var net in allSettingsInFile)
+            {
+                netMeanValidationPercent += net.PercentileCorrect;
+                netMeanFalsePositives += net.GuessedLostWhenFound;
+            }
+            netMeanValidationPercent /= allSettingsInFile.Count;
+            netMeanFalsePositives /= allSettingsInFile.Count;
+
+            foreach (var net in allSettingsInFile)
+            {
+                if (net.PercentileCorrect > netValidationPercent)
+                {
+                    netValidationPercent = net.PercentileCorrect;
+                }
+                if (net.MSE < netValidatedMSE)
+                {
+                    netValidatedMSE = net.MSE;
+                }
+                if (net.GuessedLostWhenFound > netFalsePositives)
+                {
+                    netFalsePositives = net.GuessedLostWhenFound;
+                }
+                netMeanValidationPercentError += Math.Abs(net.PercentileCorrect - netMeanValidationPercent);
+                netMeanFalsePositivesError += Math.Abs(net.GuessedLostWhenFound - netMeanFalsePositives);
+                foreach (var item in net.MSEValues)
+                {
+                    if (item < netUnValidatedMSE)
+                    {
+                        netUnValidatedMSE = item;
+                    }
+                }
+            }
+            netMeanValidationPercentError /= allSettingsInFile.Count;
+            netMeanFalsePositivesError /= allSettingsInFile.Count;
+
+            ValidationPercent = netValidationPercent;
+            MeanValidationPercent = netMeanValidationPercent;
+            MeanValidationPercentError = netMeanValidationPercentError;
+            ValidatedMSE = netValidatedMSE;
+            UnValidatedMSE = netUnValidatedMSE;
+            MeanFalsePositives = netMeanFalsePositives;
+            MeanFalsePositivesError = netMeanFalsePositivesError;
+            FalsePositives = netFalsePositives;
         }
     }
 }

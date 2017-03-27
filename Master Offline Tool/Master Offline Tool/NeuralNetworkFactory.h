@@ -101,6 +101,9 @@ public:
 
     // Cleares the hidden and output activation functions
     void ClearActivationFunctionsToUse() { m_hiddenActivationFunctionsToUse.clear(); m_outputActivationFunctionsToUse.clear(); }
+
+    // Gets all the saved networks in a list
+    std::vector<NeuralNetwork*> GetSavedNetworks() { return m_savedNetworks; };
 private:
     // First in a series of creating all different combinations of neural nets
     void CreateHiddenLayerCombinations(NetworkSettings * p_netWorkSettings, int* p_hiddenCells, const int& p_numberOfLayers, const int& p_depth);

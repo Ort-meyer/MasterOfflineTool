@@ -30,7 +30,7 @@
         {
             this.GenerateHeatmap = new System.Windows.Forms.Button();
             this.Preview = new System.Windows.Forms.PictureBox();
-            this.InFolder = new System.Windows.Forms.TextBox();
+            this.InFolderNetworkData = new System.Windows.Forms.TextBox();
             this.OutFolder = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
@@ -53,15 +53,18 @@
             this.label10 = new System.Windows.Forms.Label();
             this.imageUpperPositionY = new System.Windows.Forms.TextBox();
             this.imageRightPositionX = new System.Windows.Forms.TextBox();
+            this.label11 = new System.Windows.Forms.Label();
+            this.inFolderGoldenData = new System.Windows.Forms.TextBox();
+            this.button2 = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.Preview)).BeginInit();
             this.SuspendLayout();
             // 
             // GenerateHeatmap
             // 
-            this.GenerateHeatmap.Location = new System.Drawing.Point(9, 379);
-            this.GenerateHeatmap.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.GenerateHeatmap.Location = new System.Drawing.Point(12, 466);
+            this.GenerateHeatmap.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.GenerateHeatmap.Name = "GenerateHeatmap";
-            this.GenerateHeatmap.Size = new System.Drawing.Size(240, 46);
+            this.GenerateHeatmap.Size = new System.Drawing.Size(320, 57);
             this.GenerateHeatmap.TabIndex = 0;
             this.GenerateHeatmap.Text = "Generate Heatmap";
             this.GenerateHeatmap.UseVisualStyleBackColor = true;
@@ -69,39 +72,38 @@
             // 
             // Preview
             // 
-            this.Preview.Location = new System.Drawing.Point(274, 10);
-            this.Preview.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.Preview.Location = new System.Drawing.Point(365, 12);
+            this.Preview.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.Preview.Name = "Preview";
             this.Preview.Size = new System.Drawing.Size(374, 261);
             this.Preview.SizeMode = System.Windows.Forms.PictureBoxSizeMode.AutoSize;
             this.Preview.TabIndex = 1;
             this.Preview.TabStop = false;
             // 
-            // InFolder
+            // InFolderNetworkData
             // 
-            this.InFolder.Location = new System.Drawing.Point(148, 10);
-            this.InFolder.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
-            this.InFolder.Name = "InFolder";
-            this.InFolder.Size = new System.Drawing.Size(123, 20);
-            this.InFolder.TabIndex = 3;
-            this.InFolder.Text = "LostData";
+            this.InFolderNetworkData.Location = new System.Drawing.Point(197, 12);
+            this.InFolderNetworkData.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.InFolderNetworkData.Name = "InFolderNetworkData";
+            this.InFolderNetworkData.Size = new System.Drawing.Size(163, 22);
+            this.InFolderNetworkData.TabIndex = 3;
+            this.InFolderNetworkData.Text = "NetworkData";
             // 
             // OutFolder
             // 
-            this.OutFolder.Location = new System.Drawing.Point(148, 32);
-            this.OutFolder.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.OutFolder.Location = new System.Drawing.Point(197, 64);
+            this.OutFolder.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.OutFolder.Name = "OutFolder";
-            this.OutFolder.Size = new System.Drawing.Size(123, 20);
+            this.OutFolder.Size = new System.Drawing.Size(163, 22);
             this.OutFolder.TabIndex = 4;
             this.OutFolder.Text = "HeatMaps";
             // 
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(10, 10);
-            this.label1.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label1.Location = new System.Drawing.Point(13, 12);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(133, 13);
+            this.label1.Size = new System.Drawing.Size(178, 17);
             this.label1.TabIndex = 6;
             this.label1.Text = "Folder containing data files";
             this.label1.Click += new System.EventHandler(this.label1_Click);
@@ -109,80 +111,85 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(10, 32);
-            this.label2.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label2.Location = new System.Drawing.Point(13, 64);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(123, 13);
+            this.label2.Size = new System.Drawing.Size(164, 17);
             this.label2.TabIndex = 7;
             this.label2.Text = "Folder to save heatmaps";
             // 
             // TextureWidth
             // 
-            this.TextureWidth.Location = new System.Drawing.Point(148, 76);
-            this.TextureWidth.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.TextureWidth.Location = new System.Drawing.Point(197, 119);
+            this.TextureWidth.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.TextureWidth.Name = "TextureWidth";
-            this.TextureWidth.Size = new System.Drawing.Size(123, 20);
+            this.TextureWidth.Size = new System.Drawing.Size(163, 22);
             this.TextureWidth.TabIndex = 8;
             this.TextureWidth.Text = "4000";
             // 
             // TextureHeight
             // 
-            this.TextureHeight.Location = new System.Drawing.Point(148, 99);
-            this.TextureHeight.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.TextureHeight.Location = new System.Drawing.Point(197, 147);
+            this.TextureHeight.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.TextureHeight.Name = "TextureHeight";
-            this.TextureHeight.Size = new System.Drawing.Size(123, 20);
+            this.TextureHeight.Size = new System.Drawing.Size(163, 22);
             this.TextureHeight.TabIndex = 9;
             this.TextureHeight.Text = "4000";
             // 
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(10, 76);
+            this.label3.Location = new System.Drawing.Point(13, 119);
+            this.label3.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(57, 13);
+            this.label3.Size = new System.Drawing.Size(73, 17);
             this.label3.TabIndex = 10;
             this.label3.Text = "Pixel width";
             // 
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(10, 99);
+            this.label4.Location = new System.Drawing.Point(13, 147);
+            this.label4.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(61, 13);
+            this.label4.Size = new System.Drawing.Size(80, 17);
             this.label4.TabIndex = 11;
             this.label4.Text = "Pixel height";
             // 
             // propagation
             // 
-            this.propagation.Location = new System.Drawing.Point(148, 125);
+            this.propagation.Location = new System.Drawing.Point(197, 179);
+            this.propagation.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.propagation.Name = "propagation";
-            this.propagation.Size = new System.Drawing.Size(123, 20);
+            this.propagation.Size = new System.Drawing.Size(163, 22);
             this.propagation.TabIndex = 12;
             this.propagation.Text = "1";
             // 
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(12, 125);
+            this.label5.Location = new System.Drawing.Point(16, 179);
+            this.label5.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(88, 13);
+            this.label5.Size = new System.Drawing.Size(117, 17);
             this.label5.TabIndex = 13;
             this.label5.Text = "Pixel propagation";
             // 
             // label6
             // 
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(12, 152);
+            this.label6.Location = new System.Drawing.Point(16, 212);
+            this.label6.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(94, 13);
+            this.label6.Size = new System.Drawing.Size(126, 17);
             this.label6.TabIndex = 15;
             this.label6.Text = "Underlaying image";
             // 
             // button1
             // 
-            this.button1.Location = new System.Drawing.Point(148, 152);
+            this.button1.Location = new System.Drawing.Point(197, 212);
+            this.button1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(121, 23);
+            this.button1.Size = new System.Drawing.Size(161, 28);
             this.button1.TabIndex = 16;
             this.button1.Text = "Browse";
             this.button1.UseVisualStyleBackColor = true;
@@ -194,33 +201,37 @@
             // 
             // imageLeftPositionX
             // 
-            this.imageLeftPositionX.Location = new System.Drawing.Point(148, 204);
+            this.imageLeftPositionX.Location = new System.Drawing.Point(197, 276);
+            this.imageLeftPositionX.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.imageLeftPositionX.Name = "imageLeftPositionX";
-            this.imageLeftPositionX.Size = new System.Drawing.Size(121, 20);
+            this.imageLeftPositionX.Size = new System.Drawing.Size(160, 22);
             this.imageLeftPositionX.TabIndex = 17;
             // 
             // imageLowerPositionY
             // 
-            this.imageLowerPositionY.Location = new System.Drawing.Point(148, 230);
+            this.imageLowerPositionY.Location = new System.Drawing.Point(197, 308);
+            this.imageLowerPositionY.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.imageLowerPositionY.Name = "imageLowerPositionY";
-            this.imageLowerPositionY.Size = new System.Drawing.Size(121, 20);
+            this.imageLowerPositionY.Size = new System.Drawing.Size(160, 22);
             this.imageLowerPositionY.TabIndex = 18;
             // 
             // label7
             // 
             this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(14, 204);
+            this.label7.Location = new System.Drawing.Point(19, 276);
+            this.label7.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(83, 13);
+            this.label7.Size = new System.Drawing.Size(109, 17);
             this.label7.TabIndex = 19;
             this.label7.Text = "Image left X pos";
             // 
             // label8
             // 
             this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(14, 230);
+            this.label8.Location = new System.Drawing.Point(19, 308);
+            this.label8.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(94, 13);
+            this.label8.Size = new System.Drawing.Size(123, 17);
             this.label8.TabIndex = 20;
             this.label8.Text = "Image lower Y pos";
             // 
@@ -228,9 +239,10 @@
             // 
             this.sizeFromImage.AutoSize = true;
             this.sizeFromImage.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.sizeFromImage.Location = new System.Drawing.Point(9, 57);
+            this.sizeFromImage.Location = new System.Drawing.Point(12, 95);
+            this.sizeFromImage.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.sizeFromImage.Name = "sizeFromImage";
-            this.sizeFromImage.Size = new System.Drawing.Size(154, 17);
+            this.sizeFromImage.Size = new System.Drawing.Size(204, 21);
             this.sizeFromImage.TabIndex = 21;
             this.sizeFromImage.Text = "Use underlaying image size";
             this.sizeFromImage.UseVisualStyleBackColor = true;
@@ -242,9 +254,10 @@
             this.fitPositionsToImage.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.fitPositionsToImage.Checked = true;
             this.fitPositionsToImage.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.fitPositionsToImage.Location = new System.Drawing.Point(13, 181);
+            this.fitPositionsToImage.Location = new System.Drawing.Point(17, 248);
+            this.fitPositionsToImage.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.fitPositionsToImage.Name = "fitPositionsToImage";
-            this.fitPositionsToImage.Size = new System.Drawing.Size(148, 17);
+            this.fitPositionsToImage.Size = new System.Drawing.Size(195, 21);
             this.fitPositionsToImage.TabIndex = 22;
             this.fitPositionsToImage.Text = "Fit positions to image        ";
             this.fitPositionsToImage.UseVisualStyleBackColor = true;
@@ -253,40 +266,76 @@
             // label9
             // 
             this.label9.AutoSize = true;
-            this.label9.Location = new System.Drawing.Point(12, 282);
+            this.label9.Location = new System.Drawing.Point(16, 372);
+            this.label9.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label9.Name = "label9";
-            this.label9.Size = new System.Drawing.Size(96, 13);
+            this.label9.Size = new System.Drawing.Size(127, 17);
             this.label9.TabIndex = 26;
             this.label9.Text = "Image upper Y pos";
             // 
             // label10
             // 
             this.label10.AutoSize = true;
-            this.label10.Location = new System.Drawing.Point(13, 256);
+            this.label10.Location = new System.Drawing.Point(17, 340);
+            this.label10.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label10.Name = "label10";
-            this.label10.Size = new System.Drawing.Size(89, 13);
+            this.label10.Size = new System.Drawing.Size(118, 17);
             this.label10.TabIndex = 25;
             this.label10.Text = "Image right X pos";
             // 
             // imageUpperPositionY
             // 
-            this.imageUpperPositionY.Location = new System.Drawing.Point(148, 282);
+            this.imageUpperPositionY.Location = new System.Drawing.Point(197, 372);
+            this.imageUpperPositionY.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.imageUpperPositionY.Name = "imageUpperPositionY";
-            this.imageUpperPositionY.Size = new System.Drawing.Size(121, 20);
+            this.imageUpperPositionY.Size = new System.Drawing.Size(160, 22);
             this.imageUpperPositionY.TabIndex = 24;
             // 
             // imageRightPositionX
             // 
-            this.imageRightPositionX.Location = new System.Drawing.Point(148, 256);
+            this.imageRightPositionX.Location = new System.Drawing.Point(197, 340);
+            this.imageRightPositionX.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.imageRightPositionX.Name = "imageRightPositionX";
-            this.imageRightPositionX.Size = new System.Drawing.Size(121, 20);
+            this.imageRightPositionX.Size = new System.Drawing.Size(160, 22);
             this.imageRightPositionX.TabIndex = 23;
+            // 
+            // label11
+            // 
+            this.label11.AutoSize = true;
+            this.label11.Location = new System.Drawing.Point(13, 38);
+            this.label11.Name = "label11";
+            this.label11.Size = new System.Drawing.Size(178, 17);
+            this.label11.TabIndex = 28;
+            this.label11.Text = "Folder containing data files";
+            // 
+            // inFolderGoldenData
+            // 
+            this.inFolderGoldenData.Location = new System.Drawing.Point(197, 38);
+            this.inFolderGoldenData.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.inFolderGoldenData.Name = "inFolderGoldenData";
+            this.inFolderGoldenData.Size = new System.Drawing.Size(163, 22);
+            this.inFolderGoldenData.TabIndex = 27;
+            this.inFolderGoldenData.Text = "GoldenData";
+            // 
+            // button2
+            // 
+            this.button2.Location = new System.Drawing.Point(12, 400);
+            this.button2.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.button2.Name = "button2";
+            this.button2.Size = new System.Drawing.Size(320, 57);
+            this.button2.TabIndex = 29;
+            this.button2.Text = "Generate Merged Heatmap";
+            this.button2.UseVisualStyleBackColor = true;
+            this.button2.Click += new System.EventHandler(this.button2_Click);
             // 
             // Form1
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(564, 435);
+            this.ClientSize = new System.Drawing.Size(752, 535);
+            this.Controls.Add(this.button2);
+            this.Controls.Add(this.label11);
+            this.Controls.Add(this.inFolderGoldenData);
             this.Controls.Add(this.label9);
             this.Controls.Add(this.label10);
             this.Controls.Add(this.imageUpperPositionY);
@@ -308,10 +357,10 @@
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.OutFolder);
-            this.Controls.Add(this.InFolder);
+            this.Controls.Add(this.InFolderNetworkData);
             this.Controls.Add(this.Preview);
             this.Controls.Add(this.GenerateHeatmap);
-            this.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.Name = "Form1";
             this.Text = "Form1";
             ((System.ComponentModel.ISupportInitialize)(this.Preview)).EndInit();
@@ -324,7 +373,7 @@
 
         private System.Windows.Forms.Button GenerateHeatmap;
         private System.Windows.Forms.PictureBox Preview;
-        private System.Windows.Forms.TextBox InFolder;
+        private System.Windows.Forms.TextBox InFolderNetworkData;
         private System.Windows.Forms.TextBox OutFolder;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label2;
@@ -347,6 +396,9 @@
         private System.Windows.Forms.Label label10;
         private System.Windows.Forms.TextBox imageUpperPositionY;
         private System.Windows.Forms.TextBox imageRightPositionX;
+        private System.Windows.Forms.Label label11;
+        private System.Windows.Forms.TextBox inFolderGoldenData;
+        private System.Windows.Forms.Button button2;
     }
 }
 

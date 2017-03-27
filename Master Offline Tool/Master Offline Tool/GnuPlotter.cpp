@@ -9,8 +9,8 @@ using namespace FANN;
 using namespace std;
 GnuPlotter::GnuPlotter()
 {
-    CreatePeople("../RawData", "../FilteredData");
-    RunNetworkAndPrepForGnuPlot("../SavedNetworks/test.ann");
+    CreatePeople("../RawData", "../FilteredData/GnuplotterValidation/");
+    RunNetworkAndPrepForGnuPlot("../SavedNetworks/Validationset 0.ann");
     PrepGoldenDataForGnuPlot();
 }
 

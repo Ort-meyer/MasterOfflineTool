@@ -42,7 +42,7 @@ ConfigHandler::ConfigHandler()
 
     m_deterministicWeights = true;
     /* This is how they calculate the movement speed
-    groundspeed = 180 * maxMovementSpeed * 0.95 * 0.01 * 1.25 * (0.95 + movementSkill * 0.0002)  
+    groundspeed = 180 * maxMovementSpeed * 0.95 * 0.01 * 1.25 * (0.95 + movementSkill * 0.0002)
     where maxMovementSpeed = 90 when dexterity is 55 (which it was)
     I set movementSkill to 30 as i dont thing we reached any higher
     The total will then come to 194.3 units/sec
@@ -50,7 +50,7 @@ ConfigHandler::ConfigHandler()
     I'm guessing we had about 60 fps
     This does not take jumping and falling into account...
     */
-    m_maxDisplacement = 194.3f / 60.0f; 
+    m_maxDisplacement = 194.3f / 60.0f;
 
     // The death movement speed is 400 units/sec
     m_maxDeadDisplacement = 400.0f / 60.0f;

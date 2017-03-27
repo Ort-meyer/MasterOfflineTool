@@ -67,7 +67,7 @@
     <OutDir>$(SolutionDir)$(Configuration)\</OutDir>
     <IntDir>$(Configuration)\</IntDir>
     <IncludePath>../Utilities/;../../3rd Party;$(IncludePath)</IncludePath>
-    <LibraryPath>../Utilities/lib;../../3rd Party/FANN/lib/x64;$(LibraryPath)</LibraryPath>
+    <LibraryPath>../Utilities/lib;../../3rd Party/FANN/lib;$(LibraryPath)</LibraryPath>
     <LinkIncremental>true</LinkIncremental>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">

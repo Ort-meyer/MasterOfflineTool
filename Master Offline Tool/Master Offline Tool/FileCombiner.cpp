@@ -26,8 +26,8 @@ FileCombiner::FileCombiner() : m_dataSetBuilder(new DataSetBuilder())
     m_factory.SetDeleteCompletedNetworks(true);
 
     std::vector<FANN::activation_function_enum> functions;
-    //functions.push_back(FANN::activation_function_enum::ELLIOT_SYMMETRIC);
-    functions.push_back(FANN::activation_function_enum::SIGMOID_SYMMETRIC);
+    functions.push_back(FANN::activation_function_enum::ELLIOT_SYMMETRIC);
+    //functions.push_back(FANN::activation_function_enum::SIGMOID_SYMMETRIC);
     //functions.push_back(FANN::activation_function_enum::COS_SYMMETRIC);
     //functions.push_back(FANN::activation_function_enum::SIN_SYMMETRIC);
     //functions.push_back(FANN::activation_function_enum::GAUSSIAN_SYMMETRIC);
@@ -35,13 +35,13 @@ FileCombiner::FileCombiner() : m_dataSetBuilder(new DataSetBuilder())
     m_factory.UseTheseHiddenActivationFunctions(functions);
 
     functions.clear();
-    //functions.push_back(FANN::activation_function_enum::ELLIOT_SYMMETRIC);
-    functions.push_back(FANN::activation_function_enum::SIGMOID_SYMMETRIC);
+    // functions.push_back(FANN::activation_function_enum::ELLIOT_SYMMETRIC);
+    // functions.push_back(FANN::activation_function_enum::SIGMOID_SYMMETRIC);
     // functions.push_back(FANN::activation_function_enum::COS_SYMMETRIC);
     // functions.push_back(FANN::activation_function_enum::SIN_SYMMETRIC);
     // functions.push_back(FANN::activation_function_enum::GAUSSIAN_SYMMETRIC);
     // functions.push_back(FANN::activation_function_enum::LINEAR_PIECE_SYMMETRIC);
-    // functions.push_back(FANN::activation_function_enum::ELLIOT);
+    functions.push_back(FANN::activation_function_enum::ELLIOT);
     // functions.push_back(FANN::activation_function_enum::SIGMOID);
     // functions.push_back(FANN::activation_function_enum::GAUSSIAN);
     // functions.push_back(FANN::activation_function_enum::LINEAR_PIECE);
@@ -166,14 +166,14 @@ void FileCombiner::FeedDataToNeuralNetworkFactory()
         NetworkSettings t_netSetting;
 
         t_netSetting.outputCells = 1;
-        t_netSetting.hiddenLayers = 4;
+        t_netSetting.hiddenLayers = 5;
         int hiddenlayers[5] = { 100,100,100, 100, 100 };
         t_netSetting.hiddenCells = hiddenlayers;
         t_netSetting.learningRate = 0.7;
-        t_netSetting.steepnessHidden = 0.7;
-        t_netSetting.steepnessOutput = 0.7;
-        t_netSetting.functionHidden = FANN::activation_function_enum::ELLIOT_SYMMETRIC;
-        t_netSetting.functionOutput = FANN::activation_function_enum::ELLIOT_SYMMETRIC;
+        t_netSetting.steepnessHidden = 0.6;
+        t_netSetting.steepnessOutput = 0.6;
+        t_netSetting.functionHidden = FANN::activation_function_enum::SIGMOID_SYMMETRIC;
+        t_netSetting.functionOutput = FANN::activation_function_enum::SIGMOID_SYMMETRIC;
         t_netSetting.trainingAlgorithm = FANN::training_algorithm_enum::TRAIN_RPROP;
         t_netSetting.deterministicWeights = ConfigHandler::Get()->m_deterministicWeights;
 
@@ -185,7 +185,7 @@ void FileCombiner::FeedDataToNeuralNetworkFactory()
 
         // SaveBestNetToFile(t_factory, "bestFunctions.netSetting");
         SaveNetsOfSameSettingToFile(m_factory, m_dataSetBuilder->GetComboNameFromIndex(combo), "../SavedNetSettings/" + m_dataSetBuilder->GetComboNameFromIndex(combo));
-        // SaveBestNetToFile(m_factory, m_dataSetBuilder->GetComboNameFromIndex(combo) + "." + ConfigHandler::Get()->m_fileEndingNetSettings);
+        //SaveBestNetToFile(m_factory, m_dataSetBuilder->GetComboNameFromIndex(combo) + "." + ConfigHandler::Get()->m_fileEndingNetSettings);
 
         // Then we clear the best vector before we start the next combo
         m_factory.ClearBestVectors();
@@ -249,6 +249,10 @@ void FileCombiner::PerformCrossValidationOnNetSetting(NetworkSettings & p_netSet
         {
             m_factory.SetDeleteCompletedNetworks(false);
             m_factory.CreateSpecificNeuralNetwork(p_netSetting);
+            m_factory.JoinNetworkThreads();
+            std::vector<NeuralNetwork*> savedNetworks = m_factory.GetSavedNetworks();
+            savedNetworks.at(0)->SaveNetworkToFile("../SavedNetworks/Validationset " + std::to_string(validationSet) + "." + ConfigHandler::Get()->m_fileEndingNeuralNet);
+            m_factory.SetDeleteCompletedNetworks(true);
             break;
         }
         default:
