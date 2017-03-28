@@ -87,7 +87,6 @@ namespace SavedNetSettingsFinder
 
         private bool PassedCriteria(List<NetworkSettingInfo> p_allSettingsInFile)
         {
-            
             bool passed = true;
             float minValidationPercent = 0;
             float minMeanValidationPercent= 0;

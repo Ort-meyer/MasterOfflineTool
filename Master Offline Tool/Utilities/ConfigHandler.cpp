@@ -15,9 +15,7 @@ ConfigHandler::ConfigHandler()
     m_entriesToAvrage = 60;
     m_entriesToMerge = 5;
 
-    m_trainAllNetworks = false;
-
-    m_numValidationSet = 1;
+    m_numValidationSet = 0;
 
     m_fileEndingFiltered = "filteredData";
     m_fileEndingRawData = "rawData";
@@ -28,13 +26,13 @@ ConfigHandler::ConfigHandler()
     m_reportRate = 100;
     m_errorAcceptance = 0.000001f;
 
-    m_creationType = NetworkCreationType::CreateAllCombinations;
+    m_creationType = NetworkCreationType::CreateOneSpecific;
 
     int settingToTest = (int)FANNSettingToTest::TestHiddenCells + (int)FANNSettingToTest::TestOutputSteepness
         + (int)FANNSettingToTest::TestHiddenLayers + (int)FANNSettingToTest::TestHiddenSteepness;
     m_settingsToTest = (FANNSettingToTest)settingToTest;
 
-    m_logLevel = LogLevel::Progress;
+    m_logLevel = LogLevel::Verbose;
 
     m_maxNetworkThreads = 10;
 

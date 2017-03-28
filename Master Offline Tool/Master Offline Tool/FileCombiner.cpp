@@ -166,14 +166,14 @@ void FileCombiner::FeedDataToNeuralNetworkFactory()
         NetworkSettings t_netSetting;
 
         t_netSetting.outputCells = 1;
-        t_netSetting.hiddenLayers = 5;
-        int hiddenlayers[5] = { 100,100,100, 100, 100 };
+        t_netSetting.hiddenLayers = 3;
+        int hiddenlayers[5] = { 100,50,10, 100, 100 };
         t_netSetting.hiddenCells = hiddenlayers;
         t_netSetting.learningRate = 0.7;
         t_netSetting.steepnessHidden = 0.6;
         t_netSetting.steepnessOutput = 0.6;
-        t_netSetting.functionHidden = FANN::activation_function_enum::SIGMOID_SYMMETRIC;
-        t_netSetting.functionOutput = FANN::activation_function_enum::SIGMOID_SYMMETRIC;
+        t_netSetting.functionHidden = FANN::activation_function_enum::ELLIOT_SYMMETRIC;
+        t_netSetting.functionOutput = FANN::activation_function_enum::ELLIOT;
         t_netSetting.trainingAlgorithm = FANN::training_algorithm_enum::TRAIN_RPROP;
         t_netSetting.deterministicWeights = ConfigHandler::Get()->m_deterministicWeights;
 
