@@ -51,7 +51,7 @@ FileCombiner::FileCombiner() : m_dataSetBuilder(new DataSetBuilder())
     FeedDataToNeuralNetworkFactory();
     
     int a;
-    std::cin >> a;
+    //std::cin >> a;
 }
 
 
