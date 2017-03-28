@@ -215,6 +215,11 @@ void FileCombiner::PerformCrossValidationOnNetSetting(NetworkSettings & p_netSet
                 oneCombosTrainingData.insert(oneCombosTrainingData.end(), m_allCombosOfData[person]->at(p_combo).begin(), m_allCombosOfData[person]->at(p_combo).end());
             }
         }
+        // If a person for some reason does not have anything in the filtered data
+        if (oneCombosValidationData.size() == 0 && m_validationAmount != 0)
+        {
+            continue;
+        }
         // Now we create the training data from the accumulated training data
         FANN::training_data trainingData = CreateTrainingDataFromListOfDataSet(oneCombosTrainingData);
         FANN::training_data validationData = CreateTrainingDataFromListOfDataSet(oneCombosValidationData);

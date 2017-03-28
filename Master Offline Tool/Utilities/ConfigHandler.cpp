@@ -76,7 +76,7 @@ ConfigHandler::ConfigHandler()
     m_combinationToUse = "PosRot";
     ////// Network settings for training one network ///////
     m_hiddenLayers = 3;
-    int hiddenlayers[5] = { 100,50,10, 100, 100 };
+    int hiddenlayers[5] = { 100,100,100, 100, 100 };
     m_hiddenCells = (int*)malloc(sizeof(int) * 5);
     for (size_t i = 0; i < 5; i++)
     {
