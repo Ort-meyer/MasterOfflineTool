@@ -36,7 +36,7 @@ void KeyMaskInterpreter::ReinterpretRawKeyData(std::vector<std::string>* o_lines
                 lineToRead -= 3;
                 continue;
             }
-        }    
+        }
         
         // Hax thing so we can skip the enums with bitmasks
         // We loop over the number of changable bits in a int32

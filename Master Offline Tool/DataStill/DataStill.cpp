@@ -266,6 +266,7 @@ std::vector<std::string>* DataStill::MergeDataOntoSameLine(const std::vector<std
 
 void CheckThatAllEntiresHaveSameNrOfWords2(std::vector<std::string>& p_lines)
 {
+    return;
 	string line = p_lines.at(1);
 	istringstream in(line);
 	int inputs = std::distance(istream_iterator<string>(istringstream(line) >> ws), istream_iterator<string>());
@@ -276,7 +277,7 @@ void CheckThatAllEntiresHaveSameNrOfWords2(std::vector<std::string>& p_lines)
 		int theseInputs = std::distance(istream_iterator<string>(istringstream(line) >> ws), istream_iterator<string>());
 		if (theseInputs != inputs)
 		{
-			int derp = 2;
+            std::cout << "LINE DO NOT HAVE SAME NR OF WORDS" << std::endl;
 		}
 	}
 }

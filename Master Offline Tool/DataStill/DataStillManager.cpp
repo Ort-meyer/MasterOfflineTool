@@ -69,6 +69,7 @@ void DataStillManager::FiltrateAllFilesInDirectory(const std::string& p_readDire
 
 void CheckThatAllEntiresHaveSameNrOfWords(std::vector<std::string>& p_lines)
 {
+    return;
 	string line = p_lines.at(1);
 	istringstream in(line);
 	int inputs = std::distance(istream_iterator<string>(istringstream(line) >> ws), istream_iterator<string>());
@@ -79,7 +80,7 @@ void CheckThatAllEntiresHaveSameNrOfWords(std::vector<std::string>& p_lines)
 		int theseInputs = std::distance(istream_iterator<string>(istringstream(line) >> ws), istream_iterator<string>());
 		if (theseInputs != inputs)
 		{
-			int derp = 2;
+            std::cout << "LINE DO NOT HAVE SAME NR OF WORDS" << std::endl;
 		}
 	}
 }
@@ -180,14 +181,17 @@ void DataStillManager::ProcessFilesAndSaveToFile(std::vector<std::string> p_file
         delete toRemove;
     }
 
-    // Debug make sure every entry have the same amount of rows
-    int rows = t_allFileContent->at(0).size();
-    for (size_t i = 1; i < t_allFileContent->size(); i++)
+    // make sure every entry have the same amount of rows, we know that positions is as long as it is allowed
+    int rows = t_allFileContent->at(1).size();
+    for (size_t i = 0; i < t_allFileContent->size(); i++)
     {
         if (rows != t_allFileContent->at(i).size())
         {
-            int hej = 1;
-            std::cout << "WRONG!!";
+            if (t_allFileContent->at(i).size() - rows != 3)
+            {
+                std::cout << "WRONG!!";
+            }
+            t_allFileContent->at(i).resize(rows);
         }
     }
 
