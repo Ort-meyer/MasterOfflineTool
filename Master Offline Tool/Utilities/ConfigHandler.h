@@ -107,6 +107,17 @@ public:
     // outputSteepness goes from 0-1
     float m_outputSteepnessIncrement;
 
+    std::string m_combinationToUse;
+
+    int m_hiddenLayers;
+    int* m_hiddenCells;
+    float m_learningRate;
+    float m_steepnessHidden;
+    float m_steepnessOutput;
+    int m_functionHidden;
+    int m_functionOutput;
+    int m_trainingAlgorithm;
+
 private:
     ConfigHandler();
     ~ConfigHandler();

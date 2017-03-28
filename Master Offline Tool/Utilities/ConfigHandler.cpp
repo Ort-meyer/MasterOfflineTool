@@ -1,4 +1,6 @@
 #include "ConfigHandler.h"
+#include <FANN\header\floatfann.h>
+#include <FANN\header\fann_cpp.h>
 
 ConfigHandler* ConfigHandler::m_singleton = nullptr;
 
@@ -71,7 +73,17 @@ ConfigHandler::ConfigHandler()
     // outputSteepness goes from 0-1
     m_outputSteepnessIncrement = 0.3;
 
-
+    m_combinationToUse = "PosRot";
+    ////// Network settings for training one network ///////
+    m_hiddenLayers = 3;
+    int hiddenlayers[5] = { 100,50,10, 100, 100 };
+    m_hiddenCells = hiddenlayers;
+    m_learningRate = 0.7;
+    m_steepnessHidden = 0.6;
+    m_steepnessOutput = 0.6;
+    m_functionHidden = FANN::activation_function_enum::ELLIOT_SYMMETRIC;
+    m_functionOutput = FANN::activation_function_enum::ELLIOT;
+    m_trainingAlgorithm = FANN::training_algorithm_enum::TRAIN_RPROP;
 }
 
 

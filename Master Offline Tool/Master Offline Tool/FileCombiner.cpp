@@ -9,7 +9,6 @@
 #include <sstream>
 #include "GnuPlotter.h"
 #include <ConfigHandler.h>
-static FileCombiner m_this;
 
 FileCombiner::FileCombiner() : m_dataSetBuilder(new DataSetBuilder())
 {
@@ -147,7 +146,7 @@ void FileCombiner::CombineFilesInFolder(const std::string& p_folderName, const s
         // Sort to make sure the files are always sent in in the same order
         std::sort(t_filesInCombination.begin(), t_filesInCombination.end());
         // If we specify a combination sequence the second vectors size will be 1
-        m_allCombosOfData.push_back(m_dataSetBuilder->BuildDataSetFromFiles(t_filesInCombination, "PosRot"));
+        m_allCombosOfData.push_back(m_dataSetBuilder->BuildDataSetFromFiles(t_filesInCombination, ConfigHandler::Get()->m_combinationToUse));
     }
     m_dataSetCombinationsPerPerson = m_allCombosOfData[0]->size();
 }
@@ -165,16 +164,16 @@ void FileCombiner::FeedDataToNeuralNetworkFactory()
         // Set the net settings from config, if m_creationtype does not need a certain setting it will later be ignored
         NetworkSettings t_netSetting;
 
+        ConfigHandler* cf = ConfigHandler::Get();
         t_netSetting.outputCells = 1;
-        t_netSetting.hiddenLayers = 3;
-        int hiddenlayers[5] = { 100,50,10, 100, 100 };
-        t_netSetting.hiddenCells = hiddenlayers;
-        t_netSetting.learningRate = 0.7;
-        t_netSetting.steepnessHidden = 0.6;
-        t_netSetting.steepnessOutput = 0.6;
-        t_netSetting.functionHidden = FANN::activation_function_enum::ELLIOT_SYMMETRIC;
-        t_netSetting.functionOutput = FANN::activation_function_enum::ELLIOT;
-        t_netSetting.trainingAlgorithm = FANN::training_algorithm_enum::TRAIN_RPROP;
+        t_netSetting.hiddenLayers = cf->m_hiddenLayers;
+        t_netSetting.hiddenCells = cf->m_hiddenCells;
+        t_netSetting.learningRate = cf->m_learningRate;
+        t_netSetting.steepnessHidden = cf->m_steepnessHidden;
+        t_netSetting.steepnessOutput = cf->m_steepnessOutput;
+        t_netSetting.functionHidden = (FANN::activation_function_enum)cf->m_functionHidden;
+        t_netSetting.functionOutput = (FANN::activation_function_enum)cf->m_functionOutput;
+        t_netSetting.trainingAlgorithm = (FANN::training_algorithm_enum)cf->m_trainingAlgorithm;
         t_netSetting.deterministicWeights = ConfigHandler::Get()->m_deterministicWeights;
 
         PerformCrossValidationOnNetSetting(t_netSetting, numberOfPersons, combo);
