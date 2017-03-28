@@ -65,6 +65,7 @@
     <LibraryPath>..\3rd Party\FANN\lib;$(LibraryPath)</LibraryPath>
     <OutDir>lib</OutDir>
     <IntDir>$(Configuration)\</IntDir>
+    <TargetName>Utilities64</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <IncludePath>../../3rd Party;$(IncludePath)</IncludePath>
