@@ -34,7 +34,7 @@ ConfigHandler::ConfigHandler()
         + (int)FANNSettingToTest::TestHiddenLayers + (int)FANNSettingToTest::TestHiddenSteepness;
     m_settingsToTest = (FANNSettingToTest)settingToTest;
 
-    m_logLevel = LogLevel::Verbose;
+    m_logLevel = LogLevel::Silent;
 
     m_maxNetworkThreads = 10;
 

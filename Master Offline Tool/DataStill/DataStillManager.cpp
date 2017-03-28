@@ -95,7 +95,7 @@ void DataStillManager::ProcessFilesAndSaveToFile(std::vector<std::string> p_file
         std::cout << "WRONG SORT ON LIST!!!";
         return;
     }
-    cout << "starting process" << endl;
+    //cout << "starting process" << endl;
     DataStill still;
     KeyMaskInterpreter keyMaskInterpeter;
     std::string outputPath = FileHandler::GetAbsoluteFilePath(p_writeDirectoryPath);
