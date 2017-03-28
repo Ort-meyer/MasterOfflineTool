@@ -3,8 +3,15 @@
 #include "DataStillManager.h"
 #include <ConfigHandler.h>
 using namespace std;
-int main()
+int main(int argc, char* argv[])
 {
+    //Set config
+    if (argc > 1)
+    {
+        ConfigHandler* cf = ConfigHandler::Get();
+        cf->m_entriesToAvrage = std::stoi(std::string(argv[1]));
+        cf->m_entriesToMerge = std::stoi(std::string(argv[2]));
+    }
     //DataStill still;
     DataStillManager dataStillManager;
     dataStillManager.FiltrateAllFilesInDirectory("../rawdata/", "../FilteredData/", ConfigHandler::Get()->m_fileEndingRawData, ConfigHandler::Get()->m_fileEndingFiltered);
