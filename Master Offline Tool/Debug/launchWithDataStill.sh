@@ -3,13 +3,13 @@
 declare -a entriesToAvrage=(
 	60 
 	20 
-	240
+	120
 )
 declare -a entriesToMerge=(
 	5
 	3 
 	20 
-	40
+	10
 )
 
 for avrage in "${entriesToAvrage[@]}"
