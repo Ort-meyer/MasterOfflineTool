@@ -90,7 +90,7 @@ void GnuPlotter::RunNetworkAndPrepForGnuPlot(std::string p_annFilePath)
             // Run this data set
             float* output = t_net.run(&t_thisDataSet->values[0]);
             // Cast so we get 0 or 1
-            *output += 0.5f; // Tweak as necessary
+            *output += ConfigHandler::Get()->m_networkPredictionTolerance;
             bool lost = (int)(*output);
             if (lost)
             {
