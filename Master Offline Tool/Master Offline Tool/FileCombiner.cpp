@@ -247,12 +247,12 @@ void FileCombiner::PerformCrossValidationOnNetSetting(NetworkSettings & p_netSet
             break;
         case NetworkCreationType::CreateOneSpecific:
         {
-            m_factory.SetDeleteCompletedNetworks(false);
+            //m_factory.SetDeleteCompletedNetworks(false);
             m_factory.CreateSpecificNeuralNetwork(p_netSetting);
-            m_factory.JoinNetworkThreads();
-            std::vector<NeuralNetwork*> savedNetworks = m_factory.GetSavedNetworks();
-            savedNetworks.at(0)->SaveNetworkToFile("../SavedNetworks/Validationset " + std::to_string(validationSet) + "." + ConfigHandler::Get()->m_fileEndingNeuralNet);
-            m_factory.SetDeleteCompletedNetworks(true);
+            //m_factory.JoinNetworkThreads();
+            //std::vector<NeuralNetwork*> savedNetworks = m_factory.GetSavedNetworks();
+            //savedNetworks.at(0)->SaveNetworkToFile("../SavedNetworks/Validationset " + std::to_string(validationSet) + "." + ConfigHandler::Get()->m_fileEndingNeuralNet);
+            //m_factory.SetDeleteCompletedNetworks(true);
             break;
         }
         default:
