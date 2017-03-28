@@ -6,7 +6,7 @@ declare -a entriesToAvrage=(
 	240
 )
 declare -a entriesToMerge=(
-	6
+	5
 	3 
 	20 
 	40
@@ -14,15 +14,23 @@ declare -a entriesToMerge=(
 
 for avrage in "${entriesToAvrage[@]}"
 do
-	for merge in "${entriesToAvrage[@]}"
+	for merge in "${entriesToMerge[@]}"
 	do
-		rm -R SavednetSettings/.
+		# Inform console what's happening
 		echo "running still with setting: " $avrage $merge
-		#./DataStill64.exe $avrage $merge
-		#sh ./launchscript.sh
+		# Run the still for this setting
+		./DataStill64.exe $avrage $merge
+		# Launch the actual tool
+		sh ./launchscript.sh
+		## Start working on saving results for latest still
 		cd ..
+		# Create new directory for this still
 		mkdir -p "SavedNetSettingsDifferentStills/$avrage $merge"
-		cp -R SavedNetSettings/. "SavedNetSettingsDifferentStills/$avrage $merge"
+		# Move results
+		mv SavedNetSettings/* "SavedNetSettingsDifferentStills/$avrage $merge"
+		# Copy a certain file back so git doesn't bug out
+		cp "SavedNetSettingsDifferentStills/$avrage $merge/allActivationFunctions.bigrun" SavedNetSettings
+		# Reset folder for next run
 		cd Debug
 	done
 done
