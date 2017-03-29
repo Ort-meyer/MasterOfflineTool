@@ -24,13 +24,13 @@ namespace Heatmap_builder
                 // Merged
                 form.mergedFileName = "merged" + args[0];
                 form.button2_Click(null, null);
-
+            
                 // Calculated
                 form.mergedFileName = "calc" + args[0];
                 form.SetGoldenDataFolder("");
                 form.SetCalculatedDataFolder(network);
                 form.button2_Click(null, null);
-
+            
                 // Golden
                 form.mergedFileName = "gold" + args[0];
                 form.SetGoldenDataFolder("");
