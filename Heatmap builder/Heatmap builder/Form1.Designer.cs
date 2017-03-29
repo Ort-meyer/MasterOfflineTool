@@ -87,7 +87,7 @@
             this.InFolderNetworkData.Name = "InFolderNetworkData";
             this.InFolderNetworkData.Size = new System.Drawing.Size(163, 22);
             this.InFolderNetworkData.TabIndex = 3;
-            this.InFolderNetworkData.Text = "NetworkData";
+            this.InFolderNetworkData.Text = "../../../../Master offline tool/Heatmaps/Calculated";
             // 
             // OutFolder
             // 
@@ -124,7 +124,7 @@
             this.TextureWidth.Name = "TextureWidth";
             this.TextureWidth.Size = new System.Drawing.Size(163, 22);
             this.TextureWidth.TabIndex = 8;
-            this.TextureWidth.Text = "4000";
+            this.TextureWidth.Text = "1000";
             // 
             // TextureHeight
             // 
@@ -133,7 +133,7 @@
             this.TextureHeight.Name = "TextureHeight";
             this.TextureHeight.Size = new System.Drawing.Size(163, 22);
             this.TextureHeight.TabIndex = 9;
-            this.TextureHeight.Text = "4000";
+            this.TextureHeight.Text = "1000";
             // 
             // label3
             // 
@@ -158,7 +158,7 @@
             // propagation
             // 
             this.propagation.Location = new System.Drawing.Point(197, 179);
-            this.propagation.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.propagation.Margin = new System.Windows.Forms.Padding(4);
             this.propagation.Name = "propagation";
             this.propagation.Size = new System.Drawing.Size(163, 22);
             this.propagation.TabIndex = 12;
@@ -187,7 +187,7 @@
             // button1
             // 
             this.button1.Location = new System.Drawing.Point(197, 212);
-            this.button1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.button1.Margin = new System.Windows.Forms.Padding(4);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(161, 28);
             this.button1.TabIndex = 16;
@@ -202,18 +202,20 @@
             // imageLeftPositionX
             // 
             this.imageLeftPositionX.Location = new System.Drawing.Point(197, 276);
-            this.imageLeftPositionX.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.imageLeftPositionX.Margin = new System.Windows.Forms.Padding(4);
             this.imageLeftPositionX.Name = "imageLeftPositionX";
             this.imageLeftPositionX.Size = new System.Drawing.Size(160, 22);
             this.imageLeftPositionX.TabIndex = 17;
+            this.imageLeftPositionX.Text = "81958";
             // 
             // imageLowerPositionY
             // 
             this.imageLowerPositionY.Location = new System.Drawing.Point(197, 308);
-            this.imageLowerPositionY.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.imageLowerPositionY.Margin = new System.Windows.Forms.Padding(4);
             this.imageLowerPositionY.Name = "imageLowerPositionY";
             this.imageLowerPositionY.Size = new System.Drawing.Size(160, 22);
             this.imageLowerPositionY.TabIndex = 18;
+            this.imageLowerPositionY.Text = "-168250";
             // 
             // label7
             // 
@@ -240,7 +242,7 @@
             this.sizeFromImage.AutoSize = true;
             this.sizeFromImage.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.sizeFromImage.Location = new System.Drawing.Point(12, 95);
-            this.sizeFromImage.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.sizeFromImage.Margin = new System.Windows.Forms.Padding(4);
             this.sizeFromImage.Name = "sizeFromImage";
             this.sizeFromImage.Size = new System.Drawing.Size(204, 21);
             this.sizeFromImage.TabIndex = 21;
@@ -255,7 +257,7 @@
             this.fitPositionsToImage.Checked = true;
             this.fitPositionsToImage.CheckState = System.Windows.Forms.CheckState.Checked;
             this.fitPositionsToImage.Location = new System.Drawing.Point(17, 248);
-            this.fitPositionsToImage.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.fitPositionsToImage.Margin = new System.Windows.Forms.Padding(4);
             this.fitPositionsToImage.Name = "fitPositionsToImage";
             this.fitPositionsToImage.Size = new System.Drawing.Size(195, 21);
             this.fitPositionsToImage.TabIndex = 22;
@@ -286,18 +288,20 @@
             // imageUpperPositionY
             // 
             this.imageUpperPositionY.Location = new System.Drawing.Point(197, 372);
-            this.imageUpperPositionY.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.imageUpperPositionY.Margin = new System.Windows.Forms.Padding(4);
             this.imageUpperPositionY.Name = "imageUpperPositionY";
             this.imageUpperPositionY.Size = new System.Drawing.Size(160, 22);
             this.imageUpperPositionY.TabIndex = 24;
+            this.imageUpperPositionY.Text = "-107023";
             // 
             // imageRightPositionX
             // 
             this.imageRightPositionX.Location = new System.Drawing.Point(197, 340);
-            this.imageRightPositionX.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.imageRightPositionX.Margin = new System.Windows.Forms.Padding(4);
             this.imageRightPositionX.Name = "imageRightPositionX";
             this.imageRightPositionX.Size = new System.Drawing.Size(160, 22);
             this.imageRightPositionX.TabIndex = 23;
+            this.imageRightPositionX.Text = "124688";
             // 
             // label11
             // 
@@ -315,7 +319,7 @@
             this.inFolderGoldenData.Name = "inFolderGoldenData";
             this.inFolderGoldenData.Size = new System.Drawing.Size(163, 22);
             this.inFolderGoldenData.TabIndex = 27;
-            this.inFolderGoldenData.Text = "GoldenData";
+            this.inFolderGoldenData.Text = "../../../../Master offline tool/Heatmaps/Golden";
             // 
             // button2
             // 

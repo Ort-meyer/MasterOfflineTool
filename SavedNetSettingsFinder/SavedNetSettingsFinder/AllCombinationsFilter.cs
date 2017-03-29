@@ -321,7 +321,7 @@ namespace SavedNetSettingsFinder
             }
 
             // Precent the best net
-            button2.Text = bestFile.Substring(bestFile.LastIndexOf('\\'));
+            button2.Text = bestFile;
             bestMeanValidationPercent.Text = bestNetMeanValidationPercent.ToString();
             bestValidationPercent.Text = bestNetValidationPercent.ToString();
             bestMeanValidationPercentError.Text = bestNetMeanValidationPercentError.ToString();

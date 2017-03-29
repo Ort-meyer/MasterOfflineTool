@@ -34,5 +34,10 @@ namespace FileHandler
     Takes network settings and turns into a string which can then be saved to a
     file if one wants to.*/
     std::string SaveNetworkToString(const NetworkSettings& p_network);
+
+    /**
+    Copys given file to folder, if folder does not exist it will be created
+    */
+    void CopyFileToFolder(const std::string& p_folderFullPath, const std::string& p_fileFullPath);
 };
 

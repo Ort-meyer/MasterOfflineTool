@@ -147,6 +147,9 @@ void FileCombiner::CombineFilesInFolder(const std::string& p_folderName, const s
         std::sort(t_filesInCombination.begin(), t_filesInCombination.end());
         // If we specify a combination sequence the second vectors size will be 1
         m_allCombosOfData.push_back(m_dataSetBuilder->BuildDataSetFromFiles(t_filesInCombination, ConfigHandler::Get()->m_combinationToUse));
+
+        // Add the persons file to vector
+        m_filesPerPerson.push_back(t_filesInCombination);
     }
     m_dataSetCombinationsPerPerson = m_allCombosOfData[0]->size();
 }
@@ -201,6 +204,8 @@ void FileCombiner::PerformCrossValidationOnNetSetting(NetworkSettings & p_netSet
         validationSetAmountOverSize = abs(validationSetAmountOverSize);
         std::vector<DataSet> oneCombosTrainingData;
         std::vector<DataSet> oneCombosValidationData;
+
+        std::vector<int> personsInValidation;
         // This loop is to add all persons (excpet the validaiton set) to the training data that will be created later
         for (size_t person = 0; person < p_totalNumberOfPersons; person++)
         {
@@ -208,6 +213,7 @@ void FileCombiner::PerformCrossValidationOnNetSetting(NetworkSettings & p_netSet
             if (person >= validationSet && person < validationSet + m_validationAmount || person < validationSetAmountOverSize)
             {
                 oneCombosValidationData.insert(oneCombosValidationData.end(), m_allCombosOfData[person]->at(p_combo).begin(), m_allCombosOfData[person]->at(p_combo).end());
+                personsInValidation.push_back(person);
             }
             else
             {
@@ -251,12 +257,21 @@ void FileCombiner::PerformCrossValidationOnNetSetting(NetworkSettings & p_netSet
             break;
         case NetworkCreationType::CreateOneSpecific:
         {
-            //m_factory.SetDeleteCompletedNetworks(false);
+            m_factory.SetDeleteCompletedNetworks(false);
             m_factory.CreateSpecificNeuralNetwork(p_netSetting);
-            //m_factory.JoinNetworkThreads();
-            //std::vector<NeuralNetwork*> savedNetworks = m_factory.GetSavedNetworks();
-            //savedNetworks.at(0)->SaveNetworkToFile("../SavedNetworks/Validationset " + std::to_string(validationSet) + "." + ConfigHandler::Get()->m_fileEndingNeuralNet);
-            //m_factory.SetDeleteCompletedNetworks(true);
+            m_factory.JoinNetworkThreads();
+            std::vector<NeuralNetwork*> savedNetworks = m_factory.GetSavedNetworks();
+
+            std::string folderFullPath = FileHandler::GetAbsoluteFilePath("../SavedNetworks/" + std::to_string(validationSet) + "/");
+            savedNetworks.at(0)->SaveNetworkToFile("../SavedNetworks/Validationset " + std::to_string(validationSet) + "." + ConfigHandler::Get()->m_fileEndingNeuralNet);
+            for (size_t person = 0; person < personsInValidation.size(); person++)
+            {
+                for (size_t file = 0; file < 4; file++)
+                {
+                    FileHandler::CopyFileToFolder(folderFullPath, m_filesPerPerson[personsInValidation[person]][file]);
+                }
+            }
+            m_factory.SetDeleteCompletedNetworks(true);
             break;
         }
         default:

@@ -9,9 +9,25 @@ using namespace FANN;
 using namespace std;
 GnuPlotter::GnuPlotter()
 {
-    CreatePeople("../RawData", "../FilteredData/GnuplotterValidation/");
-    RunNetworkAndPrepForGnuPlot("../SavedNetworks/Validationset 0.ann");
-    PrepGoldenDataForGnuPlot();
+    std::vector<std::string> allAnns = FileHandler::GetAllFileNames("../SavedNetworks", "ann");
+    for (size_t i = 0; i < allAnns.size(); i++)
+    {
+        int stampStart = allAnns[i].find_last_of(' ') + 1;
+        int stampEnds = allAnns[i].find_last_of('.');
+        std::string stamp = allAnns[i].substr(stampStart, stampEnds - stampStart);
+
+        // Clear and delete m people
+        for (size_t i = 0; i < m_people.size(); i++)
+        {
+            delete m_people[i].rawPosData;
+            delete m_people[i].dataSets;
+        }
+
+        m_people.clear();
+        CreatePeople("../RawData", "../SavedNetworks/" + stamp + "/");
+        RunNetworkAndPrepForGnuPlot(allAnns[i]);
+        PrepGoldenDataForGnuPlot();
+    }
 }
 
 
@@ -58,6 +74,7 @@ void GnuPlotter::PrepGoldenDataForGnuPlot()
                vector<string>* t_newLines = ReverseEngineerPositions(*t_thisGuy->rawPosData, t_thisDataSet->index);
                // Merge with previous positions
                t_lines->insert(t_lines->end(), t_newLines->begin(), t_newLines->end());
+               delete t_newLines;
             }
         }
 
@@ -67,7 +84,9 @@ void GnuPlotter::PrepGoldenDataForGnuPlot()
         t_fileName += t_thisGuy->name;
         t_fileName += "heatmap.heatmap";
         FileHandler::WriteToFile(*t_lines, t_fileName);
+        delete t_lines;
     }
+
 }
 
 void GnuPlotter::RunNetworkAndPrepForGnuPlot(std::string p_annFilePath)
@@ -107,6 +126,7 @@ void GnuPlotter::RunNetworkAndPrepForGnuPlot(std::string p_annFilePath)
         t_fileName += t_thisGuy->name;
         t_fileName += "heatmap.heatmap";
         FileHandler::WriteToFile(*t_lines, t_fileName); // put in calculated folder since... well, it's calculated
+        delete t_lines;
     }
 }
 
