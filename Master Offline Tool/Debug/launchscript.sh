@@ -1,6 +1,6 @@
 #cd Master\ Offline\ Tool/Debug
 
-
+dataStill=$1
 #declare -a combinationsToUse=("Key" "Pos" "Rot" "KeyPos" "KeyRot" "PosRot" "KeyPosRot")
 
 declare -a combinationsToUse=("PosRot" "KeyPos" "KeyRot" "Pos" "Rot" "Key" "KeyPosRot")
@@ -36,5 +36,6 @@ do
 	do
 		echo "running setting: " $combination ${hiddenLayerCount[i]} ${hiddenLayers[i*5]} ${hiddenLayers[i*5+1]} ${hiddenLayers[i*5+2]} ${hiddenLayers[i*5+3]} ${hiddenLayers[i*5+4]}
 		./master\ Offline\ Tool.exe $combination ${hiddenLayerCount[i]} ${hiddenLayers[i*5]} ${hiddenLayers[i*5+1]} ${hiddenLayers[i*5+2]} ${hiddenLayers[i*5+3]} ${hiddenLayers[i*5+4]}
+		./../../Heatmap\ builder/Heatmap\ builder/bin/debug/Heatmap\ builder "#dataStill $combination ${hiddenLayerCount[i]} ${hiddenLayers[i*5]} ${hiddenLayers[i*5+1]} ${hiddenLayers[i*5+2]} ${hiddenLayers[i*5+3]} ${hiddenLayers[i*5+4]}"
 	done
 done

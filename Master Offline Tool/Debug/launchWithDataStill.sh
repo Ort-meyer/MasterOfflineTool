@@ -19,9 +19,9 @@ do
 		# Inform console what's happening
 		echo "running still with setting: " $avrage $merge
 		# Run the still for this setting
-		./DataStill64.exe $avrage $merge
+		#./DataStill64.exe $avrage $merge
 		# Launch the actual tool
-		sh ./launchscript.sh
+	sh ./launchscript.sh "$avrage $merge"
 		## Start working on saving results for latest still
 		cd ..
 		# Create new directory for this still
