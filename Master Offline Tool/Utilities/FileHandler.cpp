@@ -142,3 +142,13 @@ string FileHandler::SaveNetworkToString(const NetworkSettings & p_network)
     // Add the new entry to all the lines that should be writen
     return newEntry.str();
 }
+
+void FileHandler::CopyFileToFolder(const std::string & p_folderFullPath, const std::string & p_fileFullPath)
+{
+    if (CreateDirectory(p_folderFullPath.c_str(), NULL) || ERROR_ALREADY_EXISTS == GetLastError())
+    {
+        // Folder creted or already existed.
+        std::string fileName = p_fileFullPath.substr(p_fileFullPath.find_last_of('/'));
+        CopyFile(p_fileFullPath.c_str(), (p_folderFullPath + fileName).c_str(), false);
+    }
+}

@@ -39,6 +39,10 @@ private:
     // Read explanation in DataSetBuilder::BuildDataSetFromFiles. Outer vector here is for all different people
     std::vector<std::vector<std::vector<DataSet>>*> m_allCombosOfData;
 
+    // For getting person from validation data. int in vector is person, string is file names. Not very suitable for combos...
+    // Size of second vector should be 4
+    std::vector<std::vector<std::string>> m_filesPerPerson;
+
 };
 
 
