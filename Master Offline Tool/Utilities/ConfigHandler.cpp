@@ -17,7 +17,7 @@ ConfigHandler::ConfigHandler()
     m_entriesToAvrage = 60;
     m_entriesToMerge = 20;
 
-    m_numValidationSet = 4;
+    m_numValidationSet = 7;
 
     m_fileEndingFiltered = "filteredData";
     m_fileEndingRawData = "rawData";

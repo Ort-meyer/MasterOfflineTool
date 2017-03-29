@@ -17,6 +17,6 @@ int main(int argc, char* argv[])
         }
     }
 
-    // FileCombiner fc;
+    FileCombiner fc;
     GnuPlotter plotter;
 }
