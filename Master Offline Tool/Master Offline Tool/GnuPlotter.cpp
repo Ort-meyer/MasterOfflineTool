@@ -12,6 +12,7 @@ GnuPlotter::GnuPlotter()
     std::vector<std::string> allAnns = FileHandler::GetAllFileNames("../SavedNetworks", "ann");
     for (size_t i = 0; i < allAnns.size(); i++)
     {
+        currentValidationSet = i;
         int stampStart = allAnns[i].find_last_of(' ') + 1;
         int stampEnds = allAnns[i].find_last_of('.');
         std::string stamp = allAnns[i].substr(stampStart, stampEnds - stampStart);
@@ -46,7 +47,7 @@ std::vector<std::string>* GnuPlotter::ReverseEngineerPositions(const std::vector
         if (p_lines.at(i_dataSetStart) == to_string(p_index))
         {
             // We can assume that the next x * y entries from an index are the positions we're looking for
-            size_t t_numRows = ConfigHandler::Get()->m_entriesToAvrage *  ConfigHandler::Get() ->m_entriesToMerge * 3; // times 3 since each entry is 3 rows
+            size_t t_numRows = ConfigHandler::Get()->m_entriesToAvrage *  ConfigHandler::Get()->m_entriesToMerge * 3; // times 3 since each entry is 3 rows
             // Loop over relevant positions and put in return list
             for (size_t i_pos = i_dataSetStart + 1; i_pos < t_numRows + i_dataSetStart + 1; i_pos += 3)
             {
@@ -80,6 +81,7 @@ void GnuPlotter::PrepGoldenDataForGnuPlot()
 
         // Done with data sets. Time to save results to file
         string t_fileName = "../heatmaps/Golden/";
+        FileHandler::CreateFolder(t_fileName);
         t_fileName += "Golden";
         t_fileName += t_thisGuy->name;
         t_fileName += "heatmap.heatmap";
@@ -122,9 +124,11 @@ void GnuPlotter::RunNetworkAndPrepForGnuPlot(std::string p_annFilePath)
 
         // Done with data sets. Time to save results to file
         string t_fileName = "../heatmaps/Calculated/";
+        FileHandler::CreateFolder(t_fileName);
         t_fileName += "Calculated";
         t_fileName += t_thisGuy->name;
-        t_fileName += "heatmap.heatmap";
+        t_fileName += " " + currentValidationSet;
+        t_fileName += " heatmap.heatmap";
         FileHandler::WriteToFile(*t_lines, t_fileName); // put in calculated folder since... well, it's calculated
         delete t_lines;
     }

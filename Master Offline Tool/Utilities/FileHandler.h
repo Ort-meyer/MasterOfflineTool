@@ -39,5 +39,10 @@ namespace FileHandler
     Copys given file to folder, if folder does not exist it will be created
     */
     void CopyFileToFolder(const std::string& p_folderFullPath, const std::string& p_fileFullPath);
+
+    /**
+    Creates a folder
+    */
+    void CreateFolder(const std::string& p_folderToCreate);
 };
 

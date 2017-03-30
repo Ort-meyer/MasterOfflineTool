@@ -15,6 +15,10 @@ int main(int argc, char* argv[])
         {
             cf->m_hiddenCells[i] = std::stoi(std::string(argv[3 + i]));
         }
+
+        cf->m_entriesToAvrage = std::stoi(std::string(argv[8]));
+        cf->m_entriesToMerge = std::stoi(std::string(argv[9]));
+
     }
 
     FileCombiner fc;

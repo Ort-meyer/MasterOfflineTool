@@ -46,5 +46,7 @@ private:
 
     std::vector<Person> m_people;
 
+    int currentValidationSet;
+
 };
 

@@ -152,3 +152,8 @@ void FileHandler::CopyFileToFolder(const std::string & p_folderFullPath, const s
         CopyFile(p_fileFullPath.c_str(), (p_folderFullPath + fileName).c_str(), false);
     }
 }
+
+void FileHandler::CreateFolder(const std::string& p_folderToCreate)
+{
+    CreateDirectory(p_folderToCreate.c_str(), NULL);
+}

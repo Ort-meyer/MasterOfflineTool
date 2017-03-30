@@ -91,6 +91,8 @@ void FileCombiner::SaveNetsOfSameSettingToFile(const NeuralNetworkFactory& p_fac
             if (CreateDirectory(folderToUse.c_str(), NULL) || ERROR_ALREADY_EXISTS == GetLastError())
             {
                 std::ostringstream fileNameStream;
+                fileNameStream << ConfigHandler::Get()->m_entriesToAvrage;
+                fileNameStream << ConfigHandler::Get()->m_entriesToMerge;
                 fileNameStream << p_filePrefixName << " ";
                 fileNameStream << netSettings[i].functionHidden << " ";
                 fileNameStream << netSettings[i].functionOutput << " ";
