@@ -2,14 +2,9 @@
 
 declare -a entriesToAvrage=(
 	60 
-	20 
-	120
 )
 declare -a entriesToMerge=(
 	5
-	3 
-	20 
-	10
 )
 
 for avrage in "${entriesToAvrage[@]}"
@@ -30,7 +25,7 @@ do
 		# Move results
 		mv SavedNetSettings/* "SavedNetSettingsDifferentStills/$avrage $merge"
 		# Copy a certain file back so git doesn't bug out
-		cp "SavedNetSettingsDifferentStills/$avrage $merge/allActivationFunctions.bigrun" SavedNetSettings
+		mv "SavedNetSettingsDifferentStills/$avrage $merge/allActivationFunctions.bigrun" SavedNetSettings
 		# Reset folder for next run
 		cd Debug
 	done

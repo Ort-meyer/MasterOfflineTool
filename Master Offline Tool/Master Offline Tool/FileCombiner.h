@@ -28,6 +28,8 @@ private:
     std::vector<std::string> GetAllFilesWithStampAndShrinkList(const std::string& p_stamp, std::vector<std::string>& o_files);
     // This function gives back all training data that a number of combos creates
     FANN::training_data CreateTrainingDataFromListOfDataSet(std::vector<DataSet>& p_allCombosOfData);
+    // Saves all the saved net with approach to their ID
+    void SaveNetworkToFile();
     DataSetBuilder* m_dataSetBuilder;
     int m_validationAmount; // Sets how many of the file combos that should be used as validation set
     int m_stampSize;

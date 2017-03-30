@@ -84,7 +84,8 @@ void GnuPlotter::PrepGoldenDataForGnuPlot()
         FileHandler::CreateFolder(t_fileName);
         t_fileName += "Golden";
         t_fileName += t_thisGuy->name;
-        t_fileName += "heatmap.heatmap";
+        t_fileName += " " + std::to_string(currentValidationSet);
+        t_fileName += " heatmap.heatmap";
         FileHandler::WriteToFile(*t_lines, t_fileName);
         delete t_lines;
     }
@@ -127,7 +128,7 @@ void GnuPlotter::RunNetworkAndPrepForGnuPlot(std::string p_annFilePath)
         FileHandler::CreateFolder(t_fileName);
         t_fileName += "Calculated";
         t_fileName += t_thisGuy->name;
-        t_fileName += " " + currentValidationSet;
+        t_fileName += " " + std::to_string(currentValidationSet);
         t_fileName += " heatmap.heatmap";
         FileHandler::WriteToFile(*t_lines, t_fileName); // put in calculated folder since... well, it's calculated
         delete t_lines;

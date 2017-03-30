@@ -56,12 +56,21 @@
             this.label11 = new System.Windows.Forms.Label();
             this.inFolderGoldenData = new System.Windows.Forms.TextBox();
             this.button2 = new System.Windows.Forms.Button();
+            this.checkBox1 = new System.Windows.Forms.CheckBox();
+            this.colorDialog1 = new System.Windows.Forms.ColorDialog();
+            this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
+            this.ColorWrongLost = new System.Windows.Forms.PictureBox();
+            this.ColorCorrectLost = new System.Windows.Forms.PictureBox();
+            this.ColorGoldenLost = new System.Windows.Forms.PictureBox();
             ((System.ComponentModel.ISupportInitialize)(this.Preview)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.ColorWrongLost)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.ColorCorrectLost)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.ColorGoldenLost)).BeginInit();
             this.SuspendLayout();
             // 
             // GenerateHeatmap
             // 
-            this.GenerateHeatmap.Location = new System.Drawing.Point(12, 466);
+            this.GenerateHeatmap.Location = new System.Drawing.Point(12, 556);
             this.GenerateHeatmap.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.GenerateHeatmap.Name = "GenerateHeatmap";
             this.GenerateHeatmap.Size = new System.Drawing.Size(320, 57);
@@ -323,7 +332,7 @@
             // 
             // button2
             // 
-            this.button2.Location = new System.Drawing.Point(12, 400);
+            this.button2.Location = new System.Drawing.Point(12, 490);
             this.button2.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.button2.Name = "button2";
             this.button2.Size = new System.Drawing.Size(320, 57);
@@ -332,11 +341,63 @@
             this.button2.UseVisualStyleBackColor = true;
             this.button2.Click += new System.EventHandler(this.button2_Click);
             // 
+            // checkBox1
+            // 
+            this.checkBox1.AutoSize = true;
+            this.checkBox1.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.checkBox1.Checked = true;
+            this.checkBox1.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.checkBox1.Location = new System.Drawing.Point(17, 402);
+            this.checkBox1.Margin = new System.Windows.Forms.Padding(4);
+            this.checkBox1.Name = "checkBox1";
+            this.checkBox1.Size = new System.Drawing.Size(216, 21);
+            this.checkBox1.TabIndex = 30;
+            this.checkBox1.Text = "Only show hits on golden       ";
+            this.checkBox1.UseVisualStyleBackColor = true;
+            this.checkBox1.CheckedChanged += new System.EventHandler(this.checkBox1_CheckedChanged);
+            // 
+            // ColorWrongLost
+            // 
+            this.ColorWrongLost.Location = new System.Drawing.Point(22, 429);
+            this.ColorWrongLost.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.ColorWrongLost.Name = "ColorWrongLost";
+            this.ColorWrongLost.Size = new System.Drawing.Size(20, 20);
+            this.ColorWrongLost.SizeMode = System.Windows.Forms.PictureBoxSizeMode.AutoSize;
+            this.ColorWrongLost.TabIndex = 31;
+            this.ColorWrongLost.TabStop = false;
+            this.ColorWrongLost.Click += new System.EventHandler(this.ColorWrongLost_Click);
+            // 
+            // ColorCorrectLost
+            // 
+            this.ColorCorrectLost.Location = new System.Drawing.Point(73, 429);
+            this.ColorCorrectLost.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.ColorCorrectLost.Name = "ColorCorrectLost";
+            this.ColorCorrectLost.Size = new System.Drawing.Size(20, 20);
+            this.ColorCorrectLost.SizeMode = System.Windows.Forms.PictureBoxSizeMode.AutoSize;
+            this.ColorCorrectLost.TabIndex = 32;
+            this.ColorCorrectLost.TabStop = false;
+            this.ColorCorrectLost.Click += new System.EventHandler(this.ColorCorrectLost_Click);
+            // 
+            // ColorGoldenLost
+            // 
+            this.ColorGoldenLost.Location = new System.Drawing.Point(123, 429);
+            this.ColorGoldenLost.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.ColorGoldenLost.Name = "ColorGoldenLost";
+            this.ColorGoldenLost.Size = new System.Drawing.Size(20, 20);
+            this.ColorGoldenLost.SizeMode = System.Windows.Forms.PictureBoxSizeMode.AutoSize;
+            this.ColorGoldenLost.TabIndex = 33;
+            this.ColorGoldenLost.TabStop = false;
+            this.ColorGoldenLost.Click += new System.EventHandler(this.ColorGoldenLost_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(752, 535);
+            this.ClientSize = new System.Drawing.Size(752, 623);
+            this.Controls.Add(this.ColorGoldenLost);
+            this.Controls.Add(this.ColorCorrectLost);
+            this.Controls.Add(this.ColorWrongLost);
+            this.Controls.Add(this.checkBox1);
             this.Controls.Add(this.button2);
             this.Controls.Add(this.label11);
             this.Controls.Add(this.inFolderGoldenData);
@@ -368,6 +429,9 @@
             this.Name = "Form1";
             this.Text = "Form1";
             ((System.ComponentModel.ISupportInitialize)(this.Preview)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.ColorWrongLost)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.ColorCorrectLost)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.ColorGoldenLost)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -403,6 +467,12 @@
         private System.Windows.Forms.Label label11;
         private System.Windows.Forms.TextBox inFolderGoldenData;
         private System.Windows.Forms.Button button2;
+        private System.Windows.Forms.CheckBox checkBox1;
+        private System.Windows.Forms.ColorDialog colorDialog1;
+        private System.ComponentModel.BackgroundWorker backgroundWorker1;
+        private System.Windows.Forms.PictureBox ColorWrongLost;
+        private System.Windows.Forms.PictureBox ColorCorrectLost;
+        private System.Windows.Forms.PictureBox ColorGoldenLost;
     }
 }
 

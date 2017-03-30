@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -19,8 +20,12 @@ namespace Heatmap_builder
             if (args.Length != 0)
             {
                 Form1 form = new Form1();
-                string golden = form.GetGoldenDataFolder();
-                string network = form.GetCalculatedDataFolder();
+                // Since we are launching from a different place, it need to be from masterofflinetool/debug
+                string golden = "../heatmaps/Golden/";
+                string network = "../heatmaps/Calculated/";
+
+                form.SetGoldenDataFolder(golden);
+                form.SetCalculatedDataFolder(network);
                 // Merged
                 form.mergedFileName = "merged" + args[0];
                 form.button2_Click(null, null);

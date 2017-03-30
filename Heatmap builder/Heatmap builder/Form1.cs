@@ -15,6 +15,15 @@ namespace Heatmap_builder
 {
     public partial class Form1 : Form
     {
+        public string mergedFileName = "NotSet";
+        public bool onlyShowHitsOnGolden = true;
+
+        private Color wrongLost;
+        private Color goldenLost;
+        private Color correctLost;
+
+        int blueValue;
+
         System.Globalization.NumberFormatInfo nf
           = new System.Globalization.NumberFormatInfo()
           {
@@ -29,10 +38,14 @@ namespace Heatmap_builder
         public Form1()
         {
             InitializeComponent();
+            wrongLost = Color.Red;
+            SetPreviewColor(ref ColorWrongLost, wrongLost);
+            goldenLost = Color.FromArgb(0,Color.Blue);
+            SetPreviewColor(ref ColorGoldenLost, goldenLost);
+            correctLost = Color.Green;
+            SetPreviewColor(ref ColorCorrectLost, correctLost);
         }
-        public string mergedFileName = "NotSet";
 
-        int blueValue;
         // Form functions
         public void GenerateHeatmap_Click(object sender, EventArgs e)
         {
@@ -170,6 +183,10 @@ namespace Heatmap_builder
             completedImage.Save(folderPath + "/" + heatmapName + ".png", ImageFormat.Png);
         }
 
+        private void button3_Click(object sender, EventArgs e)
+        {
+
+        }
         // Helper Functions
         private List<int[]> ReadRawData(out int minX, out int minY, out int maxX, out int maxY, string fileName)
         {
@@ -255,7 +272,7 @@ namespace Heatmap_builder
                     float distanceX = Math.Abs(pixel.pixel.X - x);
                     float distanceY = Math.Abs(pixel.pixel.Y - y);
                     float distance = (float)Math.Sqrt((distanceX * distanceX + distanceY * distanceY));
-                    float alpha = 127.5f * (1.0f - Math.Min(distance / maxDistance,1.0f));
+                    float alpha = 255f * (1.0f - Math.Min(distance / maxDistance,1.0f));
                     if (float.IsNaN(alpha))
                     {
                         // this happens when propagation is set to 1
@@ -311,7 +328,6 @@ namespace Heatmap_builder
         {
             Bitmap completedImage;
             Bitmap b;
-            Bitmap golden = null;
             Bitmap underlayingImage = null;
 
             int highestNumberOfLost = 0;
@@ -328,19 +344,15 @@ namespace Heatmap_builder
             if (sizeFromImage.Checked)
             {
                 b = new Bitmap(underlayingImage.Width, underlayingImage.Height);
-                golden = new Bitmap(underlayingImage.Width, underlayingImage.Height);
             }
             else
             {
                 b = new Bitmap(int.Parse(TextureWidth.Text), int.Parse(TextureHeight.Text));
-                golden = new Bitmap(int.Parse(TextureWidth.Text), int.Parse(TextureHeight.Text));
             }
 
             Graphics g = Graphics.FromImage(b);
-            Graphics t = Graphics.FromImage(golden);
 
             g.Clear(Color.FromArgb(1, Color.Red));
-            t.Clear(Color.FromArgb(1, Color.Red));
 
             // Find out all the time the network guessed lost
             List<PixelLostInfo> networkPixelLost = new List<PixelLostInfo>();
@@ -358,17 +370,13 @@ namespace Heatmap_builder
                 networkPixelLost[networkPixelLost.Count - 1].pixel = pixel;
                 highestNumberOfLost = Math.Max(highestNumberOfLost, networkPixelLost[networkPixelLost.Count - 1].lostCount);
             }
-            foreach (var pixel in networkPixelLost)
-            {
-                ColorPixels(pixel, ref b, Color.Red);
-            }
 
             // Get the golden data
             List<PixelLostInfo> goldenPixelLost = new List<PixelLostInfo>();
             for (int currentPosition = 0; currentPosition < goldenAllLostPositions.Count; currentPosition++)
             {
                 Point pixel = ConvertPositionToPixel(goldenAllLostPositions[currentPosition][0], goldenAllLostPositions[currentPosition][1],
-                    minX, minY, maxX, maxY, golden);
+                    minX, minY, maxX, maxY, b);
                 if (currentPixelAltered != pixel)
                 {
                     goldenPixelLost.Add(new PixelLostInfo());
@@ -378,15 +386,30 @@ namespace Heatmap_builder
                 goldenPixelLost[goldenPixelLost.Count - 1].pixel = pixel;
                 highestNumberOfLost = Math.Max(highestNumberOfLost, goldenPixelLost[goldenPixelLost.Count - 1].lostCount);
             }
-            foreach (var pixel in goldenPixelLost)
+
+            foreach (var pixel in networkPixelLost)
             {
-                ColorPixels(pixel, ref golden, Color.Green);
+                if (goldenPixelLost.FindIndex(Q => Q.pixel == pixel.pixel) != -1)
+                {
+                    ColorPixels(pixel, ref b, correctLost);
+                }
+                else
+                {
+                    ColorPixels(pixel, ref b, wrongLost);
+                }
             }
-
-
+            if (!onlyShowHitsOnGolden)
+            {
+                foreach (var pixel in goldenPixelLost)
+                {
+                    if (networkPixelLost.FindIndex(Q => Q.pixel == pixel.pixel) == -1)
+                    {
+                        ColorPixels(pixel, ref b, goldenLost);
+                    }
+                }
+            }        
             // We need to flip the heatmap, wrong way now
             b.RotateFlip(RotateFlipType.Rotate180FlipX);
-            golden.RotateFlip(RotateFlipType.Rotate180FlipX);
 
             // Add the underlaying image to the given bitmap  
             if (underlayingImage != null)
@@ -396,10 +419,6 @@ namespace Heatmap_builder
             else
             {
                 completedImage = b;
-            }
-            if (golden != null)
-            {
-                completedImage = MergeTwoImages(completedImage, golden);
             }
             return completedImage;
         }
@@ -439,5 +458,45 @@ namespace Heatmap_builder
 
         public string GetCalculatedDataFolder() { return InFolderNetworkData.Text; }
         public void SetCalculatedDataFolder(string text) { InFolderNetworkData.Text = text; }
+
+        private void checkBox1_CheckedChanged(object sender, EventArgs e)
+        {
+            onlyShowHitsOnGolden = checkBox1.Checked;
+        }
+
+        private void ColorWrongLost_Click(object sender, EventArgs e)
+        {
+            wrongLost = ChangeColor(ref ColorWrongLost);
+        }
+
+        private Color ChangeColor(ref PictureBox previewer)
+        {
+            colorDialog1.ShowDialog();
+            Color newColor = colorDialog1.Color;
+            SetPreviewColor(ref previewer, newColor);
+            return newColor;
+        }
+
+        private void SetPreviewColor(ref PictureBox previewer, Color newColor)
+        {
+            if (previewer != null)
+            {
+                Bitmap preview = new Bitmap(10, 10);
+                Graphics g = Graphics.FromImage(preview);
+
+                g.Clear(Color.FromArgb(255, newColor));
+                previewer.Image = preview;
+            }
+        }
+
+        private void ColorCorrectLost_Click(object sender, EventArgs e)
+        {
+            correctLost = ChangeColor(ref ColorCorrectLost);
+        }
+
+        private void ColorGoldenLost_Click(object sender, EventArgs e)
+        {
+            goldenLost = ChangeColor(ref ColorGoldenLost);
+        }
     }
 }

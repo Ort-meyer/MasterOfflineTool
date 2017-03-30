@@ -100,6 +100,12 @@ struct NetworkSettings
     we only guess with to much uncertainty
     */
     float lostWrongGuesses;
+
+    // validation set
+    int validationSet;
+
+    // persons in validation set
+    std::vector<int> personsInValidationSet;
 };
 
 namespace NetworkSorting
