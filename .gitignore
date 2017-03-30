@@ -10,12 +10,16 @@
 *.user
 *.userosscache
 *.sln.docstates
+
 Utilities.lib
 Utilities64.lib
 
 # Specifics for this proj
 FilteredData/
 SavedNetSettings/
+SavedNetworks/
+Calculated/
+Golden/
 
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
