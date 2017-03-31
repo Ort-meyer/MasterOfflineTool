@@ -9,7 +9,7 @@ namespace BaselineVariationGnuplotTool
 {
     class Program
     {
-        
+
 
         static void Main(string[] args)
         {
@@ -39,11 +39,19 @@ namespace BaselineVariationGnuplotTool
             }
 
             // Datastill variations second 
-            string stillPath = Path.GetFullPath(Path.Combine(newPath, "Combination varied"));
-            string[] stillDirs = Directory.GetDirectories(comboPath);
-            foreach(string stillDir in stillDirs)
+            string stillPath = Path.GetFullPath(Path.Combine(newPath, "Datastill varied"));
+            string[] stillDirs = Directory.GetDirectories(stillPath);
+            foreach (string stillDir in stillDirs)
             {
+                // Has to be an array, even though we know there's only one file in there
+                string[] stillFiles = Directory.GetFiles(comboPath);
+                float meanCorrect = 0, meanWrong = 0, correctStandardDeviation = 0, wrongStandardDeviation = 0;
+                GetValues(stillFiles[0], ref meanCorrect, ref meanWrong, ref correctStandardDeviation, ref wrongStandardDeviation);
 
+                int stillSeparationIndex = stillDir.LastIndexOf("\\");
+                string thisStill = stillDir.Substring(stillSeparationIndex+1);
+
+                Console.WriteLine(thisStill);
             }
         }
 
