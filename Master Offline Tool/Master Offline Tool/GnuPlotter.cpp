@@ -12,11 +12,10 @@ GnuPlotter::GnuPlotter()
     std::vector<std::string> allAnns = FileHandler::GetAllFileNames("../SavedNetworks", "ann");
     for (size_t i = 0; i < allAnns.size(); i++)
     {
-        currentValidationSet = i;
         int stampStart = allAnns[i].find_last_of(' ') + 1;
         int stampEnds = allAnns[i].find_last_of('.');
         std::string stamp = allAnns[i].substr(stampStart, stampEnds - stampStart);
-
+        currentValidationSet = std::stoi(stamp);
         // Clear and delete m people
         for (size_t i = 0; i < m_people.size(); i++)
         {
@@ -62,10 +61,10 @@ std::vector<std::string>* GnuPlotter::ReverseEngineerPositions(const std::vector
 void GnuPlotter::PrepGoldenDataForGnuPlot()
 {
     size_t t_numPeople = m_people.size();
+    vector<string>* t_lines = new vector<string>();
     for (size_t i_person = 0; i_person < t_numPeople; i_person++)
     {
         Person* t_thisGuy = &m_people.at(i_person);
-        vector<string>* t_lines = new vector<string>();
         size_t t_numDataSets = t_thisGuy->dataSets->size();
         for (size_t i_dataSet = 0; i_dataSet < t_numDataSets; i_dataSet++)
         {
@@ -78,17 +77,15 @@ void GnuPlotter::PrepGoldenDataForGnuPlot()
                delete t_newLines;
             }
         }
-
-        // Done with data sets. Time to save results to file
-        string t_fileName = "../heatmaps/Golden/";
-        FileHandler::CreateFolder(t_fileName);
-        t_fileName += "Golden";
-        t_fileName += t_thisGuy->name;
-        t_fileName += " " + std::to_string(currentValidationSet);
-        t_fileName += " heatmap.heatmap";
-        FileHandler::WriteToFile(*t_lines, t_fileName);
-        delete t_lines;
     }
+    // Done with data sets. Time to save results to file
+    string t_fileName = "../heatmaps/Golden/";
+    FileHandler::CreateFolder(t_fileName);
+    t_fileName += "Golden";
+    t_fileName += " " + std::to_string(currentValidationSet);
+    t_fileName += " heatmap.heatmap";
+    FileHandler::WriteToFile(*t_lines, t_fileName);
+    delete t_lines;
 
 }
 
@@ -99,10 +96,10 @@ void GnuPlotter::RunNetworkAndPrepForGnuPlot(std::string p_annFilePath)
     t_net.create_from_file(p_annFilePath);
     // Run through all people (no, not like that...)
     size_t t_numPeople = m_people.size();
+    vector<string>* t_lines = new vector<string>();
     for (size_t i_person = 0; i_person< t_numPeople; i_person++)
     {
         Person* t_thisGuy = &m_people.at(i_person);
-        vector<string>* t_lines = new vector<string>();
 
         // Run each data set through the network
         size_t t_numDataSets = t_thisGuy->dataSets->size();
@@ -122,17 +119,15 @@ void GnuPlotter::RunNetworkAndPrepForGnuPlot(std::string p_annFilePath)
                 t_lines->insert(t_lines->end(), t_newLines->begin(), t_newLines->end());
             }
         }
-
-        // Done with data sets. Time to save results to file
-        string t_fileName = "../heatmaps/Calculated/";
-        FileHandler::CreateFolder(t_fileName);
-        t_fileName += "Calculated";
-        t_fileName += t_thisGuy->name;
-        t_fileName += " " + std::to_string(currentValidationSet);
-        t_fileName += " heatmap.heatmap";
-        FileHandler::WriteToFile(*t_lines, t_fileName); // put in calculated folder since... well, it's calculated
-        delete t_lines;
     }
+    // Done with data sets. Time to save results to file
+    string t_fileName = "../heatmaps/Calculated/";
+    FileHandler::CreateFolder(t_fileName);
+    t_fileName += "Calculated";
+    t_fileName += " " + std::to_string(currentValidationSet);
+    t_fileName += " heatmap.heatmap";
+    FileHandler::WriteToFile(*t_lines, t_fileName); // put in calculated folder since... well, it's calculated
+    delete t_lines;
 }
 
 std::vector<std::string> GnuPlotter::GetAllFilesWithStampAndShrinkList(const std::string& p_stamp, std::vector<std::string>& o_files)

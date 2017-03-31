@@ -17,6 +17,7 @@ namespace Heatmap_builder
     {
         public string mergedFileName = "NotSet";
         public bool onlyShowHitsOnGolden = true;
+        public bool ignoreFileWithNoLost = true;
 
         private Color wrongLost;
         private Color goldenLost;
@@ -81,6 +82,10 @@ namespace Heatmap_builder
                     goldenAllLostPositions = ReadRawData(out tminX, out tminY, out tmaxX, out tmaxY, goldenAllHeatmapFiles[i]);
                     if (goldenAllLostPositions == null)
                     {
+                        if (ignoreFileWithNoLost)
+                        {
+                            continue;
+                        }
                         goldenAllLostPositions = new List<int[]>();
                     }
                     minX = Math.Min(minX, tminX);
@@ -162,7 +167,10 @@ namespace Heatmap_builder
                 {
                     goldenToSend = goldenAllPositions[i] != null ? goldenAllPositions[i] : new List<int[]>();
                 }
-
+                if (goldenToSend == null && ignoreFileWithNoLost)
+                {
+                    continue;
+                }
                 Bitmap b = GetheatmapFromPositions(minX, minY, maxX, maxY, networkToSend, goldenToSend);
 
                 if (completedImage == null)
@@ -389,7 +397,7 @@ namespace Heatmap_builder
 
             foreach (var pixel in networkPixelLost)
             {
-                if (goldenPixelLost.FindIndex(Q => Q.pixel == pixel.pixel) != -1)
+                if (goldenPixelLost.FindIndex(Q => Q.pixel.X == pixel.pixel.X && Q.pixel.Y == pixel.pixel.Y) >= 0)
                 {
                     ColorPixels(pixel, ref b, correctLost);
                 }
@@ -402,12 +410,13 @@ namespace Heatmap_builder
             {
                 foreach (var pixel in goldenPixelLost)
                 {
-                    if (networkPixelLost.FindIndex(Q => Q.pixel == pixel.pixel) == -1)
+                    if (networkPixelLost.FindIndex(Q => Q.pixel.X == pixel.pixel.X && Q.pixel.Y == pixel.pixel.Y) < 0)
                     {
                         ColorPixels(pixel, ref b, goldenLost);
                     }
                 }
-            }        
+            }
+
             // We need to flip the heatmap, wrong way now
             b.RotateFlip(RotateFlipType.Rotate180FlipX);
 
