@@ -41,6 +41,13 @@ namespace Heatmap_builder
                 form.SetGoldenDataFolder("");
                 form.SetCalculatedDataFolder(golden);
                 form.button2_Click(null, null);
+
+                // Merged together all data
+                form.mergedFileName = "ShowAll" + args[0];
+                form.onlyShowHitsOnGolden = false;
+                form.SetGoldenDataFolder(golden);
+                form.SetCalculatedDataFolder(network);
+                form.button2_Click(null, null);
             }
             else
             {
