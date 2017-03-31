@@ -28,7 +28,6 @@ for d2 in */; do
 	cd "../../"
 done
 cd "../"
-pwd
 #echo $destination "===going into===" $target
 
 
@@ -47,15 +46,19 @@ pwd
 # Vary still last
 for d in */; do
 	echo "${d}"
+	cd "${d}"
 	cd "${baseConfig}"
 	cd "1110/"
 	for f in *; do
 		# Only grab the right network
 		if [[ ${f} == *"${baseLayers}"* ]]; then
 			#echo "${f}"
-			cp "${f}" "../../../../../Gnuplot result graph data/Datastill varied" #something like this?
+			mkdir "../../../../../Gnuplot result graph data/Datastill varied/${d}"
+			cp "${f}" "../../../../../Gnuplot result graph data/Datastill varied/${d}" #something like this?
+			echo $f
 			fi
 	done
+	cd "../../../"
 done
 
 exit 1
