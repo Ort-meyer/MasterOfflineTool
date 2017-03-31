@@ -65,7 +65,7 @@ namespace SavedNetSettingsFinder
             }
             string filesRootFolder = button1.Text;
             List<string> allFilesInFolderStructure = new List<string>();
-            allFilesInFolderStructure = GetAllFilesInFolderStructure(filesRootFolder, "netSettings");
+            allFilesInFolderStructure = GetAllFilesInFolderStructure(filesRootFolder, "");
 
             foreach (var file in allFilesInFolderStructure)
             {
@@ -257,8 +257,7 @@ namespace SavedNetSettingsFinder
                 // Go to the next subfolder and do the same thing again
                 files.AddRange(GetAllFilesInFolderStructure(directoryPath, p_fileEnding));
             }
-            // When we have been to the bottom of the directory structure we look for .json files
-            files.AddRange(Directory.GetFiles(p_rootDirectory, "PosRot*"));
+            files.AddRange(Directory.GetFiles(p_rootDirectory, "*" + p_fileEnding));
             return files;
         }
 
@@ -269,7 +268,7 @@ namespace SavedNetSettingsFinder
 
             string filesRootFolder = button1.Text;
             List<string> allFilesInFolderStructure = new List<string>();
-            allFilesInFolderStructure = GetAllFilesInFolderStructure(filesRootFolder, "netSettings");
+            allFilesInFolderStructure = GetAllFilesInFolderStructure(filesRootFolder, "");
             string bestFile = "";
 
             float bestNetValidationPercent = 0;

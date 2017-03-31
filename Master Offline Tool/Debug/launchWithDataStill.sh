@@ -1,10 +1,13 @@
 #cd Master\ Offline\ Tool/Debug
 
 declare -a entriesToAvrage=(
-	60 
+	20 
+	120
 )
 declare -a entriesToMerge=(
 	5
+	20
+	10
 )
 
 for avrage in "${entriesToAvrage[@]}"
@@ -17,7 +20,6 @@ do
 		./DataStill64.exe $avrage $merge
 		# Launch the actual tool
 	    sh ./launchscript.sh "$avrage $merge"
-	    exit 1
 		## Start working on saving results for latest still
 		cd ..
 		# Create new directory for this still
