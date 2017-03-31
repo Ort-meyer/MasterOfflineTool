@@ -50,8 +50,31 @@ namespace BaselineVariationGnuplotTool
 
                 int stillSeparationIndex = stillDir.LastIndexOf("\\");
                 string thisStill = stillDir.Substring(stillSeparationIndex+1);
+            }
 
-                Console.WriteLine(thisStill);
+            // Layers varied last
+            string layersPath = Path.GetFullPath(Path.Combine(newPath, "Layers varied"));
+            string[] layerFiles = Directory.GetFiles(layersPath);
+            foreach (string filePath in layerFiles)
+            {
+                // We don't want to try and read our dummy file
+                if (Path.GetExtension(filePath) != ".txt")
+                {
+                    // Get values
+                    float meanCorrect = 0, meanWrong = 0, correctStandardDeviation = 0, wrongStandardDeviation = 0;
+                    GetValues(filePath, ref meanCorrect, ref meanWrong, ref correctStandardDeviation, ref wrongStandardDeviation);
+
+                    // Figure out network configuration string
+                    string thisLayers = "";
+                    string fileName = Path.GetFileName(filePath);
+                    string[] infoInLine = fileName.Split(' ');
+                    int numLayers = int.Parse(infoInLine[3]);
+                    for (int i = 0; i < numLayers; i++)
+                    {
+                        thisLayers += infoInLine[5+i];
+                        thisLayers += " ";
+                    }
+                }
             }
         }
 
