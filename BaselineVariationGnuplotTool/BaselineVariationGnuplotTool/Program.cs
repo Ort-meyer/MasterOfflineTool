@@ -34,7 +34,8 @@ namespace BaselineVariationGnuplotTool
                     // Find which combo we're working on from file name
                     string fileName = Path.GetFileName(filePath);
                     int comboSeparationIndex = fileName.IndexOf(" ");
-                    string thisCombo = fileName.Substring(0, comboSeparationIndex);
+                    // WARNING!! Hard coded 4 since we run 6020 as baseline still!
+                    string thisCombo = fileName.Substring(4, comboSeparationIndex);
                 }
             }
 
