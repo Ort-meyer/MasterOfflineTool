@@ -7,6 +7,21 @@ using System.IO;
 
 namespace BaselineVariationGnuplotTool
 {
+    public class FileEntry
+    {
+        public FileEntry() { }
+        // Short variable names. I'm in a rush
+        public FileEntry(string p_text, float p_mc, float p_mw, float p_csd, float p_wsd)
+        {
+            text = p_text;
+            meanCorrect = p_mc;
+            meanWrong = p_mw;
+            correctStandardDeviation = p_csd;
+            wrongStandardDeviation = p_wsd;
+        }
+        public string text;
+        public float meanCorrect = 0, meanWrong = 0, correctStandardDeviation = 0, wrongStandardDeviation = 0;
+    }
     class Program
     {
 
@@ -19,6 +34,7 @@ namespace BaselineVariationGnuplotTool
             string newPath = Path.GetFullPath(Path.Combine(path, @"..\..\..\..\Gnuplot result graph data"));
 
             // Combo variations first
+            List<FileEntry> comboVariedArray = new List<FileEntry>();
             string comboPath = Path.GetFullPath(Path.Combine(newPath, "Combination varied"));
             string[] files = Directory.GetFiles(comboPath);
             foreach (string filePath in files)
@@ -36,10 +52,16 @@ namespace BaselineVariationGnuplotTool
                     int comboSeparationIndex = fileName.IndexOf(" ");
                     // WARNING!! Hard coded 4 since we run 6020 as baseline still!
                     string thisCombo = fileName.Substring(4, comboSeparationIndex);
+                    // Store in array
+                    FileEntry thisEntry = new FileEntry(thisCombo, meanCorrect, meanWrong, correctStandardDeviation, wrongStandardDeviation);
+                    comboVariedArray.Add(thisEntry);
                 }
             }
+            // Save to file
+
 
             // Datastill variations second 
+            List<FileEntry> stillVariedArray = new List<FileEntry>();
             string stillPath = Path.GetFullPath(Path.Combine(newPath, "Datastill varied"));
             string[] stillDirs = Directory.GetDirectories(stillPath);
             foreach (string stillDir in stillDirs)
@@ -50,10 +72,14 @@ namespace BaselineVariationGnuplotTool
                 GetValues(stillFiles[0], ref meanCorrect, ref meanWrong, ref correctStandardDeviation, ref wrongStandardDeviation);
 
                 int stillSeparationIndex = stillDir.LastIndexOf("\\");
-                string thisStill = stillDir.Substring(stillSeparationIndex+1);
+                string thisStill = stillDir.Substring(stillSeparationIndex + 1);
+                // Store in array
+                FileEntry thisEntry = new FileEntry(thisStill, meanCorrect, meanWrong, correctStandardDeviation, wrongStandardDeviation);
+                stillVariedArray.Add(thisEntry);
             }
 
             // Layers varied last
+            List<FileEntry> layerVariedArray = new List<FileEntry>();
             string layersPath = Path.GetFullPath(Path.Combine(newPath, "Layers varied"));
             string[] layerFiles = Directory.GetFiles(layersPath);
             foreach (string filePath in layerFiles)
@@ -72,9 +98,12 @@ namespace BaselineVariationGnuplotTool
                     int numLayers = int.Parse(infoInLine[3]);
                     for (int i = 0; i < numLayers; i++)
                     {
-                        thisLayers += infoInLine[5+i];
+                        thisLayers += infoInLine[5 + i];
                         thisLayers += " ";
                     }
+                    // Store in array
+                    FileEntry thisEntry = new FileEntry(thisLayers, meanCorrect, meanWrong, correctStandardDeviation, wrongStandardDeviation);
+                    layerVariedArray.Add(thisEntry);
                 }
             }
         }
@@ -85,7 +114,7 @@ namespace BaselineVariationGnuplotTool
             // Something we need to parse floats apparently
             System.Globalization.NumberFormatInfo nf = new System.Globalization.NumberFormatInfo();
 
-            
+
             // Start wtih finding all values and their totals
             int numEntries = 0;
             List<float> correctPercentiles = new List<float>();
@@ -134,6 +163,27 @@ namespace BaselineVariationGnuplotTool
             double sumMean = correctSum / p_numbers.Count;
             float standardDeviation = (float)Math.Sqrt(sumMean);
             return standardDeviation;
+        }
+
+        private static void SaveValuesToFile(string p_fileName, List<FileEntry> p_fileEntries)
+        {
+            // Convert to lines
+            List<string> lines = new List<string>();
+            int i = 0;
+            foreach (FileEntry entry in p_fileEntries)
+            {
+                string thisLine = entry.text;
+                thisLine += ", ";
+                thisLine += Convert.ToString(entry.meanCorrect);
+                thisLine += ", ";
+                thisLine += Convert.ToString(entry.correctStandardDeviation);
+                thisLine += ", ";
+                thisLine += Convert.ToString(entry.meanWrong);
+                thisLine += ", ";
+                thisLine += Convert.ToString(entry.wrongStandardDeviation);
+                lines[i] = thisLine;
+                i++;
+            }
         }
     }
 }
