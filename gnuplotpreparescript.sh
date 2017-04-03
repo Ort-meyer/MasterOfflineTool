@@ -1,7 +1,7 @@
 
-baseLayers="2  10 5" # Don't forget, TWO SPACES between first two numbers
+baseLayers="5  100 70 50 30 10" # Don't forget, TWO SPACES between first two numbers
 baseConfig="PosRot"
-baseStill="60 5"
+baseStill="60 20"
 
 # Combination variation first
 #target="Master Offline Tool/SavedNetSettingsDifferentStills/*/"
@@ -40,12 +40,10 @@ for f in *; do
 done
 # Return to pwd
 cd "../../.."
-pwd
 
 
 # Vary still last
 for d in */; do
-	echo "${d}"
 	cd "${d}"
 	cd "${baseConfig}"
 	cd "1110/"
@@ -53,9 +51,8 @@ for d in */; do
 		# Only grab the right network
 		if [[ ${f} == *"${baseLayers}"* ]]; then
 			#echo "${f}"
-			mkdir "../../../../../Gnuplot result graph data/Datastill varied/${d}"
+			mkdir -p "../../../../../Gnuplot result graph data/Datastill varied/${d}"
 			cp "${f}" "../../../../../Gnuplot result graph data/Datastill varied/${d}" #something like this?
-			echo $f
 			fi
 	done
 	cd "../../../"
