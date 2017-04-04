@@ -96,7 +96,7 @@
             this.InFolderNetworkData.Name = "InFolderNetworkData";
             this.InFolderNetworkData.Size = new System.Drawing.Size(163, 22);
             this.InFolderNetworkData.TabIndex = 3;
-            this.InFolderNetworkData.Text = "../../../../Master offline tool/Heatmaps/Calculated";
+            this.InFolderNetworkData.Text = "../../../../Master Offline Tool/Heatmaps/Calculated/";
             // 
             // OutFolder
             // 
@@ -215,7 +215,7 @@
             this.imageLeftPositionX.Name = "imageLeftPositionX";
             this.imageLeftPositionX.Size = new System.Drawing.Size(160, 22);
             this.imageLeftPositionX.TabIndex = 17;
-            this.imageLeftPositionX.Text = "81958";
+            this.imageLeftPositionX.Text = "99135";
             // 
             // imageLowerPositionY
             // 
@@ -224,7 +224,7 @@
             this.imageLowerPositionY.Name = "imageLowerPositionY";
             this.imageLowerPositionY.Size = new System.Drawing.Size(160, 22);
             this.imageLowerPositionY.TabIndex = 18;
-            this.imageLowerPositionY.Text = "-168250";
+            this.imageLowerPositionY.Text = "-158175";
             // 
             // label7
             // 
@@ -301,7 +301,7 @@
             this.imageUpperPositionY.Name = "imageUpperPositionY";
             this.imageUpperPositionY.Size = new System.Drawing.Size(160, 22);
             this.imageUpperPositionY.TabIndex = 24;
-            this.imageUpperPositionY.Text = "-107023";
+            this.imageUpperPositionY.Text = "-100200";
             // 
             // imageRightPositionX
             // 
@@ -310,7 +310,7 @@
             this.imageRightPositionX.Name = "imageRightPositionX";
             this.imageRightPositionX.Size = new System.Drawing.Size(160, 22);
             this.imageRightPositionX.TabIndex = 23;
-            this.imageRightPositionX.Text = "124688";
+            this.imageRightPositionX.Text = "154537";
             // 
             // label11
             // 
@@ -328,7 +328,7 @@
             this.inFolderGoldenData.Name = "inFolderGoldenData";
             this.inFolderGoldenData.Size = new System.Drawing.Size(163, 22);
             this.inFolderGoldenData.TabIndex = 27;
-            this.inFolderGoldenData.Text = "../../../../Master offline tool/Heatmaps/Golden";
+            this.inFolderGoldenData.Text = "../../../../Master Offline Tool/Heatmaps/Golden/";
             // 
             // button2
             // 

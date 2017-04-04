@@ -52,6 +52,15 @@ namespace Heatmap_builder
         // Form functions
         public void GenerateHeatmap_Click(object sender, EventArgs e)
         {
+            Bitmap underlayingImage = null;
+            try
+            {
+                underlayingImage = (Bitmap)Bitmap.FromFile(button1.Text);
+                underlayingImage.RotateFlip(RotateFlipType.Rotate90FlipNone);
+                underlayingImage.RotateFlip(RotateFlipType.Rotate180FlipY);
+            }
+            catch (Exception)
+            { }
             // These arrays should have the same length
             string[] goldenAllHeatmapFiles = AllHeatmapFilesInDirectory(inFolderGoldenData.Text);
             string[] networkAllHeatmapFiles = AllHeatmapFilesInDirectory(InFolderNetworkData.Text);
@@ -64,7 +73,14 @@ namespace Heatmap_builder
 
             for (int i = 0; i < networkAllHeatmapFiles.Length; i++)
             {
-                completedImage = new Bitmap(int.Parse(TextureWidth.Text), int.Parse(TextureHeight.Text));
+                if (sizeFromImage.Checked)
+                {
+                    completedImage = new Bitmap(underlayingImage.Width, underlayingImage.Height);
+                }
+                else
+                {
+                    completedImage = new Bitmap(int.Parse(TextureWidth.Text), int.Parse(TextureHeight.Text));
+                }
 
                 int minX, minY, maxX, maxY;
                 List<int[]> goldenAllLostPositions = new List<int[]>();
@@ -100,7 +116,12 @@ namespace Heatmap_builder
 
                 GetheatmapFromPositions(minX, minY, maxX, maxY, networkAllLostPositions, goldenAllLostPositions);
 
-                completedImage.RotateFlip(RotateFlipType.Rotate180FlipX);
+                completedImage.RotateFlip(RotateFlipType.Rotate180FlipY);
+                if (underlayingImage != null)
+                {
+                    completedImage = MergeTwoImages(underlayingImage, completedImage);
+                }
+
                 Preview.Image = completedImage;
                 string heatmapName = networkAllHeatmapFiles[i].Substring(networkAllHeatmapFiles[i].LastIndexOf("\\") + 1);
                 string folderPath = Path.GetFullPath(OutFolder.Text);
@@ -115,7 +136,23 @@ namespace Heatmap_builder
 
         public void button2_Click(object sender, EventArgs e)
         {
-            completedImage = new Bitmap(int.Parse(TextureWidth.Text), int.Parse(TextureHeight.Text));
+            Bitmap underlayingImage = null;
+            try
+            {
+                underlayingImage = (Bitmap)Bitmap.FromFile(button1.Text);
+                underlayingImage.RotateFlip(RotateFlipType.Rotate90FlipNone);
+                underlayingImage.RotateFlip(RotateFlipType.Rotate180FlipY);
+            }
+            catch (Exception)
+            { }
+            if (sizeFromImage.Checked)
+            {
+                completedImage = new Bitmap(underlayingImage.Width, underlayingImage.Height);
+            }
+            else
+            {
+                completedImage = new Bitmap(int.Parse(TextureWidth.Text), int.Parse(TextureHeight.Text));
+            }
 
             string[] goldenAllHeatmapFiles = AllHeatmapFilesInDirectory(inFolderGoldenData.Text);
             string[] networkAllHeatmapFiles = AllHeatmapFilesInDirectory(InFolderNetworkData.Text);
@@ -179,7 +216,14 @@ namespace Heatmap_builder
                 }
                 GetheatmapFromPositions(minX, minY, maxX, maxY, networkToSend, goldenToSend);
             }
-            completedImage.RotateFlip(RotateFlipType.Rotate180FlipX);
+            completedImage.RotateFlip(RotateFlipType.Rotate180FlipY);
+
+            // Add the underlaying image to the given bitmap  
+            if (underlayingImage != null)
+            {
+                completedImage = MergeTwoImages(underlayingImage, completedImage);
+            }
+
             Preview.Image = completedImage;
             string heatmapName = mergedFileName;
             string folderPath = Path.GetFullPath(OutFolder.Text);
@@ -250,15 +294,19 @@ namespace Heatmap_builder
         private Point ConvertPositionToPixel(int x, int y, int minX, int minY, int maxX, int maxY, Bitmap image)
         {
             Point returnPoint = new Point();
-
-            x = x - minX; // make it go from 0
-            y = y - minY; // make it go from 0
-            maxX = maxX - minX; // make it go from 0
-            maxY = maxY - minY; // make it go from 0
-            returnPoint.X = (int)(((float)x / (float)maxX) * (image.Width - 1));
-            returnPoint.Y = (int)(((float)y / (float)maxY) * (image.Height - 1));         
+            if (y < -168993)
+            {
+                int a = 4;
+            }
+            int zeroBasedX = x - minX; // make it go from 0
+            int zeroBasedY = y - minY; // make it go from 0
+            int zeroBasedmaxX = maxX - minX; // make it go from 0
+            int zeroBasedmaxY = maxY - minY; // make it go from 0
+            float percentOfMaxX = (float)zeroBasedX / (float)zeroBasedmaxX;
+            float percentOfMaxY = (float)zeroBasedY / (float)zeroBasedmaxY;
+            returnPoint.X = (int)(percentOfMaxX * (image.Width - 1));
+            returnPoint.Y = (int)(percentOfMaxY * (image.Height - 1));         
             
-
             return returnPoint;
         }
 
@@ -337,27 +385,10 @@ namespace Heatmap_builder
 
         private void GetheatmapFromPositions(int minX, int minY, int maxX, int maxY, List<int[]> networkAllLostPositions, List<int[]> goldenAllLostPositions)
         {
-            Bitmap underlayingImage = null;
-
             int highestNumberOfLost = 0;
             // sort the list so all the positions of the same type is next to eachother
             networkAllLostPositions = networkAllLostPositions.OrderBy(r => r[0]).ThenBy(r => r[1]).ToList();
             goldenAllLostPositions = goldenAllLostPositions.OrderBy(r => r[0]).ThenBy(r => r[1]).ToList();
-
-            try
-            {
-                underlayingImage = (Bitmap)Bitmap.FromFile(button1.Text);
-            }
-            catch (Exception)
-            { }
-            if (sizeFromImage.Checked)
-            {
-                completedImage = new Bitmap(underlayingImage.Width, underlayingImage.Height);
-            }
-            else
-            {
-                
-            }
 
             // Find out all the time the network guessed lost
             List<PixelLostInfo> networkPixelLost = new List<PixelLostInfo>();
@@ -378,6 +409,7 @@ namespace Heatmap_builder
 
             // Get the golden data
             List<PixelLostInfo> goldenPixelLost = new List<PixelLostInfo>();
+            currentPixelAltered = new Point(-1, -1);
             for (int currentPosition = 0; currentPosition < goldenAllLostPositions.Count; currentPosition++)
             {
                 Point pixel = ConvertPositionToPixel(goldenAllLostPositions[currentPosition][0], goldenAllLostPositions[currentPosition][1],
@@ -415,17 +447,6 @@ namespace Heatmap_builder
             }
 
             // We need to flip the heatmap, wrong way now
-            
-
-            // Add the underlaying image to the given bitmap  
-            //if (underlayingImage != null)
-            //{
-            //    completedImage = MergeTwoImages(underlayingImage, b);
-            //}
-            //else
-            //{
-            //    completedImage = b;
-            //}
         }
 
         public static Bitmap MergeTwoImages(Image firstImage, Image secondImage)
