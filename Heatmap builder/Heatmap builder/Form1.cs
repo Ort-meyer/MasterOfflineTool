@@ -27,6 +27,11 @@ namespace Heatmap_builder
 
         int blueValue;
 
+        int highestWrongPixel, highestCorrectPixel, highestGoldenPixel;
+        List<PixelLostInfo> allWrongGuesses = new List<PixelLostInfo>();
+        List<PixelLostInfo> allCorrectGuesses = new List<PixelLostInfo>();
+        List<PixelLostInfo> allGoldenInfo = new List<PixelLostInfo>();
+
         System.Globalization.NumberFormatInfo nf
           = new System.Globalization.NumberFormatInfo()
           {
@@ -52,6 +57,9 @@ namespace Heatmap_builder
         // Form functions
         public void GenerateHeatmap_Click(object sender, EventArgs e)
         {
+            // reset values
+            ResetGlobals();
+
             Bitmap underlayingImage = null;
             try
             {
@@ -136,6 +144,9 @@ namespace Heatmap_builder
 
         public void button2_Click(object sender, EventArgs e)
         {
+            // reset values
+            ResetGlobals();
+
             Bitmap underlayingImage = null;
             try
             {
@@ -143,8 +154,10 @@ namespace Heatmap_builder
                 underlayingImage.RotateFlip(RotateFlipType.Rotate90FlipNone);
                 underlayingImage.RotateFlip(RotateFlipType.Rotate180FlipY);
             }
-            catch (Exception)
-            { }
+            catch (Exception t)
+            {
+                MessageBox.Show(t.ToString());
+            }
             if (sizeFromImage.Checked)
             {
                 completedImage = new Bitmap(underlayingImage.Width, underlayingImage.Height);
@@ -216,6 +229,7 @@ namespace Heatmap_builder
                 }
                 GetheatmapFromPositions(minX, minY, maxX, maxY, networkToSend, goldenToSend);
             }
+            ColorTheImage();
             completedImage.RotateFlip(RotateFlipType.Rotate180FlipY);
 
             // Add the underlaying image to the given bitmap  
@@ -310,8 +324,9 @@ namespace Heatmap_builder
             return returnPoint;
         }
 
-        private void ColorPixels(PixelLostInfo pixel, ref Bitmap map, Color underlayingColor)
+        private void ColorPixels(PixelLostInfo pixel, ref Bitmap map, Color underlayingColor, int highestValue)
         {
+            // Check which highest to use when coloring
             int propagationLevel = int.Parse(propagation.Text);
             int halfPropagation = propagationLevel / 2;
             float maxDistanceX = Math.Abs(propagationLevel);
@@ -324,7 +339,10 @@ namespace Heatmap_builder
                     float distanceX = Math.Abs(pixel.pixel.X - x);
                     float distanceY = Math.Abs(pixel.pixel.Y - y);
                     float distance = (float)Math.Sqrt((distanceX * distanceX + distanceY * distanceY));
-                    float alpha = 255.0f * (1.0f - Math.Min(distance / maxDistance,1.0f));
+                    //float alpha = 255.0f * (1.0f - Math.Min(distance / maxDistance,1.0f));
+                    float alpha = ((float)pixel.lostCount / (float)80) * 255.0f;
+                    alpha = Math.Min(alpha, 255);
+                    alpha = 255;
                     if (float.IsNaN(alpha))
                     {
                         // this happens when propagation is set to 1
@@ -339,7 +357,7 @@ namespace Heatmap_builder
                     int G = (int)Math.Ceiling((float)previousColor.G + (float)underlayingColor.G);
                     int B = (int)Math.Ceiling((float)previousColor.B + (float)underlayingColor.B);
 
-                    Color newColor = Color.FromArgb((int)255, Math.Min(R,255), Math.Min(G, 255), Math.Min(B, 255));
+                    Color newColor = Color.FromArgb((int)alpha, Math.Min(R,255), Math.Min(G, 255), Math.Min(B, 255));
                     
                     float previousAlpha = map.GetPixel(x, y).A;
                     map.SetPixel(x, y, newColor);
@@ -350,23 +368,13 @@ namespace Heatmap_builder
 
         private void button1_Click(object sender, EventArgs e)
         {
-            int size = -1;
             DialogResult result = openFileDialog1.ShowDialog(); // Show the dialog.
             if (result == DialogResult.OK) // Test result.
             {
                 string file = openFileDialog1.FileName;
                 button1.Text = file;
-                try
-                {
-                    string text = File.ReadAllText(file);
-                    size = text.Length;
-                }
-                catch (IOException)
-                {
-                }
+
             }
-            Console.WriteLine(size); // <-- Shows file size in debugging mode.
-            Console.WriteLine(result); // <-- For debugging use.
         }
 
         private void fitPositionsToImage_CheckedChanged(object sender, EventArgs e)
@@ -385,7 +393,6 @@ namespace Heatmap_builder
 
         private void GetheatmapFromPositions(int minX, int minY, int maxX, int maxY, List<int[]> networkAllLostPositions, List<int[]> goldenAllLostPositions)
         {
-            int highestNumberOfLost = 0;
             // sort the list so all the positions of the same type is next to eachother
             networkAllLostPositions = networkAllLostPositions.OrderBy(r => r[0]).ThenBy(r => r[1]).ToList();
             goldenAllLostPositions = goldenAllLostPositions.OrderBy(r => r[0]).ThenBy(r => r[1]).ToList();
@@ -404,7 +411,6 @@ namespace Heatmap_builder
                 }
                 networkPixelLost[networkPixelLost.Count - 1].lostCount += 1;
                 networkPixelLost[networkPixelLost.Count - 1].pixel = pixel;
-                highestNumberOfLost = Math.Max(highestNumberOfLost, networkPixelLost[networkPixelLost.Count - 1].lostCount);
             }
 
             // Get the golden data
@@ -421,18 +427,35 @@ namespace Heatmap_builder
                 }
                 goldenPixelLost[goldenPixelLost.Count - 1].lostCount += 1;
                 goldenPixelLost[goldenPixelLost.Count - 1].pixel = pixel;
-                highestNumberOfLost = Math.Max(highestNumberOfLost, goldenPixelLost[goldenPixelLost.Count - 1].lostCount);
             }
 
             foreach (var pixel in networkPixelLost)
             {
                 if (goldenPixelLost.FindIndex(Q => Q.pixel.X == pixel.pixel.X && Q.pixel.Y == pixel.pixel.Y) >= 0)
                 {
-                    ColorPixels(pixel, ref completedImage, correctLost);
+                    // see if the pixel already exists in the list
+                    int index = allCorrectGuesses.FindIndex(Q => Q.pixel.X == pixel.pixel.X && Q.pixel.Y == pixel.pixel.Y);
+                    if (index < 0)
+                    {
+                        allCorrectGuesses.Add(pixel);
+                        index = allCorrectGuesses.Count - 1;
+                        allCorrectGuesses[index].lostCount = 0;
+                    }
+                    allCorrectGuesses[index].lostCount += pixel.lostCount;
+                    highestCorrectPixel = Math.Max(highestCorrectPixel, allCorrectGuesses[index].lostCount);
                 }
                 else
                 {
-                    ColorPixels(pixel, ref completedImage, wrongLost);
+                    // see if the pixel already exists in the list
+                    int index = allWrongGuesses.FindIndex(Q => Q.pixel.X == pixel.pixel.X && Q.pixel.Y == pixel.pixel.Y);
+                    if (index < 0)
+                    {
+                        allWrongGuesses.Add(pixel);
+                        index = allWrongGuesses.Count - 1;
+                        allWrongGuesses[index].lostCount = 0;
+                    }
+                    allWrongGuesses[index].lostCount += pixel.lostCount;
+                    highestWrongPixel = Math.Max(highestWrongPixel, allWrongGuesses[index].lostCount);
                 }
             }
             if (!onlyShowHitsOnGolden)
@@ -441,7 +464,16 @@ namespace Heatmap_builder
                 {
                     if (true || networkPixelLost.FindIndex(Q => Q.pixel.X == pixel.pixel.X && Q.pixel.Y == pixel.pixel.Y) < 0)
                     {
-                        ColorPixels(pixel, ref completedImage, goldenLost);
+                        // see if the pixel already exists in the list
+                        int index = allGoldenInfo.FindIndex(Q => Q.pixel.X == pixel.pixel.X && Q.pixel.Y == pixel.pixel.Y);
+                        if (index < 0)
+                        {
+                            allGoldenInfo.Add(pixel);
+                            index = allGoldenInfo.Count - 1;
+                            allGoldenInfo[index].lostCount = 0;
+                        }
+                        allGoldenInfo[index].lostCount += pixel.lostCount;
+                        highestGoldenPixel = Math.Max(highestGoldenPixel, allGoldenInfo[index].lostCount);
                     }
                 }
             }
@@ -476,6 +508,23 @@ namespace Heatmap_builder
             }
 
             return outputImage;
+        }
+
+        private void ColorTheImage()
+        {
+            // Color pixels
+            foreach (var item in allCorrectGuesses)
+            {
+                ColorPixels(item, ref completedImage, correctLost, highestCorrectPixel);
+            }
+            foreach (var item in allWrongGuesses)
+            {
+                ColorPixels(item, ref completedImage, wrongLost, highestWrongPixel);
+            }
+            foreach (var item in allGoldenInfo)
+            {
+                ColorPixels(item, ref completedImage, goldenLost, highestGoldenPixel);
+            }
         }
 
         // Functions to get/set things from controlls
@@ -523,6 +572,17 @@ namespace Heatmap_builder
         private void ColorGoldenLost_Click(object sender, EventArgs e)
         {
             goldenLost = ChangeColor(ref ColorGoldenLost);
+        }
+
+        private void ResetGlobals()
+        {
+            allGoldenInfo.Clear();
+            allCorrectGuesses.Clear();
+            allWrongGuesses.Clear();
+
+            highestGoldenPixel = 0;
+            highestCorrectPixel = 0;
+            highestWrongPixel = 0;
         }
     }
 }
