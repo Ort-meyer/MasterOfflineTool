@@ -28,7 +28,7 @@ ConfigHandler::ConfigHandler()
     m_reportRate = 100;
     m_errorAcceptance = 0.000001f;
 
-    m_creationType = NetworkCreationType::BuildFromBaseline;
+    m_creationType = NetworkCreationType::CreateOneSpecific;
 
     //int settingToTest = (int)FANNSettingToTest::TestHiddenCells + (int)FANNSettingToTest::TestOutputSteepness
     //    + (int)FANNSettingToTest::TestHiddenLayers + (int)FANNSettingToTest::TestHiddenSteepness;

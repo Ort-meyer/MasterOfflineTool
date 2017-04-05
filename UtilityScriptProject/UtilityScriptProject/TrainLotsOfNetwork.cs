@@ -10,9 +10,9 @@ namespace UtilityScriptProject
 {
     class TrainLotsOfNetwork
     {
-        int[] entriesToAvrage = { 60, 20, 120 };
-        int[] entriesToMerge = { 5, 20, 10 };
-        string[] combinationsToUse = { "PosRot", "KeyPos", "KeyRot", "Pos", "Rot", "Key", "KeyPosRot" };
+        int[] entriesToAvrage = { 60 };
+        int[] entriesToMerge = {20 };
+        string[] combinationsToUse = { "PosRot" };
 
         int[][] hiddenLayers = { 
         new int[]{ 40, 0, 0, 0, 0 },
@@ -112,18 +112,22 @@ namespace UtilityScriptProject
                     File.Delete(item);
                 }
             }
+            if (files.Count != 7*9)
+            {
+                shouldRun = true;
+            }
             return shouldRun;
         }
 
         private bool ShouldRunNetworkSetting(int avrage,int merge,string combo, int[] layers, int layerCount)
         {
             string fileLocation = rootFolder + avrage.ToString() + " " + merge.ToString() + "/" + combo + "/1110/";
-            string fileName = avrage.ToString() + merge.ToString() + combo + " 11 10 " + layerCount.ToString();
+            string fileName = avrage.ToString() + merge.ToString() + combo + " 11 10 " + layerCount.ToString() + " ";
             for (int i = 0; i < layerCount; i++)
             {
                 fileName += " " + layers[i].ToString();
             }
-            fileName += " 0.7 0.6 0.6 1";
+            fileName += " 11 10 2 0.7 0.6 0.6 1";
             bool run = !File.Exists(fileLocation + fileName);
             return run;
         }
