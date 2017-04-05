@@ -12,7 +12,7 @@ namespace UtilityScriptProject
      */
     class GnuplotBarsVaryingStuff
     {
-        GnuplotBarsVaryingStuff()
+        public GnuplotBarsVaryingStuff()
         {
 
             // Find our way to where the different folders to be plotted are
@@ -167,13 +167,13 @@ namespace UtilityScriptProject
             foreach (FileEntry entry in p_fileEntries)
             {
                 string thisLine = entry.text;
-                thisLine += ", ";
+                thisLine += ". "; // Unsure this works
                 thisLine += Convert.ToString(entry.meanCorrect);
-                thisLine += ", ";
+                thisLine += ". ";
                 thisLine += Convert.ToString(entry.correctStandardDeviation);
-                thisLine += ", ";
+                thisLine += ". ";
                 thisLine += Convert.ToString(entry.meanWrong);
-                thisLine += ", ";
+                thisLine += ". ";
                 thisLine += Convert.ToString(entry.wrongStandardDeviation);
                 lines.Add(thisLine);
                 i++;
@@ -181,7 +181,6 @@ namespace UtilityScriptProject
 
             File.WriteAllLines(p_filePath, lines.ToArray());
         }
-
     }
 
     // Used to easily group file entries for writing
