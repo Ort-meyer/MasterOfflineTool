@@ -11,7 +11,8 @@ namespace UtilityScriptProject
         static void Main(string[] args)
         {
             //RawPositionExtraction script = new RawPositionExtraction();
-            GnuplotBarsVaryingStuff barScript = new GnuplotBarsVaryingStuff();
+            GnuplotBarPrepareScript prepScript = new GnuplotBarPrepareScript();
+            //GnuplotBarsVaryingStuff barScript = new GnuplotBarsVaryingStuff();
         }
     }
 }
