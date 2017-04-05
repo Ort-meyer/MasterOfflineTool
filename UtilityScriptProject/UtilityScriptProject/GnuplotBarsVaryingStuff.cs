@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.IO;
+using System.Diagnostics;
 
 namespace UtilityScriptProject
 {
@@ -18,6 +19,7 @@ namespace UtilityScriptProject
             // Find our way to where the different folders to be plotted are
             string path = Directory.GetCurrentDirectory();
             string newPath = Path.GetFullPath(Path.Combine(path, @"..\..\..\..\Gnuplot result graph data"));
+            string gnuplotBaseName = "gnuplot bar script error bars - "; // We add specific data type where applicable
 
             // Combo variations first
             List<FileEntry> comboVariedArray = new List<FileEntry>();
@@ -45,15 +47,18 @@ namespace UtilityScriptProject
             }
             // Save to file
             SaveValuesToFile(newPath + "\\combos.txt", comboVariedArray);
+            // Plot them with gnuplot
+            PlotWithGnuplot(newPath, gnuplotBaseName + "combos.plt");
 
             // Datastill variations second 
             List<FileEntry> stillVariedArray = new List<FileEntry>();
             string stillPath = Path.GetFullPath(Path.Combine(newPath, "Datastill varied"));
             string[] stillDirs = Directory.GetDirectories(stillPath);
+            Console.WriteLine(stillDirs[1]);
             foreach (string stillDir in stillDirs)
             {
                 // Has to be an array, even though we know there's only one file in there
-                string[] stillFiles = Directory.GetFiles(comboPath);
+                string[] stillFiles = Directory.GetFiles(stillDir);
                 float meanCorrect = 0, meanWrong = 0, correctStandardDeviation = 0, wrongStandardDeviation = 0;
                 GetValues(stillFiles[0], ref meanCorrect, ref meanWrong, ref correctStandardDeviation, ref wrongStandardDeviation);
 
@@ -66,6 +71,8 @@ namespace UtilityScriptProject
 
             // Save to file
             SaveValuesToFile(newPath + "\\stills.txt", stillVariedArray);
+            // Plot them with gnuplot
+            PlotWithGnuplot(newPath, gnuplotBaseName + "stills.plt");
 
             // Layers varied last
             List<FileEntry> layerVariedArray = new List<FileEntry>();
@@ -98,6 +105,8 @@ namespace UtilityScriptProject
 
             // Save to file
             SaveValuesToFile(newPath + "\\layers.txt", layerVariedArray);
+            // Plot them with gnuplot
+            PlotWithGnuplot(newPath, gnuplotBaseName + "layers.plt");
 
         }
 
@@ -180,6 +189,19 @@ namespace UtilityScriptProject
             }
 
             File.WriteAllLines(p_filePath, lines.ToArray());
+        }
+
+        // Plots the provided text file with a hardcoded gnuplot script. Used to get true and false positives with error bars
+        private void PlotWithGnuplot(string p_plotScriptDirectory, string p_plotScriptFileName)
+        {
+            string derp = Directory.GetCurrentDirectory();
+            ProcessStartInfo PSI = new ProcessStartInfo();
+            PSI.FileName = p_plotScriptFileName;
+            PSI.WorkingDirectory = p_plotScriptDirectory;
+            using (Process exeProcess = Process.Start(PSI))
+            {
+                exeProcess.WaitForExit();
+            }
         }
     }
 
