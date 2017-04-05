@@ -58,7 +58,7 @@ namespace BaselineVariationGnuplotTool
                 }
             }
             // Save to file
-
+            SaveValuesToFile(newPath + "\\combos.txt", comboVariedArray);
 
             // Datastill variations second 
             List<FileEntry> stillVariedArray = new List<FileEntry>();
@@ -77,6 +77,9 @@ namespace BaselineVariationGnuplotTool
                 FileEntry thisEntry = new FileEntry(thisStill, meanCorrect, meanWrong, correctStandardDeviation, wrongStandardDeviation);
                 stillVariedArray.Add(thisEntry);
             }
+            
+            // Save to file
+            SaveValuesToFile(newPath + "\\stills.txt", stillVariedArray);
 
             // Layers varied last
             List<FileEntry> layerVariedArray = new List<FileEntry>();
@@ -106,6 +109,10 @@ namespace BaselineVariationGnuplotTool
                     layerVariedArray.Add(thisEntry);
                 }
             }
+
+            // Save to file
+            SaveValuesToFile(newPath + "\\layers.txt", layerVariedArray);
+
         }
 
         // Gets the values set in ref parameters from p_filename (which needsless to say is a file with tons of networks)
@@ -165,7 +172,8 @@ namespace BaselineVariationGnuplotTool
             return standardDeviation;
         }
 
-        private static void SaveValuesToFile(string p_fileName, List<FileEntry> p_fileEntries)
+        // Writes the file entries to the file path specified
+        private static void SaveValuesToFile(string p_filePath, List<FileEntry> p_fileEntries)
         {
             // Convert to lines
             List<string> lines = new List<string>();
@@ -181,9 +189,11 @@ namespace BaselineVariationGnuplotTool
                 thisLine += Convert.ToString(entry.meanWrong);
                 thisLine += ", ";
                 thisLine += Convert.ToString(entry.wrongStandardDeviation);
-                lines[i] = thisLine;
+                lines.Add(thisLine);
                 i++;
             }
+
+            File.WriteAllLines(p_filePath, lines.ToArray());
         }
     }
 }
