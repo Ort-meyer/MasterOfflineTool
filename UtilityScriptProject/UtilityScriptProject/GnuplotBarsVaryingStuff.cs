@@ -53,17 +53,17 @@ namespace UtilityScriptProject
             // Datastill variations second 
             List<FileEntry> stillVariedArray = new List<FileEntry>();
             string stillPath = Path.GetFullPath(Path.Combine(newPath, "Datastill varied"));
-            string[] stillDirs = Directory.GetDirectories(stillPath);
-            Console.WriteLine(stillDirs[1]);
-            foreach (string stillDir in stillDirs)
+            string[] stillFiles = Directory.GetFiles(stillPath);
+            foreach (string stillFile in stillFiles)
             {
                 // Has to be an array, even though we know there's only one file in there
-                string[] stillFiles = Directory.GetFiles(stillDir);
                 float meanCorrect = 0, meanWrong = 0, correctStandardDeviation = 0, wrongStandardDeviation = 0;
-                GetValues(stillFiles[0], ref meanCorrect, ref meanWrong, ref correctStandardDeviation, ref wrongStandardDeviation);
+                GetValues(stillFile, ref meanCorrect, ref meanWrong, ref correctStandardDeviation, ref wrongStandardDeviation);
 
-                int stillSeparationIndex = stillDir.LastIndexOf("\\");
-                string thisStill = stillDir.Substring(stillSeparationIndex + 1);
+                //string thisStill = stillDir.Substring(stillSeparationIndex + 1);
+                // Hax. We look as long as its not a number
+                var stillCharactersInSomeWeirdFormat = Path.GetFileName(stillFile).TakeWhile(c => Char.IsDigit(c));
+                string thisStill = new string(stillCharactersInSomeWeirdFormat.ToArray());
                 // Store in array
                 FileEntry thisEntry = new FileEntry(thisStill, meanCorrect, meanWrong, correctStandardDeviation, wrongStandardDeviation);
                 stillVariedArray.Add(thisEntry);

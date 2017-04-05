@@ -12,7 +12,7 @@ namespace UtilityScriptProject
         {
             //RawPositionExtraction script = new RawPositionExtraction();
             GnuplotBarPrepareScript prepScript = new GnuplotBarPrepareScript();
-            //GnuplotBarsVaryingStuff barScript = new GnuplotBarsVaryingStuff();
+            GnuplotBarsVaryingStuff barScript = new GnuplotBarsVaryingStuff();
         }
     }
 }
