@@ -11,8 +11,8 @@ namespace UtilityScriptProject
     class TrainLotsOfNetwork
     {
         int[] entriesToAvrage = { 60 };
-        int[] entriesToMerge = {20 };
-        string[] combinationsToUse = { "PosRot" };
+        int[] entriesToMerge = {20,10,5 };
+        string[] combinationsToUse = { "PosRot", "KeyPos", "KeyRot" ,"Pos", "Rot" ,"Key" ,"KeyPosRot" };
 
         int[][] hiddenLayers = { 
         new int[]{ 40, 0, 0, 0, 0 },
