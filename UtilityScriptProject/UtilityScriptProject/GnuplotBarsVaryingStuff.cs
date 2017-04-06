@@ -33,7 +33,7 @@ namespace UtilityScriptProject
 
                     // Get values
                     float meanCorrect = 0, meanWrong = 0, correctStandardDeviation = 0, wrongStandardDeviation = 0;
-                    GetValues(filePath, ref meanCorrect, ref meanWrong, ref correctStandardDeviation, ref wrongStandardDeviation);
+                    GnuplotUtilities.GetValues(filePath, ref meanCorrect, ref meanWrong, ref correctStandardDeviation, ref wrongStandardDeviation);
 
                     // Find which combo we're working on from file name
                     string fileName = Path.GetFileName(filePath);
@@ -58,7 +58,7 @@ namespace UtilityScriptProject
             {
                 // Has to be an array, even though we know there's only one file in there
                 float meanCorrect = 0, meanWrong = 0, correctStandardDeviation = 0, wrongStandardDeviation = 0;
-                GetValues(stillFile, ref meanCorrect, ref meanWrong, ref correctStandardDeviation, ref wrongStandardDeviation);
+                GnuplotUtilities.GetValues(stillFile, ref meanCorrect, ref meanWrong, ref correctStandardDeviation, ref wrongStandardDeviation);
 
                 //string thisStill = stillDir.Substring(stillSeparationIndex + 1);
                 // Hax. We look as long as its not a number
@@ -85,7 +85,7 @@ namespace UtilityScriptProject
                 {
                     // Get values
                     float meanCorrect = 0, meanWrong = 0, correctStandardDeviation = 0, wrongStandardDeviation = 0;
-                    GetValues(filePath, ref meanCorrect, ref meanWrong, ref correctStandardDeviation, ref wrongStandardDeviation);
+                    GnuplotUtilities.GetValues(filePath, ref meanCorrect, ref meanWrong, ref correctStandardDeviation, ref wrongStandardDeviation);
 
                     // Figure out network configuration string
                     string thisLayers = "";
@@ -109,49 +109,6 @@ namespace UtilityScriptProject
             PlotWithGnuplot(newPath, gnuplotBaseName + "layers.plt");
 
         }
-
-        // Gets the values set in ref parameters from p_filename (which needsless to say is a file with tons of networks)
-        private void GetValues(string p_filePath, ref float o_meanCorrect, ref float o_correctStandardDeviation, ref float o_meanWrong, ref float o_wrongStandardDeviation)
-        {
-            // Something we need to parse floats apparently
-            System.Globalization.NumberFormatInfo nf = new System.Globalization.NumberFormatInfo();
-
-
-            // Start wtih finding all values and their totals
-            int numEntries = 0;
-            List<float> correctPercentiles = new List<float>();
-            float meanCorrect = 0;
-            List<float> wrongPercentiles = new List<float>();
-            float meanWrong = 0;
-            string[] lines = File.ReadAllLines(p_filePath);
-            foreach (string line in lines)
-            {
-                // Get info from this line (this was clever, m8)
-                string[] infoInLine = line.Split(' ');
-                // Check that we're found the right line
-                if (line.Contains("Percentile correct: "))
-                {
-                    correctPercentiles.Add(float.Parse(infoInLine[6], nf)); // Don't forget to divide at end!
-                    meanCorrect += correctPercentiles[correctPercentiles.Count - 1];
-                    wrongPercentiles.Add(float.Parse(infoInLine[14], nf));
-                    meanWrong += wrongPercentiles[wrongPercentiles.Count - 1]; // Don't forget to divide at end!
-                    numEntries++;
-                }
-            }
-
-            // Calculate mean values
-            meanCorrect /= numEntries;
-            meanWrong /= numEntries;
-
-            // Now we calculate standard deviations for both correct and wrong
-            o_correctStandardDeviation = GnuplotUtilities.CalculateStandardDeviation(correctPercentiles, meanCorrect);
-            o_wrongStandardDeviation = GnuplotUtilities.CalculateStandardDeviation(wrongPercentiles, meanWrong);
-
-            o_meanCorrect = meanCorrect;
-            o_meanWrong = meanWrong;
-
-        }
-
 
         // Plots the provided text file with a hardcoded gnuplot script. Used to get true and false positives with error bars
         private void PlotWithGnuplot(string p_plotScriptDirectory, string p_plotScriptFileName)

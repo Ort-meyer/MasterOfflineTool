@@ -62,6 +62,48 @@ namespace UtilityScriptProject
 
             File.WriteAllLines(p_filePath, lines.ToArray());
         }
+
+        // Gets the values set in ref parameters from p_filename (which needsless to say is a file with tons of networks)
+        public static void GetValues(string p_filePath, ref float o_meanCorrect, ref float o_correctStandardDeviation, ref float o_meanWrong, ref float o_wrongStandardDeviation)
+        {
+            // Something we need to parse floats apparently
+            System.Globalization.NumberFormatInfo nf = new System.Globalization.NumberFormatInfo();
+
+
+            // Start wtih finding all values and their totals
+            int numEntries = 0;
+            List<float> correctPercentiles = new List<float>();
+            float meanCorrect = 0;
+            List<float> wrongPercentiles = new List<float>();
+            float meanWrong = 0;
+            string[] lines = File.ReadAllLines(p_filePath);
+            foreach (string line in lines)
+            {
+                // Get info from this line (this was clever, m8)
+                string[] infoInLine = line.Split(' ');
+                // Check that we're found the right line
+                if (line.Contains("Percentile correct: "))
+                {
+                    correctPercentiles.Add(float.Parse(infoInLine[6], nf)); // Don't forget to divide at end!
+                    meanCorrect += correctPercentiles[correctPercentiles.Count - 1];
+                    wrongPercentiles.Add(float.Parse(infoInLine[14], nf));
+                    meanWrong += wrongPercentiles[wrongPercentiles.Count - 1]; // Don't forget to divide at end!
+                    numEntries++;
+                }
+            }
+
+            // Calculate mean values
+            meanCorrect /= numEntries;
+            meanWrong /= numEntries;
+
+            // Now we calculate standard deviations for both correct and wrong
+            o_correctStandardDeviation = GnuplotUtilities.CalculateStandardDeviation(correctPercentiles, meanCorrect);
+            o_wrongStandardDeviation = GnuplotUtilities.CalculateStandardDeviation(wrongPercentiles, meanWrong);
+
+            o_meanCorrect = meanCorrect;
+            o_meanWrong = meanWrong;
+
+        }
     }
 
     // Used to easily group file entries for writing
