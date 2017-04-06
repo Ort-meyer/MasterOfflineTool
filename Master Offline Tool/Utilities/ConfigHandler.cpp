@@ -14,8 +14,8 @@ ConfigHandler* ConfigHandler::Get()
 
 ConfigHandler::ConfigHandler()
 {
-    m_entriesToAvrage = 60;
-    m_entriesToMerge = 5;
+    m_entriesToAvrage = 120;
+    m_entriesToMerge = 10;
 
     m_numValidationSet = 2;
 
@@ -28,15 +28,15 @@ ConfigHandler::ConfigHandler()
     m_reportRate = 100;
     m_errorAcceptance = 0.000001f;
 
-    m_creationType = NetworkCreationType::CreateOneSpecific;
+    m_creationType = NetworkCreationType::BuildFromBaseline;
 
     //int settingToTest = (int)FANNSettingToTest::TestHiddenCells + (int)FANNSettingToTest::TestOutputSteepness
     //    + (int)FANNSettingToTest::TestHiddenLayers + (int)FANNSettingToTest::TestHiddenSteepness;
     int settingToTest = (int)FANNSettingToTest::TestOutputLayerFunction + (int)FANNSettingToTest::TestOutputSteepness
-        + (int)FANNSettingToTest::TestHiddenLayerFunction + (int)FANNSettingToTest::TestHiddenSteepness;
+        + (int)FANNSettingToTest::TestHiddenLayerFunction + (int)FANNSettingToTest::TestHiddenSteepness + (int)FANNSettingToTest::TestTrainingAlgorithm;
     m_settingsToTest = (FANNSettingToTest)settingToTest;
 
-    m_logLevel = LogLevel::Silent;
+    m_logLevel = LogLevel::Progress;
 
     m_maxNetworkThreads = 10;
 
@@ -77,8 +77,8 @@ ConfigHandler::ConfigHandler()
 
     m_combinationToUse = "PosRot";
     ////// Network settings for training one network ///////
-    m_hiddenLayers = 2;
-    int hiddenlayers[5] = { 10,5,100, 100, 100 };
+    m_hiddenLayers = 5;
+    int hiddenlayers[5] = { 100,70,50, 30, 10 };
     m_hiddenCells = (int*)malloc(sizeof(int) * 5);
     for (size_t i = 0; i < 5; i++)
     {

@@ -26,24 +26,21 @@ FileCombiner::FileCombiner() : m_dataSetBuilder(new DataSetBuilder())
 
     std::vector<FANN::activation_function_enum> functions;
     functions.push_back(FANN::activation_function_enum::ELLIOT_SYMMETRIC);
-    //functions.push_back(FANN::activation_function_enum::SIGMOID_SYMMETRIC);
-    //functions.push_back(FANN::activation_function_enum::COS_SYMMETRIC);
-    //functions.push_back(FANN::activation_function_enum::SIN_SYMMETRIC);
-    //functions.push_back(FANN::activation_function_enum::GAUSSIAN_SYMMETRIC);
-    //functions.push_back(FANN::activation_function_enum::LINEAR_PIECE_SYMMETRIC);
+    functions.push_back(FANN::activation_function_enum::SIGMOID_SYMMETRIC);
+    functions.push_back(FANN::activation_function_enum::COS_SYMMETRIC);
+    functions.push_back(FANN::activation_function_enum::SIN_SYMMETRIC);
+    functions.push_back(FANN::activation_function_enum::LINEAR_PIECE_SYMMETRIC);
     m_factory.UseTheseHiddenActivationFunctions(functions);
 
     functions.clear();
-    // functions.push_back(FANN::activation_function_enum::ELLIOT_SYMMETRIC);
-    // functions.push_back(FANN::activation_function_enum::SIGMOID_SYMMETRIC);
-    // functions.push_back(FANN::activation_function_enum::COS_SYMMETRIC);
-    // functions.push_back(FANN::activation_function_enum::SIN_SYMMETRIC);
-    // functions.push_back(FANN::activation_function_enum::GAUSSIAN_SYMMETRIC);
-    // functions.push_back(FANN::activation_function_enum::LINEAR_PIECE_SYMMETRIC);
+    functions.push_back(FANN::activation_function_enum::ELLIOT_SYMMETRIC);
+    functions.push_back(FANN::activation_function_enum::SIGMOID_SYMMETRIC);
+    functions.push_back(FANN::activation_function_enum::COS_SYMMETRIC);
+    functions.push_back(FANN::activation_function_enum::SIN_SYMMETRIC);
+    functions.push_back(FANN::activation_function_enum::LINEAR_PIECE_SYMMETRIC);
     functions.push_back(FANN::activation_function_enum::ELLIOT);
-    // functions.push_back(FANN::activation_function_enum::SIGMOID);
-    // functions.push_back(FANN::activation_function_enum::GAUSSIAN);
-    // functions.push_back(FANN::activation_function_enum::LINEAR_PIECE);
+    functions.push_back(FANN::activation_function_enum::SIGMOID);
+    functions.push_back(FANN::activation_function_enum::LINEAR_PIECE);
     m_factory.UseTheseOutputActivationFunctions(functions);
 
     m_validationAmount = config->m_numValidationSet;
@@ -257,6 +254,9 @@ void FileCombiner::PerformCrossValidationOnNetSetting(NetworkSettings & p_netSet
             break;
         case NetworkCreationType::BuildFromBaseline:
             m_factory.CreateAndRunNetworksFromBaseline(p_netSetting, ConfigHandler::Get()->m_settingsToTest);
+            m_factory.JoinNetworkThreads();
+            SaveNetsOfSameSettingToFile(m_factory, m_dataSetBuilder->GetComboNameFromIndex(p_combo), "../SavedNetSettings/" + m_dataSetBuilder->GetComboNameFromIndex(p_combo));
+            m_factory.ClearBestVectors();
             break;
         case NetworkCreationType::CreateOneSpecific:
         {

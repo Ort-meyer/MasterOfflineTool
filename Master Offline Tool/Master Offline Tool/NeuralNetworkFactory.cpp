@@ -139,6 +139,7 @@ void NeuralNetworkFactory::CreateAndRunNetworksFromBaseline(NetworkSettings p_ba
 {
     NetworkSettings t_currentSettings = p_baseline;
     vector<string> t_networks;
+    LaunchNewNet(&t_currentSettings, m_epocsToTrain, m_reportRate, m_errorAcceptance);
 
     if (((int)p_whatToTest & (int)FANNSettingToTest::TestHiddenCells) == (int)FANNSettingToTest::TestHiddenCells)
     {
@@ -155,10 +156,6 @@ void NeuralNetworkFactory::CreateAndRunNetworksFromBaseline(NetworkSettings p_ba
             //SetupAndTrainNetworkAndAddResultsToList(&t_networks, t_currentSettings);
         }
         JoinNetworkThreads();
-        SaveBestNetworksToString(t_networks);
-        FileHandler::AppendToFile(t_networks, "../GraphNetworks/HiddenCells.settings");
-        t_networks.clear();
-        ClearBestVectors();
     }  
 
     // Hidden layers
@@ -185,10 +182,6 @@ void NeuralNetworkFactory::CreateAndRunNetworksFromBaseline(NetworkSettings p_ba
             //SetupAndTrainNetworkAndAddResultsToList(&t_networks, t_currentSettings);
         }
         JoinNetworkThreads();
-        SaveBestNetworksToString(t_networks);
-        FileHandler::AppendToFile(t_networks, "../GraphNetworks/HiddenLayers.settings");
-        t_networks.clear();
-        ClearBestVectors();
     }
 
     // Learning rate
@@ -203,10 +196,6 @@ void NeuralNetworkFactory::CreateAndRunNetworksFromBaseline(NetworkSettings p_ba
             // SetupAndTrainNetworkAndAddResultsToList(&t_networks, t_currentSettings);
         }
         JoinNetworkThreads();
-        SaveBestNetworksToString(t_networks);
-        FileHandler::AppendToFile(t_networks, "../GraphNetworks/LearningRate.settings");
-        t_networks.clear();
-        ClearBestVectors();
     }
 
     // Steepness hidden
@@ -217,14 +206,14 @@ void NeuralNetworkFactory::CreateAndRunNetworksFromBaseline(NetworkSettings p_ba
         for (float i = 0; i <= 1; i += t_steepnessHiddenIncrement)
         {
             t_currentSettings.steepnessHidden = i;
+            if (t_currentSettings.steepnessHidden == p_baseline.steepnessHidden)
+            {
+                continue;
+            }
             LaunchNewNet(&t_currentSettings, m_epocsToTrain, m_reportRate, m_errorAcceptance);
             //SetupAndTrainNetworkAndAddResultsToList(&t_networks, t_currentSettings);
         }
         JoinNetworkThreads();
-        SaveBestNetworksToString(t_networks);
-        FileHandler::AppendToFile(t_networks, "../GraphNetworks/SteepnessHidden.settings");
-        t_networks.clear();
-        ClearBestVectors();
     }
 
     // Steepness output
@@ -235,14 +224,14 @@ void NeuralNetworkFactory::CreateAndRunNetworksFromBaseline(NetworkSettings p_ba
         for (float i = 0; i <= 1; i += t_steepnessOutputIncrement)
         {
             t_currentSettings.steepnessOutput = i;
+            if (t_currentSettings.steepnessOutput == p_baseline.steepnessOutput)
+            {
+                continue;
+            }
             LaunchNewNet(&t_currentSettings, m_epocsToTrain, m_reportRate, m_errorAcceptance);
             // SetupAndTrainNetworkAndAddResultsToList(&t_networks, t_currentSettings);
         }
         JoinNetworkThreads();
-        SaveBestNetworksToString(t_networks);
-        FileHandler::AppendToFile(t_networks, "../GraphNetworks/SteepnessOutput.settings");
-        t_networks.clear();
-        ClearBestVectors();
     }
 
     //  Hidden Function
@@ -252,18 +241,19 @@ void NeuralNetworkFactory::CreateAndRunNetworksFromBaseline(NetworkSettings p_ba
         // Loop over all different functions, COS_SYMMETRIC is the last in the enum
         for (size_t i = 0; i < FANN::activation_function_enum::COS_SYMMETRIC + 1; i++)
         {
-            if (i == FANN::activation_function_enum::THRESHOLD || i == FANN::activation_function_enum::THRESHOLD_SYMMETRIC)
+            if (i == FANN::activation_function_enum::THRESHOLD || i == FANN::activation_function_enum::THRESHOLD_SYMMETRIC
+                || m_hiddenActivationFunctionsToUse.count((FANN::activation_function_enum)i) == 0)
             {
                 continue;
             }
             t_currentSettings.functionHidden = static_cast<FANN::activation_function_enum>(i);
+            if (t_currentSettings.functionHidden == p_baseline.functionHidden)
+            {
+                continue;
+            }
             LaunchNewNet(&t_currentSettings, m_epocsToTrain, m_reportRate, m_errorAcceptance);
         }
         JoinNetworkThreads();
-        SaveBestNetworksToString(t_networks);
-        FileHandler::AppendToFile(t_networks, "../GraphNetworks/HiddenFunction.settings");
-        t_networks.clear();
-        ClearBestVectors();
     }
 
     //  output Function
@@ -273,18 +263,19 @@ void NeuralNetworkFactory::CreateAndRunNetworksFromBaseline(NetworkSettings p_ba
         // Loop over all different functions, COS_SYMMETRIC is the last in the enum
         for (size_t i = 0; i < FANN::activation_function_enum::COS_SYMMETRIC + 1; i++)
         {
-            if (i == FANN::activation_function_enum::THRESHOLD || i == FANN::activation_function_enum::THRESHOLD_SYMMETRIC)
+            if (i == FANN::activation_function_enum::THRESHOLD || i == FANN::activation_function_enum::THRESHOLD_SYMMETRIC
+                || m_outputActivationFunctionsToUse.count((FANN::activation_function_enum)i) == 0)
             {
                 continue;
             }
             t_currentSettings.functionOutput = static_cast<FANN::activation_function_enum>(i);
+            if (t_currentSettings.functionOutput == p_baseline.functionOutput)
+            {
+                continue;
+            }
             LaunchNewNet(&t_currentSettings, m_epocsToTrain, m_reportRate, m_errorAcceptance);
         }
         JoinNetworkThreads();
-        SaveBestNetworksToString(t_networks);
-        FileHandler::AppendToFile(t_networks, "../GraphNetworks/OutputFunction.settings");
-        t_networks.clear();
-        ClearBestVectors();
     }
 
     //  training algorithm
@@ -295,13 +286,13 @@ void NeuralNetworkFactory::CreateAndRunNetworksFromBaseline(NetworkSettings p_ba
         for (size_t i = 0; i < FANN::training_algorithm_enum::TRAIN_SARPROP + 1; i++)
         {
             t_currentSettings.trainingAlgorithm = static_cast<FANN::training_algorithm_enum>(i);
+            if (t_currentSettings.trainingAlgorithm == p_baseline.trainingAlgorithm)
+            {
+                continue;
+            }
             LaunchNewNet(&t_currentSettings, m_epocsToTrain, m_reportRate, m_errorAcceptance);
         }
         JoinNetworkThreads();
-        SaveBestNetworksToString(t_networks);
-        FileHandler::AppendToFile(t_networks, "../GraphNetworks/TrainAlgorithm.settings");
-        t_networks.clear();
-        ClearBestVectors();
     }
 }
 
