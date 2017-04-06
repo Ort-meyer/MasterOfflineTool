@@ -45,6 +45,8 @@
   <ItemGroup>
     <Compile Include="GnuplotBarPrepareScript.cs" />
     <Compile Include="GnuplotBarsVaryingStuff.cs" />
+    <Compile Include="GnuplotForSteepActivTraining.cs" />
+    <Compile Include="GnuplotUtilities.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RawPositionExtraction.cs" />

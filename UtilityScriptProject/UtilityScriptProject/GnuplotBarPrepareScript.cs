@@ -30,7 +30,7 @@ namespace UtilityScriptProject
             string baseTargetPath = "..\\..\\..\\..\\Gnuplot result graph data";
 
             // Get a big nice list of all files
-            DirSearch(baseSourcePath);
+            m_allFiles = GnuplotUtilities.GetALLFilePaths(baseSourcePath, m_allFiles);
             
             // Loop through all files and fit them accordingly
             foreach (string file in m_allFiles)
@@ -50,18 +50,6 @@ namespace UtilityScriptProject
                 {
                     File.Copy(file, baseTargetPath + "\\Datastill varied\\" + Path.GetFileName(file), true);
                 }
-            }
-        }
-
-        void DirSearch(string sDir)
-        {
-            foreach (string dir in Directory.GetDirectories(sDir))
-            {
-                foreach (string file in Directory.GetFiles(dir))
-                {
-                    m_allFiles.Add(file);
-                }
-                DirSearch(dir);
             }
         }
 
