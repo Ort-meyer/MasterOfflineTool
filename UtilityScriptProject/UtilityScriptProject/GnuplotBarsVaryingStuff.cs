@@ -144,27 +144,12 @@ namespace UtilityScriptProject
             meanWrong /= numEntries;
 
             // Now we calculate standard deviations for both correct and wrong
-            o_correctStandardDeviation = CalculateStandardDeviation(correctPercentiles, meanCorrect);
-            o_wrongStandardDeviation = CalculateStandardDeviation(wrongPercentiles, meanWrong);
+            o_correctStandardDeviation = GnuplotUtilities.CalculateStandardDeviation(correctPercentiles, meanCorrect);
+            o_wrongStandardDeviation = GnuplotUtilities.CalculateStandardDeviation(wrongPercentiles, meanWrong);
 
             o_meanCorrect = meanCorrect;
             o_meanWrong = meanWrong;
 
-        }
-
-
-        // Calculates standard deviation according to https://www.mathsisfun.com/data/standard-deviation-formulas.html
-        private float CalculateStandardDeviation(List<float> p_numbers, float p_mean)
-        {
-            double correctSum = 0;
-            foreach (float f in p_numbers)
-            {
-                // These casts tho...
-                correctSum += Math.Pow(Convert.ToDouble(f - p_mean), 2);
-            }
-            double sumMean = correctSum / p_numbers.Count;
-            float standardDeviation = (float)Math.Sqrt(sumMean);
-            return standardDeviation;
         }
 
         // Writes the file entries to the file path specified
