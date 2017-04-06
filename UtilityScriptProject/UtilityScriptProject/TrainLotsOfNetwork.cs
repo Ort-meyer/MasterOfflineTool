@@ -10,7 +10,7 @@ namespace UtilityScriptProject
 {
     class TrainLotsOfNetwork
     {
-        int[] entriesToAvrage = { 60 };
+        int[] entriesToAvrage = { 60,20,120};
         int[] entriesToMerge = {20,10,5 };
         string[] combinationsToUse = { "PosRot", "KeyPos", "KeyRot" ,"Pos", "Rot" ,"Key" ,"KeyPosRot" };
 
@@ -36,7 +36,6 @@ namespace UtilityScriptProject
         3,
         4
         };
-
         string rootFolder = "../../../../Master Offline Tool/SavedNetSettingsDifferentStills/";
         string masterOfflineFolder = "../../../../Master Offline Tool/Debug/";
         string settingsFolder = "../../../../Master Offline Tool/SavedNetSettings/";
@@ -82,7 +81,7 @@ namespace UtilityScriptProject
                     int count = hiddenLayerCount[hidddenLayersindex];
                     if (ShouldRunNetworkSetting(avrage, merge, combo, layers, count))
                     {
-                        // RUN STILL WITH SETTING
+                        //RUN STILL WITH SETTING
                         ProcessStartInfo PSI = new ProcessStartInfo();
                         PSI.FileName = masterOfflineFolder + "Master Offline Tool.exe";
                         PSI.WorkingDirectory = masterOfflineFolder;
