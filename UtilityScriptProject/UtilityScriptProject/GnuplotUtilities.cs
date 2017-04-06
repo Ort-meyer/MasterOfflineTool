@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -103,6 +104,19 @@ namespace UtilityScriptProject
             o_meanCorrect = meanCorrect;
             o_meanWrong = meanWrong;
 
+        }
+
+        // Plots the provided text file with a hardcoded gnuplot script. Used to get true and false positives with error bars
+        public static void PlotWithGnuplot(string p_plotScriptDirectory, string p_plotScriptFileName)
+        {
+            string derp = Directory.GetCurrentDirectory();
+            ProcessStartInfo PSI = new ProcessStartInfo();
+            PSI.FileName = p_plotScriptFileName;
+            PSI.WorkingDirectory = p_plotScriptDirectory;
+            using (Process exeProcess = Process.Start(PSI))
+            {
+                exeProcess.WaitForExit();
+            }
         }
     }
 

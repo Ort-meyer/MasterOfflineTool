@@ -48,7 +48,7 @@ namespace UtilityScriptProject
             // Save to file
             GnuplotUtilities.SaveValuesToFile(newPath + "\\combos.txt", comboVariedArray);
             // Plot them with gnuplot
-            PlotWithGnuplot(newPath, gnuplotBaseName + "combos.plt");
+            GnuplotUtilities.PlotWithGnuplot(newPath, gnuplotBaseName + "combos.plt");
 
             // Datastill variations second 
             List<FileEntry> stillVariedArray = new List<FileEntry>();
@@ -72,7 +72,7 @@ namespace UtilityScriptProject
             // Save to file
             GnuplotUtilities.SaveValuesToFile(newPath + "\\stills.txt", stillVariedArray);
             // Plot them with gnuplot
-            PlotWithGnuplot(newPath, gnuplotBaseName + "stills.plt");
+            GnuplotUtilities.PlotWithGnuplot(newPath, gnuplotBaseName + "stills.plt");
 
             // Layers varied last
             List<FileEntry> layerVariedArray = new List<FileEntry>();
@@ -106,22 +106,10 @@ namespace UtilityScriptProject
             // Save to file
             GnuplotUtilities.SaveValuesToFile(newPath + "\\layers.txt", layerVariedArray);
             // Plot them with gnuplot
-            PlotWithGnuplot(newPath, gnuplotBaseName + "layers.plt");
+            GnuplotUtilities.PlotWithGnuplot(newPath, gnuplotBaseName + "layers.plt");
 
         }
 
-        // Plots the provided text file with a hardcoded gnuplot script. Used to get true and false positives with error bars
-        private void PlotWithGnuplot(string p_plotScriptDirectory, string p_plotScriptFileName)
-        {
-            string derp = Directory.GetCurrentDirectory();
-            ProcessStartInfo PSI = new ProcessStartInfo();
-            PSI.FileName = p_plotScriptFileName;
-            PSI.WorkingDirectory = p_plotScriptDirectory;
-            using (Process exeProcess = Process.Start(PSI))
-            {
-                exeProcess.WaitForExit();
-            }
-        }
     }
 
 
