@@ -22,7 +22,7 @@ namespace UtilityScriptProject
         public GnuplotBarPrepareScript()
         {
             m_allFiles = new List<string>();
-            string baseStill = "6020";
+            string baseStill = "12010";
             string baseCombo = "PosRot";
             string baseLayers = "5  100 70 50 30 10";
             
