@@ -1,12 +1,9 @@
 #cd Master\ Offline\ Tool/Debug
 
 declare -a entriesToAvrage=(
-	20 
 	120
 )
 declare -a entriesToMerge=(
-	5
-	20
 	10
 )
 
