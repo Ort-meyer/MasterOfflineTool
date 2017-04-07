@@ -108,7 +108,9 @@ namespace UtilityScriptProject
 
             BarPlot("Hidden activ", 1);
             BarPlot("Output activ", 2);
-            //BarPlot("Training", 8);
+            BarPlot("Training", 8);
+            BarPlot("Hidden steep", 10);
+            BarPlot("Output steep", 11);
 
 
 
@@ -137,12 +139,19 @@ namespace UtilityScriptProject
                     float meanCorrect = 0, meanWrong = 0, correctStandardDeviation = 0, wrongStandardDeviation = 0;
 
                     GnuplotUtilities.GetValues(filePath, ref meanCorrect, ref meanWrong, ref correctStandardDeviation, ref wrongStandardDeviation);
-                    string thisText;
-                    if (p_infoIndex != 8)
+                    string thisText = "";
+                    if (p_infoIndex < 3)
+                    {
                         thisText = GetActivationFunctionName(lineInfo[p_infoIndex]);
-                    else
+                    }
+                    else if (p_infoIndex == 8)
                     {
                         thisText = GetTrainingName(lineInfo[8 + int.Parse(lineInfo[3]) - 1]);
+                    }
+                    else
+                    {
+                        thisText = lineInfo[p_infoIndex + int.Parse(lineInfo[3]) - 1];
+                        thisText = thisText.Replace(".", ",");
                     }
                     FileEntry thisEntry = new FileEntry(thisText, meanCorrect, meanWrong, correctStandardDeviation, wrongStandardDeviation);
                     entriesList.Add(thisEntry);
