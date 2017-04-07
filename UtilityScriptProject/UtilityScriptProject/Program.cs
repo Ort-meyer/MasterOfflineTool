@@ -13,8 +13,8 @@ namespace UtilityScriptProject
             //RawPositionExtraction script = new RawPositionExtraction();
             //GnuplotBarPrepareScript prepScript = new GnuplotBarPrepareScript();
             //GnuplotBarsVaryingStuff barScript = new GnuplotBarsVaryingStuff();
-            TrainLotsOfNetwork train = new TrainLotsOfNetwork();
-            //GnuplotForSteepActivTraining newScrpt = new GnuplotForSteepActivTraining();
+            //TrainLotsOfNetwork train = new TrainLotsOfNetwork();
+            GnuplotForSteepActivTraining newScrpt = new GnuplotForSteepActivTraining();
         }
     }
 }

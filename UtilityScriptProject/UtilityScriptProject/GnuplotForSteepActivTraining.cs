@@ -108,7 +108,7 @@ namespace UtilityScriptProject
 
             BarPlot("Hidden activ", 1);
             BarPlot("Output activ", 2);
-            BarPlot("Training", 8);
+            //BarPlot("Training", 8);
 
 
 
@@ -149,7 +149,7 @@ namespace UtilityScriptProject
                 }
             }
             ///////////////////BIGASS BUG HERE FOR SOME REASON//////////////
-            GnuplotUtilities.SaveValuesToFile(path, entriesList);
+            GnuplotUtilities.SaveValuesToFile(path+"\\"+p_type+".txt", entriesList);
             string gnuplotPath = path + "\\gnuplot bar script error bars - generic.plt";
             // -e "filename='default.data'" - e "foo='bar"'
             string args = "-e \"fileName='" + p_type + ".txt'\" -e \"outputFileName='" + p_type + ".svg'\"";
