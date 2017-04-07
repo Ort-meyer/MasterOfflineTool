@@ -83,7 +83,6 @@ namespace UtilityScriptProject
                     if (ShouldRunNetworkSetting(avrage, merge, combo, layers, count))
                     {
                         amount++;
-                        //RUN STILL WITH SETTING
                         ProcessStartInfo PSI = new ProcessStartInfo();
                         PSI.FileName = masterOfflineFolder + "Master Offline Tool.exe";
                         PSI.WorkingDirectory = masterOfflineFolder;
