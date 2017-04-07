@@ -36,6 +36,7 @@ namespace UtilityScriptProject
         3,
         4
         };
+        int amount = 0;
         string rootFolder = "../../../../Master Offline Tool/SavedNetSettingsDifferentStills/";
         string masterOfflineFolder = "../../../../Master Offline Tool/Debug/";
         string settingsFolder = "../../../../Master Offline Tool/SavedNetSettings/";
@@ -81,6 +82,7 @@ namespace UtilityScriptProject
                     int count = hiddenLayerCount[hidddenLayersindex];
                     if (ShouldRunNetworkSetting(avrage, merge, combo, layers, count))
                     {
+                        amount++;
                         //RUN STILL WITH SETTING
                         ProcessStartInfo PSI = new ProcessStartInfo();
                         PSI.FileName = masterOfflineFolder + "Master Offline Tool.exe";
