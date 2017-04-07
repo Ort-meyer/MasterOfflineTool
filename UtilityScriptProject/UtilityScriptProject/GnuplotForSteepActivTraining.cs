@@ -152,8 +152,39 @@ namespace UtilityScriptProject
             GnuplotUtilities.SaveValuesToFile(path+"\\"+p_type+".txt", entriesList);
             string gnuplotPath = path + "\\gnuplot bar script error bars - generic.plt";
             // -e "filename='default.data'" - e "foo='bar"'
-            string args = "-e \"fileName='" + p_type + ".txt'\" -e \"outputFileName='" + p_type + ".svg'\"";
-            Process.Start(gnuplotPath, args);
+            //string args = "-e \"fileName='" + p_type + ".txt'\" -e \"outputFileName='" + p_type + ".svg'\"";
+            //string args = "-e \"fileName=\"" + p_type + ".txt\"";// ; outputFileName='" + p_type + ".svg'\"";
+
+
+            // Load gnuplot script
+            string[] gnuplotScriptLines = File.ReadAllLines(gnuplotPath);
+            for (int i = 0; i < gnuplotScriptLines.Length; i++)
+            {
+
+                if (gnuplotScriptLines[i].Contains("ARGOutputFileName"))
+                {
+                    gnuplotScriptLines[i] = gnuplotScriptLines[i].Replace("ARGOutputFileName", p_type + ".svg");
+                }
+                if (gnuplotScriptLines[i].Contains("ARGFileName"))
+                {
+                    gnuplotScriptLines[i] = gnuplotScriptLines[i].Replace("ARGFileName", p_type + ".txt");
+                }
+            }
+
+            string tempFilePath = gnuplotPath;
+            tempFilePath = tempFilePath.Replace("generic", "generic - temp");
+            File.WriteAllLines(tempFilePath, gnuplotScriptLines);
+
+            //Process.Start(tempFilePath);
+            ProcessStartInfo PSI = new ProcessStartInfo();
+            PSI.FileName = Path.GetFileName(tempFilePath);
+            string dir = Path.GetDirectoryName(tempFilePath);
+            PSI.WorkingDirectory = dir;
+            using (Process exeProcess = Process.Start(PSI))
+            {
+                exeProcess.WaitForExit();
+            }
+            File.Delete(tempFilePath);
 
 
         }
