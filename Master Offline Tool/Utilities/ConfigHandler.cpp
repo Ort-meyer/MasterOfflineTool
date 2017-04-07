@@ -32,7 +32,7 @@ ConfigHandler::ConfigHandler()
 
     //int settingToTest = (int)FANNSettingToTest::TestHiddenCells + (int)FANNSettingToTest::TestOutputSteepness
     //    + (int)FANNSettingToTest::TestHiddenLayers + (int)FANNSettingToTest::TestHiddenSteepness;
-    int settingToTest = (int)FANNSettingToTest::TestOutputLayerFunction + (int)FANNSettingToTest::TestHiddenLayerFunction;
+    int settingToTest = (int)FANNSettingToTest::TestHiddenSteepness + (int)FANNSettingToTest::TestOutputSteepness;
     m_settingsToTest = (FANNSettingToTest)settingToTest;
 
     m_logLevel = LogLevel::Progress;
