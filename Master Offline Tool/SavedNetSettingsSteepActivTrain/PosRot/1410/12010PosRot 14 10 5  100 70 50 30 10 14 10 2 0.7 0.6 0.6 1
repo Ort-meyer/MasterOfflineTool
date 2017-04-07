@@ -1,0 +1,264 @@
+ID:  MSE: 0.0712259 Percentile correct: 0 Mean error: 0.266784 Guessed lost when found: 0 Did retraining: false
+---Network settings---
+ hidden layers no: 1 cells: 100
+ hidden layers no: 2 cells: 70
+ hidden layers no: 3 cells: 50
+ hidden layers no: 4 cells: 30
+ hidden layers no: 5 cells: 10
+ Function hidden: 14 Function output: 10 Training algorithm: 2 Learning rate: 0.7 Steepness hidden: 0.6 Steepness output: 0.6 Deterministic weights: 1
+Biggest difference : 0.0337465
+MSE values: 0.210007 0.177115 0.176604 0.177477 0.176986 0.17713 0.17626 0.177318 0.177294 0.177465 0.177484 
+
+ID:  MSE: 0.375564 Percentile correct: 33.3333 Mean error: 0.507545 Guessed lost when found: 4.16667 Did retraining: false
+---Network settings---
+ hidden layers no: 1 cells: 100
+ hidden layers no: 2 cells: 70
+ hidden layers no: 3 cells: 50
+ hidden layers no: 4 cells: 30
+ hidden layers no: 5 cells: 10
+ Function hidden: 14 Function output: 10 Training algorithm: 2 Learning rate: 0.7 Steepness hidden: 0.6 Steepness output: 0.6 Deterministic weights: 1
+Biggest difference : 0.126174
+MSE values: 0.214749 0.13943 0.125993 0.100962 0.102796 0.0918086 0.0921109 0.0939524 0.0885751 0.0888483 0.0970456 
+
+ID:  MSE: 0.332624 Percentile correct: 50.9091 Mean error: 0.448785 Guessed lost when found: 12.7273 Did retraining: false
+---Network settings---
+ hidden layers no: 1 cells: 100
+ hidden layers no: 2 cells: 70
+ hidden layers no: 3 cells: 50
+ hidden layers no: 4 cells: 30
+ hidden layers no: 5 cells: 10
+ Function hidden: 14 Function output: 10 Training algorithm: 2 Learning rate: 0.7 Steepness hidden: 0.6 Steepness output: 0.6 Deterministic weights: 1
+Biggest difference : 0.125579
+MSE values: 0.204848 0.137638 0.104789 0.0956764 0.0974924 0.109979 0.0981626 0.0875977 0.0792689 0.089372 0.0837789 
+
+ID:  MSE: 0.161771 Percentile correct: 63.8298 Mean error: 0.310296 Guessed lost when found: 3.19149 Did retraining: false
+---Network settings---
+ hidden layers no: 1 cells: 100
+ hidden layers no: 2 cells: 70
+ hidden layers no: 3 cells: 50
+ hidden layers no: 4 cells: 30
+ hidden layers no: 5 cells: 10
+ Function hidden: 14 Function output: 10 Training algorithm: 2 Learning rate: 0.7 Steepness hidden: 0.6 Steepness output: 0.6 Deterministic weights: 1
+Biggest difference : 0.105347
+MSE values: 0.217225 0.175612 0.159084 0.144573 0.142183 0.13299 0.13034 0.12536 0.111878 0.118309 0.114859 
+
+ID:  MSE: 0.232782 Percentile correct: 61.5385 Mean error: 0.343098 Guessed lost when found: 9.40171 Did retraining: false
+---Network settings---
+ hidden layers no: 1 cells: 100
+ hidden layers no: 2 cells: 70
+ hidden layers no: 3 cells: 50
+ hidden layers no: 4 cells: 30
+ hidden layers no: 5 cells: 10
+ Function hidden: 14 Function output: 10 Training algorithm: 2 Learning rate: 0.7 Steepness hidden: 0.6 Steepness output: 0.6 Deterministic weights: 1
+Biggest difference : 0.130931
+MSE values: 0.212334 0.139769 0.122953 0.113369 0.108136 0.0980128 0.110913 0.0997535 0.0999817 0.0814028 0.0866433 
+
+ID:  MSE: 0.189548 Percentile correct: 48.9362 Mean error: 0.355627 Guessed lost when found: 0 Did retraining: false
+---Network settings---
+ hidden layers no: 1 cells: 100
+ hidden layers no: 2 cells: 70
+ hidden layers no: 3 cells: 50
+ hidden layers no: 4 cells: 30
+ hidden layers no: 5 cells: 10
+ Function hidden: 14 Function output: 10 Training algorithm: 2 Learning rate: 0.7 Steepness hidden: 0.6 Steepness output: 0.6 Deterministic weights: 1
+Biggest difference : 0.0614544
+MSE values: 0.204009 0.173291 0.169669 0.165914 0.165693 0.161225 0.154736 0.151092 0.152118 0.142555 0.145864 
+
+ID:  MSE: 0.0981083 Percentile correct: 71.5789 Mean error: 0.253434 Guessed lost when found: 0 Did retraining: false
+---Network settings---
+ hidden layers no: 1 cells: 100
+ hidden layers no: 2 cells: 70
+ hidden layers no: 3 cells: 50
+ hidden layers no: 4 cells: 30
+ hidden layers no: 5 cells: 10
+ Function hidden: 14 Function output: 10 Training algorithm: 2 Learning rate: 0.7 Steepness hidden: 0.6 Steepness output: 0.6 Deterministic weights: 1
+Biggest difference : 0.083926
+MSE values: 0.208682 0.18003 0.174446 0.153288 0.147068 0.147504 0.137134 0.130324 0.128378 0.124756 0.128922 
+
+ID:  MSE: 0.104962 Percentile correct: 77.0492 Mean error: 0.243828 Guessed lost when found: 0.819672 Did retraining: false
+---Network settings---
+ hidden layers no: 1 cells: 100
+ hidden layers no: 2 cells: 70
+ hidden layers no: 3 cells: 50
+ hidden layers no: 4 cells: 30
+ hidden layers no: 5 cells: 10
+ Function hidden: 14 Function output: 10 Training algorithm: 2 Learning rate: 0.7 Steepness hidden: 0.6 Steepness output: 0.6 Deterministic weights: 1
+Biggest difference : 0.115975
+MSE values: 0.218909 0.165517 0.137983 0.136443 0.110636 0.102935 0.108291 0.122963 0.126022 0.121229 0.123475 
+
+ID:  MSE: 0.238391 Percentile correct: 46.2687 Mean error: 0.401543 Guessed lost when found: 0 Did retraining: false
+---Network settings---
+ hidden layers no: 1 cells: 100
+ hidden layers no: 2 cells: 70
+ hidden layers no: 3 cells: 50
+ hidden layers no: 4 cells: 30
+ hidden layers no: 5 cells: 10
+ Function hidden: 14 Function output: 10 Training algorithm: 2 Learning rate: 0.7 Steepness hidden: 0.6 Steepness output: 0.6 Deterministic weights: 1
+Biggest difference : 0.0890277
+MSE values: 0.219782 0.169501 0.165886 0.163905 0.163953 0.16141 0.157648 0.143312 0.14014 0.140333 0.130754 
+
+ID:  MSE: 0.432116 Percentile correct: 42.6966 Mean error: 0.532529 Guessed lost when found: 2.80899 Did retraining: false
+---Network settings---
+ hidden layers no: 1 cells: 100
+ hidden layers no: 2 cells: 70
+ hidden layers no: 3 cells: 50
+ hidden layers no: 4 cells: 30
+ hidden layers no: 5 cells: 10
+ Function hidden: 14 Function output: 10 Training algorithm: 2 Learning rate: 0.7 Steepness hidden: 0.6 Steepness output: 0.6 Deterministic weights: 1
+Biggest difference : 0.124225
+MSE values: 0.193686 0.124167 0.106487 0.0905716 0.0827687 0.0751788 0.0749596 0.0783771 0.0738552 0.0738952 0.0694615 
+
+ID:  MSE: 0.252607 Percentile correct: 62.0833 Mean error: 0.372439 Guessed lost when found: 9.16667 Did retraining: false
+---Network settings---
+ hidden layers no: 1 cells: 100
+ hidden layers no: 2 cells: 70
+ hidden layers no: 3 cells: 50
+ hidden layers no: 4 cells: 30
+ hidden layers no: 5 cells: 10
+ Function hidden: 14 Function output: 10 Training algorithm: 2 Learning rate: 0.7 Steepness hidden: 0.6 Steepness output: 0.6 Deterministic weights: 1
+Biggest difference : 0.137257
+MSE values: 0.219136 0.14692 0.134909 0.123917 0.105067 0.106566 0.0977525 0.10975 0.094196 0.081879 0.0928336 
+
+ID:  MSE: 0.17206 Percentile correct: 72.0812 Mean error: 0.274212 Guessed lost when found: 13.7056 Did retraining: false
+---Network settings---
+ hidden layers no: 1 cells: 100
+ hidden layers no: 2 cells: 70
+ hidden layers no: 3 cells: 50
+ hidden layers no: 4 cells: 30
+ hidden layers no: 5 cells: 10
+ Function hidden: 14 Function output: 10 Training algorithm: 2 Learning rate: 0.7 Steepness hidden: 0.6 Steepness output: 0.6 Deterministic weights: 1
+Biggest difference : 0.15273
+MSE values: 0.215247 0.112109 0.0993291 0.0781892 0.0838431 0.0788209 0.0716555 0.0625161 0.0814538 0.0632437 0.0664632 
+
+ID:  MSE: 0.174948 Percentile correct: 70.9302 Mean error: 0.290306 Guessed lost when found: 11.0465 Did retraining: false
+---Network settings---
+ hidden layers no: 1 cells: 100
+ hidden layers no: 2 cells: 70
+ hidden layers no: 3 cells: 50
+ hidden layers no: 4 cells: 30
+ hidden layers no: 5 cells: 10
+ Function hidden: 14 Function output: 10 Training algorithm: 2 Learning rate: 0.7 Steepness hidden: 0.6 Steepness output: 0.6 Deterministic weights: 1
+Biggest difference : 0.126467
+MSE values: 0.210072 0.150123 0.140203 0.123721 0.115441 0.110229 0.114576 0.103303 0.0952693 0.0836049 0.0971432 
+
+ID:  MSE: 0.159319 Percentile correct: 61.9718 Mean error: 0.293936 Guessed lost when found: 14.554 Did retraining: false
+---Network settings---
+ hidden layers no: 1 cells: 100
+ hidden layers no: 2 cells: 70
+ hidden layers no: 3 cells: 50
+ hidden layers no: 4 cells: 30
+ hidden layers no: 5 cells: 10
+ Function hidden: 14 Function output: 10 Training algorithm: 2 Learning rate: 0.7 Steepness hidden: 0.6 Steepness output: 0.6 Deterministic weights: 1
+Biggest difference : 0.112773
+MSE values: 0.21933 0.173106 0.166303 0.134604 0.136711 0.129492 0.119985 0.117614 0.107261 0.106557 0.11262 
+
+ID:  MSE: 0.175433 Percentile correct: 70.2532 Mean error: 0.304126 Guessed lost when found: 6.32911 Did retraining: false
+---Network settings---
+ hidden layers no: 1 cells: 100
+ hidden layers no: 2 cells: 70
+ hidden layers no: 3 cells: 50
+ hidden layers no: 4 cells: 30
+ hidden layers no: 5 cells: 10
+ Function hidden: 14 Function output: 10 Training algorithm: 2 Learning rate: 0.7 Steepness hidden: 0.6 Steepness output: 0.6 Deterministic weights: 1
+Biggest difference : 0.114253
+MSE values: 0.211136 0.155374 0.138237 0.127193 0.117298 0.105683 0.0968829 0.0990917 0.102935 0.102127 0.10293 
+
+ID:  MSE: 0.260254 Percentile correct: 56 Mean error: 0.403826 Guessed lost when found: 0 Did retraining: false
+---Network settings---
+ hidden layers no: 1 cells: 100
+ hidden layers no: 2 cells: 70
+ hidden layers no: 3 cells: 50
+ hidden layers no: 4 cells: 30
+ hidden layers no: 5 cells: 10
+ Function hidden: 14 Function output: 10 Training algorithm: 2 Learning rate: 0.7 Steepness hidden: 0.6 Steepness output: 0.6 Deterministic weights: 1
+Biggest difference : 0.0816075
+MSE values: 0.198636 0.158797 0.148166 0.1324 0.131648 0.133295 0.122135 0.118437 0.117029 0.128451 0.118386 
+
+ID:  MSE: 0.169564 Percentile correct: 68.9655 Mean error: 0.30755 Guessed lost when found: 5.17241 Did retraining: false
+---Network settings---
+ hidden layers no: 1 cells: 100
+ hidden layers no: 2 cells: 70
+ hidden layers no: 3 cells: 50
+ hidden layers no: 4 cells: 30
+ hidden layers no: 5 cells: 10
+ Function hidden: 14 Function output: 10 Training algorithm: 2 Learning rate: 0.7 Steepness hidden: 0.6 Steepness output: 0.6 Deterministic weights: 1
+Biggest difference : 0.102753
+MSE values: 0.210713 0.164785 0.142617 0.135961 0.139518 0.121762 0.119034 0.113738 0.10796 0.117532 0.113748 
+
+ID:  MSE: 0.286512 Percentile correct: 60.5505 Mean error: 0.397782 Guessed lost when found: 9.17431 Did retraining: false
+---Network settings---
+ hidden layers no: 1 cells: 100
+ hidden layers no: 2 cells: 70
+ hidden layers no: 3 cells: 50
+ hidden layers no: 4 cells: 30
+ hidden layers no: 5 cells: 10
+ Function hidden: 14 Function output: 10 Training algorithm: 2 Learning rate: 0.7 Steepness hidden: 0.6 Steepness output: 0.6 Deterministic weights: 1
+Biggest difference : 0.123361
+MSE values: 0.201815 0.160418 0.124783 0.1006 0.103514 0.0970929 0.0998981 0.0820396 0.0790207 0.0854331 0.0784537 
+
+ID:  MSE: 0.521269 Percentile correct: 28.8136 Mean error: 0.635122 Guessed lost when found: 0 Did retraining: false
+---Network settings---
+ hidden layers no: 1 cells: 100
+ hidden layers no: 2 cells: 70
+ hidden layers no: 3 cells: 50
+ hidden layers no: 4 cells: 30
+ hidden layers no: 5 cells: 10
+ Function hidden: 14 Function output: 10 Training algorithm: 2 Learning rate: 0.7 Steepness hidden: 0.6 Steepness output: 0.6 Deterministic weights: 1
+Biggest difference : 0.111993
+MSE values: 0.19679 0.129921 0.111279 0.0990844 0.0965041 0.0879315 0.0856807 0.087492 0.0877 0.0847969 0.0889755 
+
+ID:  MSE: 0.365389 Percentile correct: 43.5897 Mean error: 0.489289 Guessed lost when found: 10.2564 Did retraining: false
+---Network settings---
+ hidden layers no: 1 cells: 100
+ hidden layers no: 2 cells: 70
+ hidden layers no: 3 cells: 50
+ hidden layers no: 4 cells: 30
+ hidden layers no: 5 cells: 10
+ Function hidden: 14 Function output: 10 Training algorithm: 2 Learning rate: 0.7 Steepness hidden: 0.6 Steepness output: 0.6 Deterministic weights: 1
+Biggest difference : 0.114285
+MSE values: 0.204811 0.136716 0.115294 0.101484 0.0992013 0.0955681 0.104206 0.10346 0.0921972 0.090526 0.0972082 
+
+ID:  MSE: 0.189992 Percentile correct: 67.6923 Mean error: 0.31529 Guessed lost when found: 12.3077 Did retraining: false
+---Network settings---
+ hidden layers no: 1 cells: 100
+ hidden layers no: 2 cells: 70
+ hidden layers no: 3 cells: 50
+ hidden layers no: 4 cells: 30
+ hidden layers no: 5 cells: 10
+ Function hidden: 14 Function output: 10 Training algorithm: 2 Learning rate: 0.7 Steepness hidden: 0.6 Steepness output: 0.6 Deterministic weights: 1
+Biggest difference : 0.117167
+MSE values: 0.201971 0.158206 0.117759 0.122173 0.109904 0.0961572 0.0994859 0.0848045 0.0912999 0.0932364 0.102445 
+
+ID:  MSE: 0.353056 Percentile correct: 50 Mean error: 0.466545 Guessed lost when found: 5 Did retraining: false
+---Network settings---
+ hidden layers no: 1 cells: 100
+ hidden layers no: 2 cells: 70
+ hidden layers no: 3 cells: 50
+ hidden layers no: 4 cells: 30
+ hidden layers no: 5 cells: 10
+ Function hidden: 14 Function output: 10 Training algorithm: 2 Learning rate: 0.7 Steepness hidden: 0.6 Steepness output: 0.6 Deterministic weights: 1
+Biggest difference : 0.128136
+MSE values: 0.20881 0.146203 0.13299 0.119752 0.106343 0.101252 0.0985561 0.0942704 0.0957615 0.0970635 0.0806741 
+
+ID:  MSE: 0.35342 Percentile correct: 50 Mean error: 0.472356 Guessed lost when found: 5.43478 Did retraining: false
+---Network settings---
+ hidden layers no: 1 cells: 100
+ hidden layers no: 2 cells: 70
+ hidden layers no: 3 cells: 50
+ hidden layers no: 4 cells: 30
+ hidden layers no: 5 cells: 10
+ Function hidden: 14 Function output: 10 Training algorithm: 2 Learning rate: 0.7 Steepness hidden: 0.6 Steepness output: 0.6 Deterministic weights: 1
+Biggest difference : 0.106521
+MSE values: 0.198576 0.136355 0.115147 0.102222 0.09469 0.0976572 0.0989141 0.0955775 0.0920546 0.0981214 0.0948349 
+
+ID:  MSE: 0.150177 Percentile correct: 66.25 Mean error: 0.286086 Guessed lost when found: 7.5 Did retraining: false
+---Network settings---
+ hidden layers no: 1 cells: 100
+ hidden layers no: 2 cells: 70
+ hidden layers no: 3 cells: 50
+ hidden layers no: 4 cells: 30
+ hidden layers no: 5 cells: 10
+ Function hidden: 14 Function output: 10 Training algorithm: 2 Learning rate: 0.7 Steepness hidden: 0.6 Steepness output: 0.6 Deterministic weights: 1
+Biggest difference : 0.101662
+MSE values: 0.20358 0.171902 0.147295 0.134175 0.120088 0.111493 0.105283 0.101918 0.10557 0.105121 0.102768 
+
