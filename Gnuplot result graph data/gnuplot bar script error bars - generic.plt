@@ -4,8 +4,7 @@ reset
 fontsize = 12
 
 #set title "ARGTitle"
-set term svg
-#set output "Hidden activ.svg"
+set term pdf
 set output "ARGOutputFileName"
 set style fill solid 1.00 border 0
 set style histogram errorbars gap 2 lw 1

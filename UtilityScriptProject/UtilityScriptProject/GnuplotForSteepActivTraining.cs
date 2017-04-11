@@ -172,7 +172,7 @@ namespace UtilityScriptProject
 
                 if (gnuplotScriptLines[i].Contains("ARGOutputFileName"))
                 {
-                    gnuplotScriptLines[i] = gnuplotScriptLines[i].Replace("ARGOutputFileName", p_type + ".svg");
+                    gnuplotScriptLines[i] = gnuplotScriptLines[i].Replace("ARGOutputFileName", p_type + ".pdf");
                 }
                 if (gnuplotScriptLines[i].Contains("ARGFileName"))
                 {
