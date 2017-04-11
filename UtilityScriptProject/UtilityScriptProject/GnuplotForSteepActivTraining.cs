@@ -50,8 +50,8 @@ namespace UtilityScriptProject
                      info[10 + int.Parse(info[3]) - 1] == baseHiddenSteepness &&
                      info[11 + int.Parse(info[3]) - 1] == baseOutputSteepness)
                 {
-                    Directory.CreateDirectory(m_baseTargetPath + "\\Hidden activ varied\\");
-                    File.Copy(file, m_baseTargetPath + "\\Hidden activ varied\\" + Path.GetFileName(file), true);
+                    Directory.CreateDirectory(m_baseTargetPath + "\\Hidden activation functions varied\\");
+                    File.Copy(file, m_baseTargetPath + "\\Hidden activation functions varied\\" + Path.GetFileName(file), true);
                 }
 
                 // Output activ
@@ -62,8 +62,8 @@ namespace UtilityScriptProject
                     info[10 + int.Parse(info[3]) - 1] == baseHiddenSteepness &&
                     info[11 + int.Parse(info[3]) - 1] == baseOutputSteepness)
                 {
-                    Directory.CreateDirectory(m_baseTargetPath + "\\Output activ varied\\");
-                    File.Copy(file, m_baseTargetPath + "\\Output activ varied\\" + Path.GetFileName(file), true);
+                    Directory.CreateDirectory(m_baseTargetPath + "\\Output activation functions varied\\");
+                    File.Copy(file, m_baseTargetPath + "\\Output activation functions varied\\" + Path.GetFileName(file), true);
                 }
 
                 // Training
@@ -74,8 +74,8 @@ namespace UtilityScriptProject
                     info[10 + int.Parse(info[3]) - 1] == baseHiddenSteepness &&
                     info[11 + int.Parse(info[3]) - 1] == baseOutputSteepness)
                 {
-                    Directory.CreateDirectory(m_baseTargetPath + "\\Training varied\\");
-                    File.Copy(file, m_baseTargetPath + "\\Training varied\\" + Path.GetFileName(file), true);
+                    Directory.CreateDirectory(m_baseTargetPath + "\\Training algorithms varied\\");
+                    File.Copy(file, m_baseTargetPath + "\\Training algorithms varied\\" + Path.GetFileName(file), true);
                 }
 
                 // Hidden steep
@@ -86,8 +86,8 @@ namespace UtilityScriptProject
                     //info[10] == baseHiddenSteepness &&
                     info[11 + int.Parse(info[3]) - 1] == baseOutputSteepness)
                 {
-                    Directory.CreateDirectory(m_baseTargetPath + "\\Hidden steep varied\\");
-                    File.Copy(file, m_baseTargetPath + "\\Hidden steep varied\\" + Path.GetFileName(file), true);
+                    Directory.CreateDirectory(m_baseTargetPath + "\\Hidden steepness varied\\");
+                    File.Copy(file, m_baseTargetPath + "\\Hidden steepness varied\\" + Path.GetFileName(file), true);
                 }
 
                 // Output steep
@@ -98,19 +98,19 @@ namespace UtilityScriptProject
                     info[10 + int.Parse(info[3]) - 1] == baseHiddenSteepness)
                 //info[11] == baseOutputSteepness)
                 {
-                    Directory.CreateDirectory(m_baseTargetPath + "\\Output steep varied\\");
-                    File.Copy(file, m_baseTargetPath + "\\Output steep varied\\" + Path.GetFileName(file), true);
+                    Directory.CreateDirectory(m_baseTargetPath + "\\Output steepness varied\\");
+                    File.Copy(file, m_baseTargetPath + "\\Output steepness varied\\" + Path.GetFileName(file), true);
                 }
 
             }
 
             // Files are moved, now calculate stuff and put into gnuplot-ready file
 
-            BarPlot("Hidden activ", 1);
-            BarPlot("Output activ", 2);
-            BarPlot("Training", 8);
-            BarPlot("Hidden steep", 10);
-            BarPlot("Output steep", 11);
+            BarPlot("Hidden activation functions", 1);
+            BarPlot("Output activation functions", 2);
+            BarPlot("Training algorithms", 8);
+            BarPlot("Hidden steepness", 10);
+            BarPlot("Output steepness", 11);
 
 
 
@@ -178,6 +178,11 @@ namespace UtilityScriptProject
                 {
                     gnuplotScriptLines[i] = gnuplotScriptLines[i].Replace("ARGFileName", p_type + ".txt");
                 }
+                if (gnuplotScriptLines[i].Contains("ARGTitle"))
+                {
+                    gnuplotScriptLines[i] = gnuplotScriptLines[i].Replace("ARGTitle", p_type);
+                }
+
             }
 
             string tempFilePath = gnuplotPath;

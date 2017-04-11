@@ -38,8 +38,8 @@ namespace UtilityScriptProject
                     // Find which combo we're working on from file name
                     string fileName = Path.GetFileName(filePath);
                     int comboSeparationIndex = fileName.IndexOf(" ");
-                    // WARNING!! Hard coded 4 since we run 6020 as baseline still!
-                    string thisCombo = fileName.Substring(4, comboSeparationIndex);
+                    // WARNING!! Hard coded 6 since we run 12010 as baseline still!
+                    string thisCombo = fileName.Substring(5, comboSeparationIndex-5);
                     // Store in array
                     FileEntry thisEntry = new FileEntry(thisCombo, meanCorrect, meanWrong, correctStandardDeviation, wrongStandardDeviation);
                     comboVariedArray.Add(thisEntry);
@@ -64,6 +64,7 @@ namespace UtilityScriptProject
                 // Hax. We look as long as its not a number
                 var stillCharactersInSomeWeirdFormat = Path.GetFileName(stillFile).TakeWhile(c => Char.IsDigit(c));
                 string thisStill = new string(stillCharactersInSomeWeirdFormat.ToArray());
+                thisStill = thisStill.Replace("0", "0 ");
                 // Store in array
                 FileEntry thisEntry = new FileEntry(thisStill, meanCorrect, meanWrong, correctStandardDeviation, wrongStandardDeviation);
                 stillVariedArray.Add(thisEntry);

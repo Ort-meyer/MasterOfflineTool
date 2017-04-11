@@ -38,16 +38,19 @@ namespace UtilityScriptProject
                 // Layer varied
                 if (file.Contains(baseStill) && file.Contains(baseCombo) && !file.Contains("Key"))
                 {
+                    Directory.CreateDirectory(baseTargetPath + "\\Layers varied\\");
                     File.Copy(file, baseTargetPath + "\\Layers varied\\" + Path.GetFileName(file), true);
                 }
                 // Combo varied
                 if (file.Contains(baseStill) && file.Contains(baseLayers))
                 {
+                    Directory.CreateDirectory(baseTargetPath + "\\Combination varied\\");
                     File.Copy(file, baseTargetPath + "\\Combination varied\\" + Path.GetFileName(file), true);
                 }
                 // Still varied
                 if (file.Contains(baseCombo) && file.Contains(baseLayers) && !file.Contains("Key"))
                 {
+                    Directory.CreateDirectory(baseTargetPath + "\\Datastill varied\\");
                     File.Copy(file, baseTargetPath + "\\Datastill varied\\" + Path.GetFileName(file), true);
                 }
             }
