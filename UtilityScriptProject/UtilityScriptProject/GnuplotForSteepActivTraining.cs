@@ -219,7 +219,8 @@ namespace UtilityScriptProject
         private string GetTrainingName(string p_index)
         {
             Dictionary<string, string> trainingMap = new Dictionary<string, string>();
-            trainingMap["1"] = "Incremental";
+            trainingMap["0"] = "Incremental";
+            trainingMap["1"] = "Batch";
             trainingMap["2"] = "RProp";
             trainingMap["3"] = "QuickProp";
             trainingMap["4"] = "SarProp";
