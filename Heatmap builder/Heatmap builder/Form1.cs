@@ -19,9 +19,9 @@ namespace Heatmap_builder
         public bool onlyShowHitsOnGolden = true;
         public bool ignoreFileWithNoLost = true;
 
-        private Color wrongLost;
-        private Color goldenLost;
-        private Color correctLost;
+        public Color wrongLost;
+        public Color goldenLost;
+        public Color correctLost;
 
         Bitmap completedImage;
 
@@ -533,6 +533,10 @@ namespace Heatmap_builder
 
         public string GetCalculatedDataFolder() { return InFolderNetworkData.Text; }
         public void SetCalculatedDataFolder(string text) { InFolderNetworkData.Text = text; }
+
+        public void SetUnderlayingImageLocation(string text) { button1.Text = text; }
+
+        public void SetUseUnderlayingImageSize(bool use) { sizeFromImage.Checked = use; }
 
         private void checkBox1_CheckedChanged(object sender, EventArgs e)
         {
