@@ -22,5 +22,5 @@ int main(int argc, char* argv[])
     }
 
     FileCombiner fc;
-    //GnuPlotter plotter;
+    GnuPlotter plotter;
 }

@@ -129,6 +129,7 @@ void DataStillManager::ProcessFilesAndSaveToFile(std::vector<std::string> p_file
             keyMaskInterpeter.ReinterpretRawKeyData(fileContent);
             // TODO doesn't this introduce a memory leak, since we change the pointer of fileContent to a new one but doesn't remove the old one
             fileContent = still.FilterAdd2(*fileContent, ConfigHandler::Get()->m_entriesToAvrage);
+            // We use entries to average here since a player can max press a key once a frame and since we have averaged over multiple frames this is it
             fileContent = still.NormalizeValuesUsingNumber(*fileContent, ConfigHandler::Get()->m_entriesToAvrage, p_files[currentFile]);
 			CheckThatAllEntiresHaveSameNrOfWords(*fileContent);
 
