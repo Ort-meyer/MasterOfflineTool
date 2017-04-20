@@ -138,7 +138,7 @@ namespace UtilityScriptProject
                     // Get values
                     float meanCorrect = 0, meanWrong = 0, correctStandardDeviation = 0, wrongStandardDeviation = 0;
 
-                    GnuplotUtilities.GetValues(filePath, ref meanCorrect, ref meanWrong, ref correctStandardDeviation, ref wrongStandardDeviation);
+                    GnuplotUtilities.GetValues(filePath, ref meanCorrect, ref correctStandardDeviation, ref meanWrong,  ref wrongStandardDeviation);
                     string thisText = "";
                     if (p_infoIndex < 3)
                     {

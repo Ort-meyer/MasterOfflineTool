@@ -33,7 +33,7 @@ namespace UtilityScriptProject
 
                     // Get values
                     float meanCorrect = 0, meanWrong = 0, correctStandardDeviation = 0, wrongStandardDeviation = 0;
-                    GnuplotUtilities.GetValues(filePath, ref meanCorrect, ref meanWrong, ref correctStandardDeviation, ref wrongStandardDeviation);
+                    GnuplotUtilities.GetValues(filePath, ref meanCorrect, ref correctStandardDeviation, ref meanWrong, ref wrongStandardDeviation);
 
                     // Find which combo we're working on from file name
                     string fileName = Path.GetFileName(filePath);
@@ -58,7 +58,7 @@ namespace UtilityScriptProject
             {
                 // Has to be an array, even though we know there's only one file in there
                 float meanCorrect = 0, meanWrong = 0, correctStandardDeviation = 0, wrongStandardDeviation = 0;
-                GnuplotUtilities.GetValues(stillFile, ref meanCorrect, ref meanWrong, ref correctStandardDeviation, ref wrongStandardDeviation);
+                GnuplotUtilities.GetValues(stillFile, ref meanCorrect, ref correctStandardDeviation, ref meanWrong, ref wrongStandardDeviation);
 
                 //string thisStill = stillDir.Substring(stillSeparationIndex + 1);
                 // Hax. We look as long as its not a number
@@ -86,7 +86,7 @@ namespace UtilityScriptProject
                 {
                     // Get values
                     float meanCorrect = 0, meanWrong = 0, correctStandardDeviation = 0, wrongStandardDeviation = 0;
-                    GnuplotUtilities.GetValues(filePath, ref meanCorrect, ref meanWrong, ref correctStandardDeviation, ref wrongStandardDeviation);
+                    GnuplotUtilities.GetValues(filePath, ref meanCorrect, ref correctStandardDeviation, ref meanWrong,  ref wrongStandardDeviation);
 
                     // Figure out network configuration string
                     string thisLayers = "";
