@@ -28,7 +28,7 @@ ConfigHandler::ConfigHandler()
     m_reportRate = 100;
     m_errorAcceptance = 0.000001f;
 
-    m_creationType = NetworkCreationType::CreateOneSpecific;
+    m_creationType = NetworkCreationType::BuildFromBaseline;
 
     //int settingToTest = (int)FANNSettingToTest::TestHiddenCells + (int)FANNSettingToTest::TestOutputSteepness
     //    + (int)FANNSettingToTest::TestHiddenLayers + (int)FANNSettingToTest::TestHiddenSteepness;
@@ -84,10 +84,10 @@ ConfigHandler::ConfigHandler()
         m_hiddenCells[i] = hiddenlayers[i];
     }
     m_learningRate = 0.7;
-    m_steepnessHidden = 0.6;
-    m_steepnessOutput = 0.6;
+    m_steepnessHidden = 0.7;
+    m_steepnessOutput = 0.7;
     m_functionHidden = FANN::activation_function_enum::ELLIOT_SYMMETRIC;
-    m_functionOutput = FANN::activation_function_enum::ELLIOT;
+    m_functionOutput = FANN::activation_function_enum::ELLIOT_SYMMETRIC;
     m_trainingAlgorithm = FANN::training_algorithm_enum::TRAIN_RPROP;
 }
 
