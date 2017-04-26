@@ -84,10 +84,10 @@ ConfigHandler::ConfigHandler()
         m_hiddenCells[i] = hiddenlayers[i];
     }
     m_learningRate = 0.7;
-    m_steepnessHidden = 0.7;
-    m_steepnessOutput = 0.7;
+    m_steepnessHidden = 0.6;    
+    m_steepnessOutput = 0.6;
     m_functionHidden = FANN::activation_function_enum::ELLIOT_SYMMETRIC;
-    m_functionOutput = FANN::activation_function_enum::ELLIOT_SYMMETRIC;
+    m_functionOutput = FANN::activation_function_enum::ELLIOT;
     m_trainingAlgorithm = FANN::training_algorithm_enum::TRAIN_RPROP;
 }
 

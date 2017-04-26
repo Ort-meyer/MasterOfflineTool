@@ -267,6 +267,29 @@ void NeuralNetwork::SetupNetwork()
             m_networkSettings.hiddenCells[4],
             m_networkSettings.outputCells);
         break;
+    case 6:
+        m_net.create_standard(7,
+            m_networkSettings.inputCells,
+            m_networkSettings.hiddenCells[0],
+            m_networkSettings.hiddenCells[1],
+            m_networkSettings.hiddenCells[2],
+            m_networkSettings.hiddenCells[3],
+            m_networkSettings.hiddenCells[4],
+            m_networkSettings.hiddenCells[5],
+            m_networkSettings.outputCells);
+        break;
+    case 7:
+        m_net.create_standard(7,
+            m_networkSettings.inputCells,
+            m_networkSettings.hiddenCells[0],
+            m_networkSettings.hiddenCells[1],
+            m_networkSettings.hiddenCells[2],
+            m_networkSettings.hiddenCells[3],
+            m_networkSettings.hiddenCells[4],
+            m_networkSettings.hiddenCells[5],
+            m_networkSettings.hiddenCells[6],
+            m_networkSettings.outputCells);
+        break;
     }
     // Set learning rate, activation function and steepness
     m_net.set_learning_rate(m_networkSettings.learningRate);

@@ -11,16 +11,16 @@ int main(int argc, char* argv[])
         cf->m_combinationToUse = argv[1];
 
         cf->m_hiddenLayers = std::stoi(std::string(argv[2]));
-        for (size_t i = 0; i < 5; i++)
+        for (size_t i = 0; i < 7; i++)
         {
             cf->m_hiddenCells[i] = std::stoi(std::string(argv[3 + i]));
         }
 
-        cf->m_entriesToAvrage = std::stoi(std::string(argv[8]));
-        cf->m_entriesToMerge = std::stoi(std::string(argv[9]));
+        cf->m_entriesToAvrage = std::stoi(std::string(argv[10]));
+        cf->m_entriesToMerge = std::stoi(std::string(argv[11]));
 
     }
 
     FileCombiner fc;
-    GnuPlotter plotter;
+    //GnuPlotter plotter;
 }
