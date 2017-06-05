@@ -12,7 +12,20 @@ namespace UtilityScriptProject
      Class containing some utility stuff for gnuplot scripts*/
     class GnuplotUtilities
     {
-        
+        public static List<string> GetAllFilesInFolderStructure(string p_rootDirectory, string p_fileEnding)
+        {
+            List<string> files = new List<string>();
+            // FInd all subdirectories
+            string[] subDirectories = Directory.GetDirectories(p_rootDirectory);
+            foreach (var directoryPath in subDirectories)
+            {
+                // Go to the next subfolder and do the same thing again
+                files.AddRange(GetAllFilesInFolderStructure(directoryPath, p_fileEnding));
+            }
+            files.AddRange(Directory.GetFiles(p_rootDirectory, "*" + p_fileEnding));
+            return files;
+        }
+
         public static List<string> GetALLFilePaths(string sDir, List<string> p_fileNames)
         {
             foreach (string dir in Directory.GetDirectories(sDir))

@@ -11,10 +11,12 @@ namespace UtilityScriptProject
         static void Main(string[] args)
         {
             //RawPositionExtraction script = new RawPositionExtraction();
-            GnuplotBarPrepareScript prepScript = new GnuplotBarPrepareScript();
-            GnuplotBarsVaryingStuff barScript = new GnuplotBarsVaryingStuff();
+            //GnuplotBarPrepareScript prepScript = new GnuplotBarPrepareScript();
+            //GnuplotBarsVaryingStuff barScript = new GnuplotBarsVaryingStuff();
             //TrainLotsOfNetwork train = new TrainLotsOfNetwork();
-            GnuplotForSteepActivTraining newScrpt = new GnuplotForSteepActivTraining();
+            //GnuplotForSteepActivTraining newScrpt = new GnuplotForSteepActivTraining();
+            //RawDataStatisticsExtraction dataExtract = new RawDataStatisticsExtraction();
+            PlayerStatisticExtraction playerStats = new PlayerStatisticExtraction();
         }
     }
 }
